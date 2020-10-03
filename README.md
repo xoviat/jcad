@@ -1,7 +1,7 @@
 # JCAD
 
 This project aims to simplify and clarify the process of ordering SMT assembly boards from JLCPCB.
-The problem is as such: given a KiCAD .sch and .pcb file, what is the simpliest and fastest way
+The problem is as such: given a KiCAD .sch and .kicad_pcb file, what is the simpliest and fastest way
 to order SMT assembled boards from JLCPCB? The current process is as follows:
 
 1. Generate a BOM in EEschema
@@ -19,7 +19,7 @@ to order SMT assembled boards from JLCPCB? The current process is as follows:
 
 ## What can change
 
-1. The input files to the JLCPCB website can be directly derived from the KiCAD .sch and .pcb files
+1. The input files to the JLCPCB website can be directly derived from the KiCAD .sch and .kicad_pcb files
 2. The components can be assigned interactively, before uploading to JLCPCB.
 3. Calculations can be done offline, using the JLCPCB component database.
 4. Footprints can be assigned offline, using the JLCPCB component database, directly editing the .sch file.
@@ -33,7 +33,7 @@ to order SMT assembled boards from JLCPCB? The current process is as follows:
 ## Why this is possible
 
 1. The .sch format is not too complex and we only need to edit properties of the components. We will not edit component placement or wires.
-2. The .pcb file can be read using the pcbnew Python API. We can generate the required outputs and postprocess them ourselves.
+2. The .kicad_pcb file can be read using the pcbnew Python API. We can generate the required outputs and postprocess them ourselves.
 3. The BOM and POS files are simple to read and should not pose too many difficulties.
 
 ## Libraries

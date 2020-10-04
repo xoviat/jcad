@@ -79,6 +79,26 @@ type SchematicComponent struct {
 
 }
 
+func (st *SchematicComponent) Designator() string {
+	return ""
+}
+
+func (st *SchematicComponent) Value() string {
+	return ""
+}
+
+func (st *SchematicComponent) Footprint() string {
+	return ""
+}
+
+func (st *SchematicComponent) Footprint() string {
+	return ""
+}
+
+func (st *SchematicComponent) Part() string {
+	return ""
+}
+
 func (st *SchematicComponent) Text() string {
 	text := "$Comp"
 	for _, line := range st.lines {

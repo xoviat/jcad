@@ -110,7 +110,7 @@ def convert(pcb, dir):
     offset = pcbnew.wxPoint(0, 0)
     # False to generate 2 separate drill files (one for plated holes, one for non plated holes)
     # True to generate only one drill file
-    mergeNPTH = False
+    mergeNPTH = True
     drlwriter.SetOptions(mirror, minimalHeader, offset, mergeNPTH)
 
     metricFmt = True
@@ -120,11 +120,6 @@ def convert(pcb, dir):
     genMap = True
     print 'create drill and map files in %s' % pctl.GetPlotDirName()
     drlwriter.CreateDrillandMapFilesSet(pctl.GetPlotDirName(), genDrl, genMap)
-
-    # One can create a text file to report drill statistics
-    rptfn = pctl.GetPlotDirName() + 'drill_report.rpt'
-    print 'report: %s' % rptfn
-    drlwriter.GenDrillReportFile(rptfn)
 
 
 def main():

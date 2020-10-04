@@ -2,7 +2,9 @@ package lib
 
 import (
 	"encoding/csv"
+	"fmt"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -48,16 +50,27 @@ func GenerateOutputs(src, bom, cpl string, library *Library) {
 		// G***,LOGO,F4Silkscreen,57.2,-56.9,0.0,top
 		// C1,10u,C_0805_2012Metric,30.0,-42.9,90.0,top
 		designator, comment, footprint, x, y, rotation, layer := unpack(line)
-
-		/*
-			First, find the component for this designator
-		*/
-		component := &LibraryComponent{ID: comment} // library.FindMatching("", comment, footprint)
-		if component == nil {
+		if designator == "G***" {
 			continue
 		}
 
-		_ = footprint
+		re1 := regexp.MustCompile("[^a-zA-Z]+")
+		tdesignator := re1.ReplaceAllString(designator, "")
+
+		component := library.FindMatching(tdesignator, comment, footprint)
+		if component == nil {
+			fmt.Printf("Enter component ID for %s, %s, %s\n:", designator, comment, footprint)
+
+			id := ""
+			fmt.Scanln(&id)
+
+			if id == "" {
+				continue
+			}
+
+			library.Associate(tdesignator, comment, footprint, id)
+			component = library.FindMatching(tdesignator, comment, footprint)
+		}
 
 		/*
 			Then, add it to the designator map

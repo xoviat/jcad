@@ -1,9 +1,6 @@
 package lib
 
 import (
-	"bytes"
-	"encoding/gob"
-
 	"os"
 	"path/filepath"
 
@@ -12,61 +9,19 @@ import (
 	"github.com/boltdb/bolt"
 )
 
-type ComponentType int
-
-const (
-	Resistor ComponentType = iota
-	Capacitor
-	Inductor
-	Crystal
-	IC
-)
-
-var ComponentTypes = []ComponentType{Resistor, Capacitor, Inductor, Crystal, IC}
-
-func (s ComponentType) String() string {
-	return [...]string{"resistor", "capactior", "crystal", "ic"}[s]
-}
-
-/*
-	LCSC Part	First Category	Second Category	MFR.Part	Package	Solder Joint	Manufacturer	Library Type	Description	Datasheet	Price	Stock
-	C25725	Resistors	Resistor Networks & Arrays	4D02WGJ0103TCE	0402_x4	8	Uniroyal Elec	Basic	Resistor Networks & Arrays 10KOhms ±5% 1/16W 0402_x4 RoHS	https://datasheet.lcsc.com/szlcsc/Uniroyal-Elec-4D02WGJ0103TCE_C25725.pdf	1-199:0.006956522,200-:0.002717391	79847
-*/
-
-func Exists(path string) bool {
-	if _, err := os.Stat(path); err == nil {
-		return true
-	} else if os.IsNotExist(err) {
-		return false
-	}
-
-	return true
-}
-
-/*
-	return an encoded object as bytes
-*/
-func Marshal(v interface{}) ([]byte, error) {
-	b := new(bytes.Buffer)
-	err := gob.NewEncoder(b).Encode(v)
-	if err != nil {
-		return nil, err
-	}
-	return b.Bytes(), nil
-}
-
-/*
-	return a decoded object from bytes
-*/
-func Unmarshal(data []byte, v interface{}) error {
-	b := bytes.NewBuffer(data)
-	return gob.NewDecoder(b).Decode(v)
-}
-
 type Library struct {
 	root  string
 	db    *bolt.DB
 	index bleve.Index
+}
+
+/*
+	Indexes the library. This function may take a long time.
+*/
+func (l *Library) Index() error {
+	// l.index.Index(component.ID, *component)
+
+	return nil
 }
 
 /*
@@ -83,35 +38,13 @@ func (l *Library) Import(src string) error {
 	if err != nil {
 		return err
 	}
-	/*
-		new plan: have a long-running indexing worker
 
-		chindex := make(chan *LibraryComponent, 500)
-		chdone := make(chan bool, 10)
-		workers := 8
-		for i := 0; i < workers; i++ {
-			go func() {
-				for {
-					component := <-chindex
-					if component == nil {
-						break
-					}
-
-					l.index.Index(component.ID, *component)
-				}
-				chdone <- true
-			}()
-		}
-
-	*/
 	l.db.Update(func(tx *bolt.Tx) error {
 		tx.DeleteBucket([]byte("components"))
 		tx.DeleteBucket([]byte("unindexed"))
-		tx.DeleteBucket([]byte("parts"))
 
 		tx.CreateBucket([]byte("components"))
 		tx.CreateBucket([]byte("unindexed"))
-		tx.CreateBucket([]byte("parts"))
 
 		return nil
 	})
@@ -148,38 +81,13 @@ func (l *Library) Import(src string) error {
 		if err := l.db.Update(func(tx *bolt.Tx) error {
 			components := tx.Bucket([]byte("components"))
 			unindexed := tx.Bucket([]byte("unindexed"))
-			parts := tx.Bucket([]byte("parts"))
-			pmap := make(map[string][]string)
-
-			zmap := make(map[ComponentType]map[string]string)
-			for _, componentType := range ComponentTypes {
-				zmap[componentType] = make(map[string]string)
-			}
-
-			updateparts := func() error {
-				bytes := []byte("")
-				eIDs := []string{}
-				for part, IDs := range pmap {
-					eIDs = []string{}
-					if bytes = parts.Get([]byte(part)); bytes != nil {
-						Unmarshal(bytes, &eIDs)
-					}
-					bytes, _ = Marshal(append(eIDs, IDs...))
-					err = parts.Put([]byte(part), bytes)
-					if err != nil {
-						return err
-					}
-				}
-
-				return nil
-			}
 
 			/*
 				Do it this way to save memory
 			*/
 			for j := 0; j < k; j++ {
 				if row = <-chrows; len(row) == 0 {
-					return updateparts()
+					return nil
 				}
 
 				component := LibraryComponent{
@@ -193,11 +101,6 @@ func (l *Library) Import(src string) error {
 					LibraryType:    row[7],
 					Description:    row[8],
 				}
-
-				if _, ok := pmap[component.Part]; !ok {
-					pmap[component.Part] = []string{}
-				}
-				pmap[component.Part] = append(pmap[component.Part], component.ID)
 
 				bytes, err := Marshal(component)
 				if err != nil {
@@ -220,13 +123,20 @@ func (l *Library) Import(src string) error {
 				i++
 			}
 
-			return updateparts()
+			return nil
 		}); err != nil {
 			return err
 		}
 	}
 
 	return nil
+}
+
+func NewDefaultLibrary() (*Library, error) {
+	path := filepath.Join(GetLocalAppData(), "JCAD")
+	os.MkdirAll(path, 0777)
+
+	return NewLibrary(path)
 }
 
 /*
@@ -241,7 +151,7 @@ func NewLibrary(root string) (*Library, error) {
 	db.Update(func(tx *bolt.Tx) error {
 		tx.CreateBucketIfNotExists([]byte("components"))
 		tx.CreateBucketIfNotExists([]byte("unindexed"))
-		tx.CreateBucketIfNotExists([]byte("parts"))
+		tx.CreateBucketIfNotExists([]byte("associations"))
 
 		return nil
 	})
@@ -323,41 +233,82 @@ func (l *Library) FindMatching(prefix, comment, pkg string) *LibraryComponent {
 		N/A
 	*/
 
-	components := []*LibraryComponent{}
-	part := comment
+	/*
+		If there is an existing saved association, use that
+	*/
+
+	component := LibraryComponent{}
 
 	l.db.View(func(tx *bolt.Tx) error {
+		bassociations := tx.Bucket([]byte("associations"))
 		bcomponents := tx.Bucket([]byte("components"))
-		bparts := tx.Bucket([]byte("parts"))
 
-		IDs := []string{}
-		if bytes := bparts.Get([]byte(part)); bytes != nil {
-			Unmarshal(bytes, &IDs)
+		ID := ""
+		key, _ := Marshal([]string{prefix, comment, pkg})
+		if bytes := bassociations.Get(key); bytes != nil {
+			ID = string(bytes)
 		}
 
-		if len(IDs) == 0 {
-			return nil
-		}
-
-		for _, ID := range IDs {
-			component := LibraryComponent{}
-			if bytes := bcomponents.Get([]byte(ID)); bytes != nil {
-				Unmarshal(bytes, &component)
-			}
-
-			components = append(components, &component)
+		if bytes := bcomponents.Get([]byte(ID)); bytes != nil {
+			Unmarshal(bytes, &component)
 		}
 
 		return nil
 	})
 
-	if len(components) == 0 {
+	if component.ID == "" {
 		return nil
 	}
 
+	return &component
+
+	/*
+
+		components := []*LibraryComponent{}
+		part := comment
+
+		l.db.View(func(tx *bolt.Tx) error {
+			bcomponents := tx.Bucket([]byte("components"))
+			bparts := tx.Bucket([]byte("parts"))
+
+			IDs := []string{}
+			if bytes := bparts.Get([]byte(part)); bytes != nil {
+				Unmarshal(bytes, &IDs)
+			}
+
+			if len(IDs) == 0 {
+				return nil
+			}
+
+			for _, ID := range IDs {
+				component := LibraryComponent{}
+				if bytes := bcomponents.Get([]byte(ID)); bytes != nil {
+					Unmarshal(bytes, &component)
+				}
+
+				components = append(components, &component)
+			}
+
+			return nil
+		})
+
+		if len(components) == 0 {
+			return nil
+		}
+	*/
 	/*
 		TODO: check package
 	*/
 
-	return components[0]
+}
+
+func (l *Library) Associate(prefix, comment, pkg, ID string) {
+	l.db.Update(func(tx *bolt.Tx) error {
+		bassociations := tx.Bucket([]byte("associations"))
+		ID := ""
+
+		key, _ := Marshal([]string{prefix, comment, pkg})
+		return bassociations.Put(key, []byte(ID))
+	})
+
 }

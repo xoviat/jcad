@@ -39,9 +39,12 @@ to quickly create a Cobra application.`,
 		}
 
 		pcb := args[0]
-		lib.ExecuteScript("generate_cpl.py", []string{pcb, "../test-data/temp/data.cpl"})
-		lib.GenerateOutputs("test-data/tmp/data.cpl", "../test-data/tmp/bom.csv", "test-data/tmp/cpl.csv", nil)
-		lib.ExecuteScript("generate_gerbers.py", []string{pcb, "../test-data/temp/gerbers"})
+
+		library, _ := lib.NewDefaultLibrary()
+
+		lib.ExecuteScript("generate_cpl.py", []string{pcb, "test-data/temp/data.cpl"})
+		lib.GenerateOutputs("test-data/temp/data.cpl", "test-data/temp/bom.csv", "test-data/temp/cpl.csv", library)
+		lib.ExecuteScript("generate_gerbers.py", []string{pcb, "test-data/temp/gerbers"})
 	},
 }
 

@@ -6,3 +6,5 @@ lib/test_library
 .vscode
 
 test-data/temp
+__debug_bin
+*.exe

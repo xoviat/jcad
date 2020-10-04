@@ -3,9 +3,10 @@ package lib
 import (
 	"bytes"
 	"encoding/gob"
+	"fmt"
+
 	"os"
 	"path/filepath"
-	"strconv"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/blevesearch/bleve"
@@ -57,59 +58,87 @@ type Library struct {
 	Import a library from an excel file
 */
 func (l *Library) Import(src string) error {
-
-	scomponents := make(chan *LibraryComponent, 100)
-	go func() {
-		for {
-			component := <-scomponents
-			if component == nil {
-				break
-			}
-
-			l.index.Index(component.ID, *component)
-		}
-	}()
-
 	f, err := excelize.OpenFile(src)
 	if err != nil {
 		return err
 	}
 
-	cv := func(row int, col string) string {
-		v, _ := f.GetCellValue("", col+strconv.Itoa(row+2))
-
-		return v
+	sheet := f.GetSheetList()[0]
+	rows, err := f.Rows(sheet)
+	if err != nil {
+		return err
 	}
+/*
+	new plan: have a long-running indexing worker
+
+	chindex := make(chan *LibraryComponent, 500)
+	chdone := make(chan bool, 10)
+	workers := 8
+	for i := 0; i < workers; i++ {
+		go func() {
+			for {
+				component := <-chindex
+				if component == nil {
+					break
+				}
+	
+				l.index.Index(component.ID, *component)
+			}
+			chdone <- true
+		}()
+	}
+	
+*/
+	chrows := make(chan []string, 100)
+	go func() {
+		for  {
+			if end := !rows.Next(); end {
+				chrows <- []string{}
+
+				return
+			}
+
+			row, err := rows.Columns()
+			if err != nil {
+				continue
+			}
+
+			if len(row) < 9 {
+				continue
+			}
+
+			chrows <- row
+		}
+	}()
 
 	i := 0
-	k := 500
-	end := false
+	/*
+		amount per transaction
+	*/
+	k := 2000
 	for {
-		/*
-			500 per transaction
-		*/
-		l.db.Update(func(tx *bolt.Tx) error {
+		if err := l.db.Update(func(tx *bolt.Tx) error {
 			components := tx.Bucket([]byte("components"))
+			unindexed := tx.Bucket([]byte("unindexed"))
+			row := []string{}
 			/*
 				Do it this way to save memory
 			*/
 			for j := 0; j < k; j++ {
-				component := LibraryComponent{
-					ID:             cv(i, "A"),
-					FirstCategory:  cv(i, "B"),
-					SecondCategory: cv(i, "C"),
-					MFRPart:        cv(i, "D"),
-					Package:        cv(i, "E"),
-					SolderJoint:    cv(i, "F"),
-					Manufacturer:   cv(i, "G"),
-					LibraryType:    cv(i, "H"),
-					Description:    cv(i, "I"),
+				if row = <-chrows; len(row) == 0{
+					return fmt.Errorf("excel sheet terminated")
 				}
 
-				if component.ID == "" {
-					end = true
-
-					return nil
+				component := LibraryComponent{
+					ID:             row[0],
+					FirstCategory:  row[1],
+					SecondCategory: row[2],
+					MFRPart:        row[3],
+					Package:        row[4],
+					SolderJoint:    row[5],
+					Manufacturer:   row[6],
+					LibraryType:    row[7],
+					Description:    row[8],
 				}
 
 				bytes, err := Marshal(component)
@@ -122,14 +151,19 @@ func (l *Library) Import(src string) error {
 					return err
 				}
 
-				scomponents <- &component
+				/*
+					ids are removed from unindexed once they are indexed
+				*/
+				err = unindexed.Put([]byte(component.ID), []byte(""))
+				if err != nil {
+					return err
+				}
+
 				i++
 			}
 
 			return nil
-		})
-
-		if end {
+		}); err != nil && err.Error() == "excel sheet terminated" {
 			break
 		}
 	}
@@ -148,6 +182,7 @@ func NewLibrary(root string) (*Library, error) {
 
 	db.Update(func(tx *bolt.Tx) error {
 		tx.CreateBucketIfNotExists([]byte("components"))
+		tx.CreateBucketIfNotExists([]byte("unindexed"))
 
 		return nil
 	})

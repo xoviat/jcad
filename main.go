@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/xoviat/JCAD/cli/cmd"
+import "github.com/xoviat/JCAD/cmd"
 
 func main() {
 	cmd.Execute()

@@ -38,10 +38,7 @@ to order SMT assembled boards from JLCPCB? The current process is as follows:
 ## Libraries
 
 1. I golang because it's performant, compiles quickly, and executes natively.
-2. I use lxn/walk because I avoid cgo at all costs. Unfortunatley, this restricts the gui of this application to windows, but command-line could
-   be developed for other plafforms, and I am not opposed to other UI frameworks if they avoid cgo. I will focus on windows because it's what
-   I use.
-3. This applicadtion will require KiCad to be installed to access the pcbnew api. It will use python scripts to access the pcbnew API.
+2. This applicadtion will require KiCad to be installed to access the pcbnew api. It will use python scripts to access the pcbnew API.
 
 ## Issues
 

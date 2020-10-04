@@ -19,22 +19,21 @@ to order SMT assembled boards from JLCPCB? The current process is as follows:
 
 ## What can change
 
-1. The input files to the JLCPCB website can be directly derived from the KiCAD .sch and .kicad_pcb files
+1. The input files to the JLCPCB website can be directly derived from the .kicad_pcb file
 2. The components can be assigned interactively, before uploading to JLCPCB.
 3. Calculations can be done offline, using the JLCPCB component database.
 4. Footprints can be assigned offline, using the JLCPCB component database, directly editing the .sch file.
 
 ## What our envisionsed workflow looks like
 
-1. After creating a schema, open our tool and assign footprints directly using  the JLCPCB component database, and directly assign the JLCPCB part number.
-2. Then, after creating the PCB, open our tool again, and directly generate the JLCPCB files and validate component orientation offline.
-3. In addition, directly generate an additional BOM of through-hole parts not included in the SMT assembly that the user can upload to Mouser. Validate using the Mouser API.
+1. After creating a .kicad_pcb file, directly generate the required outputs for JLCPCB and derive the component parts from
+   the designator, commment, and footprint. 
+2. Directly generate an additional BOM that is uploadable to Mouser for the additional though-hole parts required.
 
 ## Why this is possible
 
-1. The .sch format is not too complex and we only need to edit properties of the components. We will not edit component placement or wires.
-2. The .kicad_pcb file can be read using the pcbnew Python API. We can generate the required outputs and postprocess them ourselves.
-3. The BOM and POS files are simple to read and should not pose too many difficulties.
+1. The .kicad_pcb file can be read using the pcbnew Python API. We can generate the required outputs and postprocess them ourselves.
+2. The BOM and POS files are simple to read and should not pose too many difficulties.
 
 ## Libraries
 

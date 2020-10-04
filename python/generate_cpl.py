@@ -87,7 +87,7 @@ def convert(pcb, brd):
 
         module_bbox = module.GetBoundingBox()
         brd.write(
-            "{ref}	{value}	{name}	{x0}	{y0}	{orientation}	{layer}\n".format(
+            "{ref},{value},{name},{x0},{y0},{orientation},{layer}\n".format(
                 ref=module.GetReference(),
                 value=module.GetValue(),
                 name=module.GetFPID().GetLibItemName(),

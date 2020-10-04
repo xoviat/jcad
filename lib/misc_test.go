@@ -2,13 +2,12 @@ package lib
 
 import "testing"
 
-
 func TestFindMatchingComponent(t *testing.T) {
-	library, err := NewLibrary("test_library") 
+	library, err := NewLibrary("test_library")
 	if err != nil {
 		t.FailNow()
 	}
-	
+
 	if err := library.Import("../test-data/JLCPCB SMT Parts Library(20201003).xlsx"); err != nil {
 		t.Fail()
 	}
@@ -20,14 +19,15 @@ func TestFindMatchingComponent(t *testing.T) {
 
 }
 
-func TestGenerateBOM(t *testing.T) {
-	
+/*
+	Test loading the schematic
+*/
+func TestParseSchematic(t *testing.T) {
+	components := ParseSchematic("../test-data/input/STM32F4_Breakout.sch")
+
+	_ = components
 }
 
-
-/*
-	Test loading and saving the schematic to ensure that no data is lost
-*/
-func TestLoadSaveSchematic(t *testing.T) {
+func TestGenerateBOM(t *testing.T) {
 
 }

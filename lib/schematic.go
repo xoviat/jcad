@@ -1,62 +1,10 @@
 package lib
 
-import "io/ioutil"
-
-type Schematic struct {
-	version string
-	blocks  []SchematicBlock
-}
-
-func (s *Schematic) Compoonents() []*SchematicComponent {
-	compoents := make([]*SchematicComponent, 10)
-	for _, block := range s.blocks {
-		if component, ok := block.(*SchematicComponent); ok {
-			compoents = append(compoents, component)
-		}
-	}
-
-	return compoents
-}
-
-func (s *Schematic) Text() string {
-	text := ""
-	for _, block := range s.blocks {
-		text += block.Text() + "\n"
-	}
-
-	return text
-}
-
-type SchematicBlock interface {
-	Text() string
-}
-
-/*
-	Represents other data present in the sch file that is of no concern to us
-*/
-type SchematicText struct {
-	/*
-		EELAYER 30 0
-		EELAYER END
-		$Descr A4 11693 8268
-		encoding utf-8
-		Sheet 1 1
-		Title ""
-		Date ""
-		Rev ""
-		Comp ""
-		Comment1 ""
-		Comment2 ""
-		Comment3 ""
-		Comment4 ""
-		$EndDescr
-	*/
-	text string
-}
-
-func (st *SchematicText) Text() string {
-	return st.text
-}
+import (
+	"bufio"
+	"os"
+	"strings"
+)
 
 /*
 	Represents a schematic component
@@ -108,10 +56,32 @@ func (st *SchematicComponent) Text() string {
 	return text
 }
 
-func LoadSchematic(src string) *Schematic {
-	return nil
-}
+/*
+	Return a list of components, given a schematic
+*/
+func ParseSchematic(src string) []*SchematicComponent {
+	fp, err := os.Open(src)
+	if err != nil {
+		return []*SchematicComponent{}
+	}
 
-func SaveSchematic(src string, sch *Schematic) {
-	ioutil.WriteFile(src, []byte(sch.Text()), 0777)
+	components := []*SchematicComponent{}
+	scanner := bufio.NewScanner(fp)
+	scanning := true
+	for scanning {
+		text := ""
+		for scanning = scanner.Scan(); scanning && text != "$Comp"; scanning = scanner.Scan() {
+			text = strings.TrimSpace(scanner.Text())
+		}
+
+		component := SchematicComponent{}
+		for scanning = scanner.Scan(); scanning && text != "$EndComp"; scanning = scanner.Scan() {
+			text = strings.TrimSpace(scanner.Text())
+			component.lines = append(component.lines, strings.Split(text, " "))
+		}
+
+		components = append(components, &component)
+	}
+
+	return components
 }

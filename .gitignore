@@ -3,3 +3,4 @@ python/test.bat
 python/test_gerbers
 *.test
 lib/test_library
+.vscode

@@ -91,10 +91,6 @@ func (st *SchematicComponent) Footprint() string {
 	return ""
 }
 
-func (st *SchematicComponent) Footprint() string {
-	return ""
-}
-
 func (st *SchematicComponent) Part() string {
 	return ""
 }

@@ -3,7 +3,6 @@ package lib
 import (
 	"bytes"
 	"encoding/gob"
-	"fmt"
 
 	"os"
 	"path/filepath"
@@ -89,6 +88,20 @@ func (l *Library) Import(src string) error {
 	}
 	
 */
+	l.db.Update(func(tx *bolt.Tx) error {
+		tx.DeleteBucket([]byte("components"))
+		tx.DeleteBucket([]byte("unindexed"))
+		tx.DeleteBucket([]byte("parts"))
+
+		tx.CreateBucket([]byte("components"))
+		tx.CreateBucket([]byte("unindexed"))
+		tx.CreateBucket([]byte("parts"))
+
+		return nil
+	})
+
+
+
 	chrows := make(chan []string, 100)
 	go func() {
 		for  {
@@ -116,30 +129,56 @@ func (l *Library) Import(src string) error {
 		amount per transaction
 	*/
 	k := 2000
-	for {
+	row := []string{""}
+	for len(row) != 0 {
 		if err := l.db.Update(func(tx *bolt.Tx) error {
 			components := tx.Bucket([]byte("components"))
 			unindexed := tx.Bucket([]byte("unindexed"))
-			row := []string{}
+			parts := tx.Bucket([]byte("parts"))
+			pmap := make(map[string][]string)
+
+			updateparts := func() error {
+				bytes := []byte("")
+				eIDs := []string{}
+				for part, IDs := range pmap {
+					eIDs = []string{}
+					if bytes = parts.Get([]byte(part)); bytes != nil {
+						Unmarshal(bytes, &eIDs)
+					} 
+					bytes, _ = Marshal(append(eIDs, IDs...))
+					err = parts.Put([]byte(part), bytes)
+					if err != nil {
+						return err
+					}
+				}
+
+				return nil
+			}
+
 			/*
 				Do it this way to save memory
 			*/
 			for j := 0; j < k; j++ {
 				if row = <-chrows; len(row) == 0{
-					return fmt.Errorf("excel sheet terminated")
+					return updateparts()
 				}
 
 				component := LibraryComponent{
 					ID:             row[0],
 					FirstCategory:  row[1],
 					SecondCategory: row[2],
-					MFRPart:        row[3],
+					Part:           row[3], 
 					Package:        row[4],
 					SolderJoint:    row[5],
 					Manufacturer:   row[6],
 					LibraryType:    row[7],
 					Description:    row[8],
 				}
+
+				if _, ok := pmap[component.Part]; !ok {
+					pmap[component.Part] = []string{}
+				}
+				pmap[component.Part] = append(pmap[component.Part], component.ID)
 
 				bytes, err := Marshal(component)
 				if err != nil {
@@ -162,9 +201,9 @@ func (l *Library) Import(src string) error {
 				i++
 			}
 
-			return nil
-		}); err != nil && err.Error() == "excel sheet terminated" {
-			break
+			return updateparts()
+		}); err != nil {
+			return err
 		}
 	}
 
@@ -183,6 +222,7 @@ func NewLibrary(root string) (*Library, error) {
 	db.Update(func(tx *bolt.Tx) error {
 		tx.CreateBucketIfNotExists([]byte("components"))
 		tx.CreateBucketIfNotExists([]byte("unindexed"))
+		tx.CreateBucketIfNotExists([]byte("parts"))
 
 		return nil
 	})
@@ -206,7 +246,7 @@ type LibraryComponent struct {
 	ID             string
 	FirstCategory  string
 	SecondCategory string
-	MFRPart        string
+	Part        string
 	Package        string
 	SolderJoint    string
 	Manufacturer   string
@@ -214,12 +254,12 @@ type LibraryComponent struct {
 	Description    string
 }
 
-/*
+/* 
 	Find library components, given a search string
 */
-func (l *Library) Find(text string, typ string) []*LibraryComponent {
-	query := bleve.NewMatchQuery(text)
-	query.SetField("Title")
+func (l *Library) Find(description string) []*LibraryComponent {
+	query := bleve.NewMatchQuery(description)
+	query.SetField("Description")
 
 	result, err := l.index.Search(bleve.NewSearchRequest(query))
 	if err != nil {
@@ -233,4 +273,52 @@ func (l *Library) Find(text string, typ string) []*LibraryComponent {
 	}
 
 	return []*LibraryComponent{}
+}
+
+
+/*	
+	Find the best suitable component, given the part and package
+
+	Prefer a basic part, if available
+	Require the package (footprint) to match
+
+	Return nil if no part foundl
+*/		
+func (l *Library) FindMatching(part string, pkg string) *LibraryComponent {
+	components := []*LibraryComponent{}
+
+	l.db.View(func(tx *bolt.Tx) error {
+		bcomponents := tx.Bucket([]byte("components"))
+		bparts := tx.Bucket([]byte("parts"))
+
+		IDs := []string{}
+		if bytes := bparts.Get([]byte(part)); bytes != nil {
+			Unmarshal(bytes, &IDs)
+		} 
+
+		if len(IDs) == 0  {
+			return nil
+		}
+
+		for _, ID := range IDs {
+			component := LibraryComponent{}
+			if bytes := bcomponents.Get([]byte(ID)); bytes != nil {
+				Unmarshal(bytes, &component)
+			}
+
+			components = append(components, &component)
+		}
+
+		return nil
+	})
+
+	if len(components) == 0 {
+		return nil
+	}
+
+	/*
+		TODO: check package
+	*/
+
+	return components[0]
 }

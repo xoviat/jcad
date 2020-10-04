@@ -8,7 +8,6 @@ usage: generate_cpl.py <pcb_file.pcb> <cpl_file.cpl>
 import sys
 import re
 import argparse
-
 import pcbnew
 
 
@@ -111,14 +110,14 @@ def main():
         help="input in .kicad_pcb format",
     )
     parser.add_argument(
-        "brd_file",
-        metavar="BRD-FILE",
+        "cpl_file",
+        metavar="CPL-FILE",
         type=argparse.FileType("wt"),
         help="output in .cpl format",
     )
 
     args = parser.parse_args()
-    convert(pcbnew.LoadBoard(args.kicad_pcb_file), args.brd_file)
+    convert(pcbnew.LoadBoard(args.kicad_pcb_file), args.cpl_file)
 
 
 if __name__ == "__main__":

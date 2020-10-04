@@ -2,7 +2,6 @@ package lib
 
 import (
 	"encoding/csv"
-	"fmt"
 	"os"
 	"strings"
 )
@@ -23,7 +22,7 @@ func GenerateOutputs(src, bom, cpl string, library *Library) {
 	}
 	defer fpb.Close()
 
-	fpc, err := os.Create(bom)
+	fpc, err := os.Create(cpl)
 	if err != nil {
 		return
 	}
@@ -33,6 +32,11 @@ func GenerateOutputs(src, bom, cpl string, library *Library) {
 		return s[0], s[1], s[2], s[3], s[4], s[5], s[6]
 	}
 
+	bwriter := csv.NewWriter(fpb)
+	cwriter := csv.NewWriter(fpc)
+
+	cwriter.Write([]string{"Designator", "Mid X", "Mid Y", "Layer", "Rotation"})
+	bwriter.Write([]string{"Comment", "Designator", "Footprint", "LCSC Part"})
 	/*
 		Map component numbers to designators
 	*/
@@ -48,10 +52,12 @@ func GenerateOutputs(src, bom, cpl string, library *Library) {
 		/*
 			First, find the component for this designator
 		*/
-		component := library.FindMatching(comment, footprint)
+		component := &LibraryComponent{ID: comment} // library.FindMatching("", comment, footprint)
 		if component == nil {
 			continue
 		}
+
+		_ = footprint
 
 		/*
 			Then, add it to the designator map
@@ -65,8 +71,7 @@ func GenerateOutputs(src, bom, cpl string, library *Library) {
 		/*
 			Write the component to the position file, since we're keeping it
 		*/
-		fmt.Fprintf(fpc, "%s,%s,%s,%s,%s", designator, x, y, layer, rotation)
-
+		cwriter.Write([]string{designator, x, y, layer, rotation})
 		line = []string{}
 	}
 
@@ -74,6 +79,9 @@ func GenerateOutputs(src, bom, cpl string, library *Library) {
 		component := cmap[ID]
 		designator := strings.Join(designators, ",")
 
-		fmt.Fprintf(fpb, "%s,%s,%s,%s", component.Part, designator, component.Package, ID)
+		bwriter.Write([]string{component.Part, designator, component.Package, ID})
 	}
+
+	cwriter.Flush()
+	bwriter.Flush()
 }

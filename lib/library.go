@@ -12,6 +12,22 @@ import (
 	"github.com/boltdb/bolt"
 )
 
+type ComponentType int
+
+const (
+	Resistor ComponentType = iota
+	Capacitor
+	Inductor
+	Crystal
+	IC
+)
+
+var ComponentTypes = []ComponentType{Resistor, Capacitor, Inductor, Crystal, IC}
+
+func (s ComponentType) String() string {
+	return [...]string{"resistor", "capactior", "crystal", "ic"}[s]
+}
+
 /*
 	LCSC Part	First Category	Second Category	MFR.Part	Package	Solder Joint	Manufacturer	Library Type	Description	Datasheet	Price	Stock
 	C25725	Resistors	Resistor Networks & Arrays	4D02WGJ0103TCE	0402_x4	8	Uniroyal Elec	Basic	Resistor Networks & Arrays 10KOhms ±5% 1/16W 0402_x4 RoHS	https://datasheet.lcsc.com/szlcsc/Uniroyal-Elec-4D02WGJ0103TCE_C25725.pdf	1-199:0.006956522,200-:0.002717391	79847
@@ -67,27 +83,27 @@ func (l *Library) Import(src string) error {
 	if err != nil {
 		return err
 	}
-/*
-	new plan: have a long-running indexing worker
+	/*
+		new plan: have a long-running indexing worker
 
-	chindex := make(chan *LibraryComponent, 500)
-	chdone := make(chan bool, 10)
-	workers := 8
-	for i := 0; i < workers; i++ {
-		go func() {
-			for {
-				component := <-chindex
-				if component == nil {
-					break
+		chindex := make(chan *LibraryComponent, 500)
+		chdone := make(chan bool, 10)
+		workers := 8
+		for i := 0; i < workers; i++ {
+			go func() {
+				for {
+					component := <-chindex
+					if component == nil {
+						break
+					}
+
+					l.index.Index(component.ID, *component)
 				}
-	
-				l.index.Index(component.ID, *component)
-			}
-			chdone <- true
-		}()
-	}
-	
-*/
+				chdone <- true
+			}()
+		}
+
+	*/
 	l.db.Update(func(tx *bolt.Tx) error {
 		tx.DeleteBucket([]byte("components"))
 		tx.DeleteBucket([]byte("unindexed"))
@@ -100,11 +116,9 @@ func (l *Library) Import(src string) error {
 		return nil
 	})
 
-
-
 	chrows := make(chan []string, 100)
 	go func() {
-		for  {
+		for {
 			if end := !rows.Next(); end {
 				chrows <- []string{}
 
@@ -137,6 +151,11 @@ func (l *Library) Import(src string) error {
 			parts := tx.Bucket([]byte("parts"))
 			pmap := make(map[string][]string)
 
+			zmap := make(map[ComponentType]map[string]string)
+			for _, componentType := range ComponentTypes {
+				zmap[componentType] = make(map[string]string)
+			}
+
 			updateparts := func() error {
 				bytes := []byte("")
 				eIDs := []string{}
@@ -144,7 +163,7 @@ func (l *Library) Import(src string) error {
 					eIDs = []string{}
 					if bytes = parts.Get([]byte(part)); bytes != nil {
 						Unmarshal(bytes, &eIDs)
-					} 
+					}
 					bytes, _ = Marshal(append(eIDs, IDs...))
 					err = parts.Put([]byte(part), bytes)
 					if err != nil {
@@ -159,7 +178,7 @@ func (l *Library) Import(src string) error {
 				Do it this way to save memory
 			*/
 			for j := 0; j < k; j++ {
-				if row = <-chrows; len(row) == 0{
+				if row = <-chrows; len(row) == 0 {
 					return updateparts()
 				}
 
@@ -167,7 +186,7 @@ func (l *Library) Import(src string) error {
 					ID:             row[0],
 					FirstCategory:  row[1],
 					SecondCategory: row[2],
-					Part:           row[3], 
+					Part:           row[3],
 					Package:        row[4],
 					SolderJoint:    row[5],
 					Manufacturer:   row[6],
@@ -246,7 +265,7 @@ type LibraryComponent struct {
 	ID             string
 	FirstCategory  string
 	SecondCategory string
-	Part        string
+	Part           string
 	Package        string
 	SolderJoint    string
 	Manufacturer   string
@@ -254,7 +273,7 @@ type LibraryComponent struct {
 	Description    string
 }
 
-/* 
+/*
 	Find library components, given a search string
 */
 func (l *Library) Find(description string) []*LibraryComponent {
@@ -275,17 +294,37 @@ func (l *Library) Find(description string) []*LibraryComponent {
 	return []*LibraryComponent{}
 }
 
-
-/*	
-	Find the best suitable component, given the part and package
+/*
+	Find the best suitable component, given the comment and package
 
 	Prefer a basic part, if available
 	Require the package (footprint) to match
 
 	Return nil if no part foundl
-*/		
-func (l *Library) FindMatching(part string, pkg string) *LibraryComponent {
+*/
+func (l *Library) FindMatching(prefix, comment, pkg string) *LibraryComponent {
+	/*
+		This method is not trivial! The comment may refer to a part number,
+		a resistor value, such as 2k2, or a capacitor value. A list of possible
+		combinations for the parameters is given below:
+
+		U	AMS1117-3.3		SOT-223-3_TabPin2,25.225001
+		U	STM32F405RGT6	LQFP-64_10x10mm_P0.5mm
+		F	500mA			Fuse_0603_1608Metric
+		FB	100 @ 100 MHz	L_0805_2012Metric
+		C	100nf			C_0402_1005Metric
+		R	220				R_0402_1005Metric
+		R	2k2				R_0603_1608Metric
+
+		The desired results are given below:
+
+		Power Management ICs				AMS1117-3.3		SOT-223					Positive Fixed 1.3V @ 800mA 15V 3.3V 1A
+		Embedded Processors & Controllers	STM32F405RGT6	LQFP-64_10.0x10.0x0.5P	STMicroelectronics
+		N/A
+	*/
+
 	components := []*LibraryComponent{}
+	part := comment
 
 	l.db.View(func(tx *bolt.Tx) error {
 		bcomponents := tx.Bucket([]byte("components"))
@@ -294,9 +333,9 @@ func (l *Library) FindMatching(part string, pkg string) *LibraryComponent {
 		IDs := []string{}
 		if bytes := bparts.Get([]byte(part)); bytes != nil {
 			Unmarshal(bytes, &IDs)
-		} 
+		}
 
-		if len(IDs) == 0  {
+		if len(IDs) == 0 {
 			return nil
 		}
 

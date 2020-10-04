@@ -4,3 +4,5 @@ python/test_gerbers
 *.test
 lib/test_library
 .vscode
+
+test-data/temp

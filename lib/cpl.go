@@ -44,6 +44,7 @@ func GenerateOutputs(src, bom, cpl string, library *Library) {
 	*/
 	dmap := make(map[string][]string)
 	cmap := make(map[string]*LibraryComponent)
+	cmmap := make(map[string]string)
 	//read data into multi-dimentional array of strings
 	reader := csv.NewReader(fp)
 	for line, _ := reader.Read(); len(line) > 0; line, _ = reader.Read() {
@@ -80,6 +81,7 @@ func GenerateOutputs(src, bom, cpl string, library *Library) {
 			cmap[component.ID] = component
 		}
 		dmap[component.ID] = append(dmap[component.ID], designator)
+		cmmap[component.ID] = comment
 
 		/*
 			Write the component to the position file, since we're keeping it
@@ -92,7 +94,7 @@ func GenerateOutputs(src, bom, cpl string, library *Library) {
 		component := cmap[ID]
 		designator := strings.Join(designators, ",")
 
-		bwriter.Write([]string{component.Part, designator, component.Package, ID})
+		bwriter.Write([]string{cmmap[ID], designator, component.Package, ID})
 	}
 
 	cwriter.Flush()

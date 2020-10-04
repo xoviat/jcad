@@ -305,9 +305,9 @@ func (l *Library) FindMatching(prefix, comment, pkg string) *LibraryComponent {
 func (l *Library) Associate(prefix, comment, pkg, ID string) {
 	l.db.Update(func(tx *bolt.Tx) error {
 		bassociations := tx.Bucket([]byte("associations"))
-		ID := ""
 
 		key, _ := Marshal([]string{prefix, comment, pkg})
+
 		return bassociations.Put(key, []byte(ID))
 	})
 

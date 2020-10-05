@@ -210,6 +210,22 @@ func (l *Library) Find(description string) []*LibraryComponent {
 }
 
 /*
+	Determine whether it is possible to place the component using the SMT process
+*/
+func (l *Library) CanAssemble(bcomponent *BoardComponent) bool {
+	switch re1.ReplaceAllString(bcomponent.Designator, "") {
+	case "J":
+		return false
+	case "H":
+		return false
+	case "G":
+		return false
+	}
+
+	return true
+}
+
+/*
 	Find the best suitable component, given the comment and package
 
 	Prefer a basic part, if available

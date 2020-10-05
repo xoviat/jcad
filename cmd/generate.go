@@ -56,6 +56,10 @@ to quickly create a Cobra application.`,
 		components := []*lib.BoardComponent{}
 		entries := map[string]*lib.BOMEntry{}
 		for _, component := range lib.ReadCPL(scpl) {
+			if !library.CanAssemble(component) {
+				continue
+			}
+
 			lcomponent := library.FindMatching(component)
 			if lcomponent == nil {
 				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Footprint)

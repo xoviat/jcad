@@ -17,7 +17,9 @@ package cmd
 
 import (
 	"fmt"
+	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/xoviat/JCAD/lib"
@@ -43,10 +45,11 @@ to quickly create a Cobra application.`,
 
 		library, _ := lib.NewDefaultLibrary()
 
-		scpl := filepath.Join(filepath.Dir(pcb), "board_data.cpl")
-		bom := filepath.Join(filepath.Dir(pcb), "bom.csv")
-		cpl := filepath.Join(filepath.Dir(pcb), "cpl.csv")
-		gerbers := filepath.Join(filepath.Dir(pcb), "gerbers")
+		rname := strings.TrimSuffix(filepath.Base(pcb), path.Ext(pcb))
+		scpl := filepath.Join(filepath.Dir(pcb), rname+"-data.cpl")
+		bom := filepath.Join(filepath.Dir(pcb), rname+"-BOM.csv")
+		cpl := filepath.Join(filepath.Dir(pcb), rname+"-all-pos.csv")
+		gerbers := filepath.Join(filepath.Dir(pcb), "gerber")
 
 		lib.ExecuteScript("generate_cpl.py", []string{pcb, scpl})
 

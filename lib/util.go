@@ -71,3 +71,13 @@ func ExecuteScript(script string, args []string) {
 
 	command.Run()
 }
+
+func bcKey(component *BoardComponent) []byte {
+	key, _ := Marshal([]string{
+		re1.ReplaceAllString(component.Designator, ""),
+		component.Comment,
+		component.Footprint,
+	})
+
+	return key
+}

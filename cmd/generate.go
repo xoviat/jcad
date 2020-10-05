@@ -17,7 +17,7 @@ package cmd
 
 import (
 	"fmt"
-	"regexp"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/xoviat/JCAD/lib"
@@ -43,24 +43,20 @@ to quickly create a Cobra application.`,
 
 		library, _ := lib.NewDefaultLibrary()
 
-		lib.ExecuteScript("generate_cpl.py", []string{pcb, "test-data/temp/data.cpl"})
-		// lib.GenerateOutputs("test-data/temp/data.cpl", "test-data/temp/bom.csv", "test-data/temp/cpl.csv", library)
+		scpl := filepath.Join(filepath.Dir(pcb), "board_data.cpl")
+		bom := filepath.Join(filepath.Dir(pcb), "bom.csv")
+		cpl := filepath.Join(filepath.Dir(pcb), "cpl.csv")
+		gerbers := filepath.Join(filepath.Dir(pcb), "gerbers")
 
-		/*
-			Map component numbers to designators
-		*/
+		lib.ExecuteScript("generate_cpl.py", []string{pcb, scpl})
 
 		/*
 			Includes ONLY SMT components
 		*/
 		components := []*lib.BoardComponent{}
 		entries := map[string]*lib.BOMEntry{}
-
-		re1 := regexp.MustCompile("[^a-zA-Z]+")
-		for _, component := range lib.ReadCPL("test-data/temp/data.cpl") {
-			tdesignator := re1.ReplaceAllString(component.Designator, "")
-
-			lcomponent := library.FindMatching(tdesignator, component.Comment, component.Footprint)
+		for _, component := range lib.ReadCPL(scpl) {
+			lcomponent := library.FindMatching(component)
 			if lcomponent == nil {
 				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Footprint)
 
@@ -71,8 +67,8 @@ to quickly create a Cobra application.`,
 					continue
 				}
 
-				library.Associate(tdesignator, component.Comment, component.Footprint, id)
-				lcomponent = library.FindMatching(tdesignator, component.Comment, component.Footprint)
+				library.Associate(component, id)
+				lcomponent = library.FindMatching(component)
 			}
 
 			components = append(components, component)
@@ -93,10 +89,10 @@ to quickly create a Cobra application.`,
 			sentries = append(sentries, entry)
 		}
 
-		lib.WriteBOM("test-data/temp/bom.csv", sentries)
-		lib.WriteCPL("test-data/temp/cpl.csv", components)
+		lib.WriteBOM(bom, sentries)
+		lib.WriteCPL(cpl, components)
 
-		lib.ExecuteScript("generate_gerbers.py", []string{pcb, "test-data/temp/gerbers"})
+		lib.ExecuteScript("generate_gerbers.py", []string{pcb, gerbers})
 	},
 }
 

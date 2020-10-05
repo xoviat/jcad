@@ -3,10 +3,15 @@ package lib
 import (
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/blevesearch/bleve"
 	"github.com/boltdb/bolt"
+)
+
+var (
+	re1 *regexp.Regexp = regexp.MustCompile("[^a-zA-Z]+")
 )
 
 type Library struct {
@@ -212,7 +217,7 @@ func (l *Library) Find(description string) []*LibraryComponent {
 
 	Return nil if no part foundl
 */
-func (l *Library) FindMatching(prefix, comment, pkg string) *LibraryComponent {
+func (l *Library) FindMatching(bcomponent *BoardComponent) *LibraryComponent {
 	/*
 		This method is not trivial! The comment may refer to a part number,
 		a resistor value, such as 2k2, or a capacitor value. A list of possible
@@ -244,7 +249,7 @@ func (l *Library) FindMatching(prefix, comment, pkg string) *LibraryComponent {
 		bcomponents := tx.Bucket([]byte("components"))
 
 		ID := ""
-		key, _ := Marshal([]string{prefix, comment, pkg})
+		key := bcKey(bcomponent)
 		if bytes := bassociations.Get(key); bytes != nil {
 			ID = string(bytes)
 		}
@@ -302,11 +307,10 @@ func (l *Library) FindMatching(prefix, comment, pkg string) *LibraryComponent {
 
 }
 
-func (l *Library) Associate(prefix, comment, pkg, ID string) {
+func (l *Library) Associate(bcomponent *BoardComponent, ID string) {
 	l.db.Update(func(tx *bolt.Tx) error {
 		bassociations := tx.Bucket([]byte("associations"))
-
-		key, _ := Marshal([]string{prefix, comment, pkg})
+		key := bcKey(bcomponent)
 
 		return bassociations.Put(key, []byte(ID))
 	})

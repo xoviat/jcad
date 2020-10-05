@@ -78,7 +78,7 @@ func WriteBOM(dst string, entries []*BOMEntry) {
 	defer fp.Close()
 
 	writer := csv.NewWriter(fp)
-	writer.Write([]string{"Comment", "Designator", "Footprint", "LCSC Part"})
+	writer.Write([]string{"Comment", "Designator", "Footprint", "LCSC Part #"})
 	for _, entry := range entries {
 		writer.Write([]string{
 			entry.Comment,

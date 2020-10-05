@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"regexp"
 
 	"github.com/spf13/cobra"
 	"github.com/xoviat/JCAD/lib"
@@ -43,7 +44,58 @@ to quickly create a Cobra application.`,
 		library, _ := lib.NewDefaultLibrary()
 
 		lib.ExecuteScript("generate_cpl.py", []string{pcb, "test-data/temp/data.cpl"})
-		lib.GenerateOutputs("test-data/temp/data.cpl", "test-data/temp/bom.csv", "test-data/temp/cpl.csv", library)
+		// lib.GenerateOutputs("test-data/temp/data.cpl", "test-data/temp/bom.csv", "test-data/temp/cpl.csv", library)
+
+		/*
+			Map component numbers to designators
+		*/
+
+		/*
+			Includes ONLY SMT components
+		*/
+		components := []*lib.BoardComponent{}
+		entries := map[string]*lib.BOMEntry{}
+
+		re1 := regexp.MustCompile("[^a-zA-Z]+")
+		for _, component := range lib.ReadCPL("test-data/temp/data.cpl") {
+			tdesignator := re1.ReplaceAllString(component.Designator, "")
+
+			lcomponent := library.FindMatching(tdesignator, component.Comment, component.Footprint)
+			if lcomponent == nil {
+				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Footprint)
+
+				id := ""
+				fmt.Scanln(&id)
+
+				if id == "" {
+					continue
+				}
+
+				library.Associate(tdesignator, component.Comment, component.Footprint, id)
+				lcomponent = library.FindMatching(tdesignator, component.Comment, component.Footprint)
+			}
+
+			components = append(components, component)
+
+			/*
+				Then, add it to the designator map
+			*/
+			if _, ok := entries[lcomponent.ID]; !ok {
+				entries[lcomponent.ID] = &lib.BOMEntry{}
+				entries[lcomponent.ID].Comment = component.Comment
+				entries[lcomponent.ID].Component = lcomponent
+			}
+			entries[lcomponent.ID].Designators = append(entries[lcomponent.ID].Designators, component.Designator)
+		}
+
+		sentries := []*lib.BOMEntry{}
+		for _, entry := range entries {
+			sentries = append(sentries, entry)
+		}
+
+		lib.WriteBOM("test-data/temp/bom.csv", sentries)
+		lib.WriteCPL("test-data/temp/cpl.csv", components)
+
 		lib.ExecuteScript("generate_gerbers.py", []string{pcb, "test-data/temp/gerbers"})
 	},
 }

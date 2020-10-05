@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -186,6 +187,7 @@ type LibraryComponent struct {
 	Manufacturer   string
 	LibraryType    string
 	Description    string
+	Rotation       float64
 }
 
 /*
@@ -223,6 +225,35 @@ func (l *Library) CanAssemble(bcomponent *BoardComponent) bool {
 	}
 
 	return true
+}
+
+func (l *Library) SetRotation(ID string, rotation float64) {
+	component := LibraryComponent{}
+	err := l.db.Update(func(tx *bolt.Tx) error {
+		bcomponents := tx.Bucket([]byte("components"))
+
+		if bytes := bcomponents.Get([]byte(ID)); bytes != nil {
+			Unmarshal(bytes, &component)
+		}
+
+		component.Rotation = rotation
+
+		bytes, err := Marshal(component)
+		if err != nil {
+			return err
+		}
+
+		err = bcomponents.Put([]byte(component.ID), bytes)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		fmt.Printf("error in set-rotation: %s\n", err)
+	}
 }
 
 /*

@@ -20,6 +20,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/mholt/archiver"
@@ -56,6 +57,8 @@ to quickly create a Cobra application.`,
 
 		lib.ExecuteScript("generate_cpl.py", []string{pcb, scpl})
 
+		smap := make(map[string]bool)
+
 		/*
 			Includes ONLY SMT components
 		*/
@@ -70,15 +73,26 @@ to quickly create a Cobra application.`,
 			if lcomponent == nil {
 				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Footprint)
 
+				sKey := string(lib.BcKey(component))
+				if _, ok := smap[sKey]; ok {
+					continue
+				}
+
 				id := ""
 				fmt.Scanln(&id)
 
 				if id == "" {
+					smap[sKey] = true
 					continue
 				}
 
 				library.Associate(component, id)
 				lcomponent = library.FindMatching(component)
+			}
+
+			if lcomponent == nil {
+				fmt.Println("notice: unexpected condition")
+				continue
 			}
 
 			components = append(components, component)
@@ -92,6 +106,15 @@ to quickly create a Cobra application.`,
 				entries[lcomponent.ID].Component = lcomponent
 			}
 			entries[lcomponent.ID].Designators = append(entries[lcomponent.ID].Designators, component.Designator)
+
+			rotation, err := strconv.ParseFloat(component.Rotation, 64)
+			if err != nil {
+				fmt.Printf("failed to parse board component rotation: %s\n", component.Rotation)
+				continue
+			}
+
+			rotation += lcomponent.Rotation
+			component.Rotation = fmt.Sprintf("%.1f", rotation)
 		}
 
 		sentries := []*lib.BOMEntry{}

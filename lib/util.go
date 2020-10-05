@@ -81,3 +81,7 @@ func bcKey(component *BoardComponent) []byte {
 
 	return key
 }
+
+func BcKey(component *BoardComponent) []byte {
+	return bcKey(component)
+}

@@ -17,10 +17,12 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"path"
 	"path/filepath"
 	"strings"
 
+	"github.com/mholt/archiver"
 	"github.com/spf13/cobra"
 	"github.com/xoviat/JCAD/lib"
 )
@@ -49,7 +51,8 @@ to quickly create a Cobra application.`,
 		scpl := filepath.Join(filepath.Dir(pcb), rname+"-data.cpl")
 		bom := filepath.Join(filepath.Dir(pcb), rname+"-BOM.csv")
 		cpl := filepath.Join(filepath.Dir(pcb), rname+"-all-pos.csv")
-		gerbers := filepath.Join(filepath.Dir(pcb), "gerber")
+		gerbers := filepath.Join(filepath.Dir(pcb), rname+"-gerber")
+		zip := filepath.Join(filepath.Dir(pcb), rname+"-gerber.zip")
 
 		lib.ExecuteScript("generate_cpl.py", []string{pcb, scpl})
 
@@ -100,6 +103,9 @@ to quickly create a Cobra application.`,
 		lib.WriteCPL(cpl, components)
 
 		lib.ExecuteScript("generate_gerbers.py", []string{pcb, gerbers})
+
+		os.Remove(zip)
+		archiver.Archive([]string{gerbers}, zip)
 	},
 }
 

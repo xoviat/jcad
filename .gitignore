@@ -8,3 +8,4 @@ lib/test_library
 test-data/temp
 __debug_bin
 *.exe
+*.zip

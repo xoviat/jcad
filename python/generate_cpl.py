@@ -6,6 +6,7 @@ usage: generate_cpl.py <pcb_file.pcb> <cpl_file.cpl>
 """
 
 import sys
+import csv
 import re
 import argparse
 import pcbnew
@@ -72,6 +73,7 @@ def convert(pcb, brd):
 
     pin_at = 0
 
+    writer = csv.writer(brd)
     # Logic taken from pcbnew/exporters/export_footprints_placefile.cpp
     # See https://gitlab.com/kicad/code/kicad/-/issues/2453
     for module in modules:
@@ -86,19 +88,17 @@ def convert(pcb, brd):
             footprint_pos.x = - footprint_pos.x
 
         module_bbox = module.GetBoundingBox()
-        brd.write(
-            "{ref},{value},{name},{x0},{y0},{orientation},{layer}\n".format(
-                ref=module.GetReference(),
-                value=module.GetValue(),
-                name=module.GetFPID().GetLibItemName(),
-                x0=footprint_pos.x * conv_unit,
-                y0=-footprint_pos.y * conv_unit,
-                orientation=module.GetOrientation() / 10.0,
-                layer="top" if layer == pcbnew.F_Cu else "bottom",
-            )
-        )
+        writer.writerow([
+            module.GetReference(),
+            module.GetValue(),
+            module.GetFPID().GetLibItemName(),
+            round(footprint_pos.x * conv_unit, 4),
+            round(-footprint_pos.y * conv_unit, 4),
+            module.GetOrientation() / 10.0,
+            "top" if layer == pcbnew.F_Cu else "bottom",
+        ])
+
         pin_at += module.GetPadCount()
-    brd.write("\n")
 
 
 def main():
@@ -112,7 +112,7 @@ def main():
     parser.add_argument(
         "cpl_file",
         metavar="CPL-FILE",
-        type=argparse.FileType("wt"),
+        type=argparse.FileType("wb"),
         help="output in .cpl format",
     )
 

@@ -9,7 +9,7 @@ import (
 type BoardComponent struct {
 	Designator string
 	Comment    string
-	Footprint  string
+	Package    string
 	X          string
 	Y          string
 	Rotation   string
@@ -35,7 +35,7 @@ func ReadCPL(src string) []*BoardComponent {
 		components = append(components, &BoardComponent{
 			Designator: line[0],
 			Comment:    line[1],
-			Footprint:  line[2],
+			Package:    line[2],
 			X:          line[3],
 			Y:          line[4],
 			Rotation:   line[5],

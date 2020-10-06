@@ -158,6 +158,7 @@ func NewLibrary(root string) (*Library, error) {
 		tx.CreateBucketIfNotExists([]byte("components"))
 		tx.CreateBucketIfNotExists([]byte("unindexed"))
 		tx.CreateBucketIfNotExists([]byte("associations"))
+		tx.CreateBucketIfNotExists([]byte("packages"))
 
 		return nil
 	})
@@ -257,14 +258,14 @@ func (l *Library) SetRotation(ID string, rotation float64) {
 }
 
 /*
-	Find the best suitable component, given the comment and package
+	Find the best suitable library componentx, given the board components
 
 	Prefer a basic part, if available
 	Require the package (footprint) to match
 
-	Return nil if no part foundl
+	Return nil if no part found
 */
-func (l *Library) FindMatching(bcomponent *BoardComponent) *LibraryComponent {
+func (l *Library) FindMatching(bcomponent *BoardComponent) []*LibraryComponent {
 	/*
 		This method is not trivial! The comment may refer to a part number,
 		a resistor value, such as 2k2, or a capacitor value. A list of possible
@@ -285,10 +286,25 @@ func (l *Library) FindMatching(bcomponent *BoardComponent) *LibraryComponent {
 		N/A
 	*/
 
-	/*
-		If there is an existing saved association, use that
-	*/
+	return []*LibraryComponent{}
+}
 
+func (l *Library) Exact(id string) *LibraryComponent {
+	component := LibraryComponent{}
+
+	l.db.View(func(tx *bolt.Tx) error {
+		bcomponents := tx.Bucket([]byte("components"))
+		if bytes := bcomponents.Get([]byte(id)); bytes != nil {
+			Unmarshal(bytes, &component)
+		}
+
+		return nil
+	})
+
+	return &component
+}
+
+func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
 	component := LibraryComponent{}
 
 	l.db.View(func(tx *bolt.Tx) error {
@@ -313,53 +329,21 @@ func (l *Library) FindMatching(bcomponent *BoardComponent) *LibraryComponent {
 	}
 
 	return &component
-
-	/*
-
-		components := []*LibraryComponent{}
-		part := comment
-
-		l.db.View(func(tx *bolt.Tx) error {
-			bcomponents := tx.Bucket([]byte("components"))
-			bparts := tx.Bucket([]byte("parts"))
-
-			IDs := []string{}
-			if bytes := bparts.Get([]byte(part)); bytes != nil {
-				Unmarshal(bytes, &IDs)
-			}
-
-			if len(IDs) == 0 {
-				return nil
-			}
-
-			for _, ID := range IDs {
-				component := LibraryComponent{}
-				if bytes := bcomponents.Get([]byte(ID)); bytes != nil {
-					Unmarshal(bytes, &component)
-				}
-
-				components = append(components, &component)
-			}
-
-			return nil
-		})
-
-		if len(components) == 0 {
-			return nil
-		}
-	*/
-	/*
-		TODO: check package
-	*/
-
 }
 
-func (l *Library) Associate(bcomponent *BoardComponent, ID string) {
+func (l *Library) Associate(bcomponent *BoardComponent, lcomponent *LibraryComponent) {
 	l.db.Update(func(tx *bolt.Tx) error {
 		bassociations := tx.Bucket([]byte("associations"))
+		bfootprints := tx.Bucket([]byte("packages"))
+
 		key := bcKey(bcomponent)
 
-		return bassociations.Put(key, []byte(ID))
+		err := bassociations.Put(key, []byte(lcomponent.ID))
+		if err != nil {
+			return err
+		}
+
+		return bfootprints.Put([]byte(bcomponent.Package), []byte(lcomponent.Package))
 	})
 
 }

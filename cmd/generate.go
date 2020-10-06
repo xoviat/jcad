@@ -70,9 +70,9 @@ to quickly create a Cobra application.`,
 				continue
 			}
 
-			lcomponent := library.FindMatching(component)
+			lcomponent := library.FindAssociated(component)
 			if lcomponent == nil {
-				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Footprint)
+				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Package)
 
 				sKey := string(lib.BcKey(component))
 				if _, ok := smap[sKey]; ok {
@@ -92,8 +92,8 @@ to quickly create a Cobra application.`,
 					continue
 				}
 
-				library.Associate(component, id)
-				lcomponent = library.FindMatching(component)
+				lcomponent = library.Exact(id)
+				library.Associate(component, lcomponent)
 			}
 
 			if lcomponent == nil {

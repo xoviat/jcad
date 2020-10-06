@@ -6,6 +6,9 @@ import (
 	"strings"
 )
 
+/*
+	referred to as 'bcomponent'
+*/
 type BoardComponent struct {
 	Designator string
 	Comment    string

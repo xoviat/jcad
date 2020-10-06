@@ -80,11 +80,14 @@ to quickly create a Cobra application.`,
 				}
 
 				id := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
-					return prompt.FilterHasPrefix([]prompt.Suggest{
-						{Text: "C101", Description: "Store the username and age"},
-						{Text: "C201", Description: "Store the article text posted by user"},
-						{Text: "C301", Description: "Store the text commented to articles"},
-					}, d.GetWordBeforeCursor(), true)
+					suggestions := []prompt.Suggest{}
+					for _, lcomponent := range library.FindMatching(component) {
+						suggestions = append(suggestions, prompt.Suggest{
+							Text: lcomponent.ID, Description: lcomponent.Part + " " + lcomponent.Package,
+						})
+					}
+
+					return prompt.FilterHasPrefix(suggestions, d.GetWordBeforeCursor(), true)
 				})
 
 				if id == "" {

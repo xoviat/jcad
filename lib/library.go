@@ -196,6 +196,9 @@ func NewLibrary(root string) (*Library, error) {
 	}, nil
 }
 
+/*
+	referred to as 'component'
+*/
 type LibraryComponent struct {
 	ID             string
 	FirstCategory  string

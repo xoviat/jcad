@@ -23,6 +23,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/c-bata/go-prompt"
 	"github.com/mholt/archiver"
 	"github.com/spf13/cobra"
 	"github.com/xoviat/JCAD/lib"
@@ -78,8 +79,13 @@ to quickly create a Cobra application.`,
 					continue
 				}
 
-				id := ""
-				fmt.Scanln(&id)
+				id := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
+					return prompt.FilterHasPrefix([]prompt.Suggest{
+						{Text: "C101", Description: "Store the username and age"},
+						{Text: "C201", Description: "Store the article text posted by user"},
+						{Text: "C301", Description: "Store the text commented to articles"},
+					}, d.GetWordBeforeCursor(), true)
+				})
 
 				if id == "" {
 					smap[sKey] = true

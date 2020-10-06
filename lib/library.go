@@ -27,6 +27,24 @@ type Library struct {
 func (l *Library) Index() error {
 	// l.index.Index(component.ID, *component)
 
+	l.db.Update(func(tx *bolt.Tx) error {
+		bcomponents := tx.Bucket([]byte("components"))
+		bunindexed := tx.Bucket([]byte("unindexed"))
+
+		c := bunindexed.Cursor()
+		for k, _ := c.First(); k != nil; k, _ = c.Next() {
+			bytes := bcomponents.Get(k)
+			component := LibraryComponent{}
+
+			Unmarshal(bytes, &component)
+
+			l.index.Index(component.ID, component)
+			bunindexed.Delete(k)
+		}
+
+		return nil
+	})
+
 	return nil
 }
 

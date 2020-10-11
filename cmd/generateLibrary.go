@@ -24,6 +24,10 @@ import (
 	"github.com/xoviat/JCAD/lib"
 )
 
+var (
+	includeExtended bool
+)
+
 // generateLibraryCmd represents the generateLibrary command
 var generateLibraryCmd = &cobra.Command{
 	Use:   "generate-library",
@@ -75,8 +79,15 @@ to quickly create a Cobra application.`,
 			return
 		}
 
+		cname := "Resistors"
+		sname := "RESISTOR"
+
 		sets := make(map[string][]*lib.LibraryComponent)
-		for _, capacitor := range library.FindInCategory("Capacitors") {
+		for _, capacitor := range library.FindInCategory(cname) {
+			if !includeExtended && capacitor.LibraryType != "Basic" {
+				continue
+			}
+
 			value := capacitor.Value()
 			if _, ok := sets[value]; !ok {
 				sets[value] = []*lib.LibraryComponent{}
@@ -95,11 +106,11 @@ to quickly create a Cobra application.`,
 			deviceset := &lib.EagleLibraryDeviceSet{
 				Description: value,
 				Name:        value,
-				Prefix:      "C",
+				Prefix:      set[0].Prefix(),
 				Gates: []*lib.EagleLibraryGate{
 					{
 						Name:   "G$1",
-						Symbol: "CAP",
+						Symbol: sname,
 						X:      "0",
 						Y:      "0",
 					},
@@ -168,5 +179,5 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// generateLibraryCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	generateLibraryCmd.Flags().BoolVarP(&includeExtended, "extended", "e", false, "Whether to include extended parts")
 }

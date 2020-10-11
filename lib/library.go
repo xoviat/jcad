@@ -15,7 +15,8 @@ import (
 
 var (
 	re1 *regexp.Regexp = regexp.MustCompile("[^a-zA-Z]+")
-	re2 *regexp.Regexp = regexp.MustCompile("[0-9]+(nF|pF|uF)")
+	re2 *regexp.Regexp = regexp.MustCompile("[0-9\\.]+(nF|pF|uF)")
+	re3 *regexp.Regexp = regexp.MustCompile("[0-9\\.]+(Ohms)")
 )
 
 type Library struct {
@@ -78,9 +79,11 @@ func (l *Library) Import(src string) error {
 	l.db.Update(func(tx *bolt.Tx) error {
 		tx.DeleteBucket([]byte("components"))
 		tx.DeleteBucket([]byte("unindexed"))
+		tx.DeleteBucket([]byte("categories"))
 
 		tx.CreateBucket([]byte("components"))
 		tx.CreateBucket([]byte("unindexed"))
+		tx.CreateBucket([]byte("categories"))
 
 		return nil
 	})
@@ -254,6 +257,17 @@ func (lc *LibraryComponent) CID() string {
 	return "C" + strconv.Itoa(lc.ID)
 }
 
+func (lc *LibraryComponent) Prefix() string {
+	switch lc.FirstCategory {
+	case "Capacitors":
+		return "C"
+	case "Resistors":
+		return "R"
+	}
+
+	return ""
+}
+
 /*
 	Attempt to determine the value from the description
 */
@@ -262,6 +276,8 @@ func (lc *LibraryComponent) Value() string {
 	case "Capacitors":
 		// XX(pF|uF|nF)
 		return re2.FindString(lc.Description)
+	case "Resistors":
+		return re3.FindString(lc.Description)
 	}
 
 	return ""

@@ -213,11 +213,14 @@ func NewLibrary(root string) (*Library, error) {
 	}
 
 	db.Update(func(tx *bolt.Tx) error {
-		tx.CreateBucketIfNotExists([]byte("components"))
-		tx.CreateBucketIfNotExists([]byte("unindexed"))
-		tx.CreateBucketIfNotExists([]byte("component-associations"))
-		tx.CreateBucketIfNotExists([]byte("package-associations"))
-		tx.CreateBucketIfNotExists([]byte("categories"))
+		tx.CreateBucketIfNotExists([]byte("components"))             // Contains all of the JLCPCB components
+		tx.CreateBucketIfNotExists([]byte("unindexed"))              // Contains the keys of the components unindexed
+		tx.CreateBucketIfNotExists([]byte("categories"))             // Associates the categories with all contained within
+		tx.CreateBucketIfNotExists([]byte("packages"))               // Contains a list of eagle packages
+		tx.CreateBucketIfNotExists([]byte("symbols"))                // Contains a list of eagle symbols
+		tx.CreateBucketIfNotExists([]byte("component-associations")) // Associates a BoardComponent Key with a LibraryComponetn
+		tx.CreateBucketIfNotExists([]byte("package-associations"))   // Associates a KiCad package with a JLCPCB package
+		tx.CreateBucketIfNotExists([]byte("symbol-associations"))    // Associates a JLCPCB category with a symbol
 
 		return nil
 	})
@@ -466,4 +469,55 @@ func (l *Library) Associate(bcomponent *BoardComponent, lcomponent *LibraryCompo
 		return bfootprints.Put([]byte(bcomponent.Package), []byte(lcomponent.Package))
 	})
 
+}
+
+func (l *Library) AssociateSymbol(category, symbol string) {
+	l.db.Update(func(tx *bolt.Tx) error {
+		bassociations := tx.Bucket([]byte("symbol-associations"))
+
+		err := bassociations.Put([]byte(category), []byte(symbol))
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+func (l *Library) AddPackages(packages []*EagleLibraryPackage) {
+	l.db.Update(func(tx *bolt.Tx) error {
+		bpackages := tx.Bucket([]byte("packages"))
+		for _, pkg := range packages {
+			bytes, err := Marshal(pkg)
+			if err != nil {
+				return err
+			}
+
+			err = bpackages.Put([]byte(pkg.Name), bytes)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+}
+
+func (l *Library) AddSymbols(symbols []*EagleLibrarySymbol) {
+	l.db.Update(func(tx *bolt.Tx) error {
+		bsymbols := tx.Bucket([]byte("symbols"))
+		for _, symbol := range symbols {
+			bytes, err := Marshal(symbol)
+			if err != nil {
+				return err
+			}
+
+			err = bsymbols.Put([]byte(symbol.Name), bytes)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }

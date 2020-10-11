@@ -83,16 +83,16 @@ to quickly create a Cobra application.`,
 		sname := "RESISTOR"
 
 		sets := make(map[string][]*lib.LibraryComponent)
-		for _, capacitor := range library.FindInCategory(cname) {
-			if !includeExtended && capacitor.LibraryType != "Basic" {
+		for _, component := range library.FindInCategory(cname) {
+			if !includeExtended && component.LibraryType != "Basic" {
 				continue
 			}
 
-			value := capacitor.Value()
+			value := component.Value()
 			if _, ok := sets[value]; !ok {
 				sets[value] = []*lib.LibraryComponent{}
 			}
-			sets[value] = append(sets[value], capacitor)
+			sets[value] = append(sets[value], component)
 		}
 
 		devicesets := []*lib.EagleLibraryDeviceSet{}

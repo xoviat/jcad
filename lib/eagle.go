@@ -81,6 +81,7 @@ type EagleLibraryWire struct {
 	Y2    string `xml:"y2,attr"`
 	Width string `xml:"width,attr"`
 	Layer string `xml:"layer,attr"`
+	Curve string `xml:"curve,attr"`
 }
 
 type EagleLibraryRectangle struct {

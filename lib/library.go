@@ -16,7 +16,7 @@ import (
 var (
 	re1 *regexp.Regexp = regexp.MustCompile("[^a-zA-Z]+")
 	re2 *regexp.Regexp = regexp.MustCompile("[0-9\\.]+(nF|pF|uF)")
-	re3 *regexp.Regexp = regexp.MustCompile("[0-9\\.]+(Ohms)")
+	re3 *regexp.Regexp = regexp.MustCompile("[0-9\\.]+(MOhms|KOhms|Ohms)")
 )
 
 type Library struct {
@@ -263,6 +263,10 @@ func (lc *LibraryComponent) Prefix() string {
 		return "C"
 	case "Resistors":
 		return "R"
+	case "Inductors & Chokes & Transformers":
+		return "L"
+	case "Filters":
+		return "FB"
 	}
 
 	return ""

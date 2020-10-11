@@ -15,6 +15,7 @@ import (
 
 var (
 	re1 *regexp.Regexp = regexp.MustCompile("[^a-zA-Z]+")
+	re2 *regexp.Regexp = regexp.MustCompile("[0-9]+(nF|pF|uF)")
 )
 
 type Library struct {
@@ -251,6 +252,19 @@ type LibraryComponent struct {
 
 func (lc *LibraryComponent) CID() string {
 	return "C" + strconv.Itoa(lc.ID)
+}
+
+/*
+	Attempt to determine the value from the description
+*/
+func (lc *LibraryComponent) Value() string {
+	switch lc.FirstCategory {
+	case "Capacitors":
+		// XX(pF|uF|nF)
+		return re2.FindString(lc.Description)
+	}
+
+	return ""
 }
 
 /*

@@ -45,7 +45,7 @@ type EagleLibraryLayer struct {
 type EagleLibraryPackage struct {
 	Name        string                    `xml:"name,attr"`
 	Description string                    `xml:"description"`
-	SMDs        []*EagleLibraryPackageSMD `xml"smd"`
+	SMDs        []*EagleLibrarySMD        `xml:"smd"`
 	Texts       []*EagleLibraryText       `xml:"text"`
 	Wires       []*EagleLibraryWire       `xml:"wire"`
 	Rectangles  []*EagleLibraryRectangle  `xml:"rectangle"`
@@ -54,7 +54,7 @@ type EagleLibraryPackage struct {
 	Circles     []*EagleLibraryCircle     `xml:"circle"`
 }
 
-type EagleLibraryPackageSMD struct {
+type EagleLibrarySMD struct {
 	Name  string `xml:"name,attr"`
 	X     string `xml:"x,attr"`
 	Y     string `xml:"y,attr"`
@@ -101,11 +101,12 @@ type EagleLibraryPackagePad struct {
 }
 
 type EagleLibraryPolygon struct {
-	Width string `xml:"width,attr"`
-	Layer string `xml:"layer,attr"`
+	Width    string                `xml:"width,attr"`
+	Layer    string                `xml:"layer,attr"`
+	Vertices []*EagleLibraryVertex `xml:"vertex"`
 }
 
-type EagleLibraryPolygonVertex struct {
+type EagleLibraryVertex struct {
 	X     string `xml:"x,attr"`
 	Y     string `xml:"y,attr"`
 	Curve string `xml:"curve,attr"`
@@ -131,12 +132,13 @@ type EagleLibraryPin struct {
 }
 
 type EagleLibrarySymbol struct {
-	Name        string                 `xml:"name,attr"`
-	Description string                 `xml:"description"`
-	Wires       []*EagleLibraryWire    `xml:"wire"`
-	Polygons    []*EagleLibraryPolygon `xml:"polygon"`
-	Texts       []*EagleLibraryText    `xml:"text"`
-	Pins        []*EagleLibraryPin     `xml:"pin"`
+	Name        string                   `xml:"name,attr"`
+	Description string                   `xml:"description"`
+	Wires       []*EagleLibraryWire      `xml:"wire"`
+	Polygons    []*EagleLibraryPolygon   `xml:"polygon"`
+	Rectangles  []*EagleLibraryRectangle `xml:"rectangle"`
+	Texts       []*EagleLibraryText      `xml:"text"`
+	Pins        []*EagleLibraryPin       `xml:"pin"`
 }
 
 type EagleLibraryDeviceSet struct {
@@ -168,10 +170,11 @@ type EagleLibraryConnect struct {
 }
 
 type EagleLibraryTechnology struct {
-	Attributes []*EagleLibraryTechnologyAttribute `xml:"attribute"`
+	Name       string                   `xml:"name,attr"`
+	Attributes []*EagleLibraryAttribute `xml:"attribute"`
 }
 
-type EagleLibraryTechnologyAttribute struct {
+type EagleLibraryAttribute struct {
 	Name     string `xml:"name,attr"`
 	Value    string `xml:"value,attr"`
 	Constant string `xml:"contstant,attr"`

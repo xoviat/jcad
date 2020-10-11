@@ -62,16 +62,6 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		enc := xml.NewEncoder(fpdst)
-		err = enc.Encode(elibrary)
-		if err != nil {
-			fmt.Printf("failed to encode library: %s\n", err)
-			return
-		}
-
-		fpsrc.Close()
-		fpdst.Close()
-
 		/*
 			Goal: load an lbr file, and modify the devicesets
 		*/
@@ -85,11 +75,85 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		capacitors := library.FindInCategory("Capacitors")
-		for _, capacitor := range capacitors {
-			fmt.Println(capacitor.Description)
+		sets := make(map[string][]*lib.LibraryComponent)
+		for _, capacitor := range library.FindInCategory("Capacitors") {
+			value := capacitor.Value()
+			if _, ok := sets[value]; !ok {
+				sets[value] = []*lib.LibraryComponent{}
+			}
+			sets[value] = append(sets[value], capacitor)
 		}
 
+		devicesets := []*lib.EagleLibraryDeviceSet{}
+		for value, set := range sets {
+			/*
+				<gates>
+					<gate name="G$1" symbol="CAP" x="0" y="0"/>
+				</gates>
+			*/
+
+			deviceset := &lib.EagleLibraryDeviceSet{
+				Description: value,
+				Name:        value,
+				Prefix:      "C",
+				Gates: []*lib.EagleLibraryGate{
+					{
+						Name:   "G$1",
+						Symbol: "CAP",
+						X:      "0",
+						Y:      "0",
+					},
+				},
+			}
+
+			for _, capacitor := range set {
+				/*
+					<device name="-0603-50V-10%" package="0603">
+						<connects>
+							<connect gate="G$1" pin="1" pad="1"/>
+							<connect gate="G$1" pin="2" pad="2"/>
+						</connects>
+						<technologies>
+							<technology name="">
+								<attribute name="PROD_ID" value="CAP-00867"/>
+								<attribute name="VALUE" value="10nF"/>
+							</technology>
+						</technologies>
+					</device>
+				*/
+
+				deviceset.Devices = append(deviceset.Devices, &lib.EagleLibraryDevice{
+					Name:    capacitor.Description,
+					Package: capacitor.Package,
+					Connects: []*lib.EagleLibraryConnect{
+						{Gate: "G$1", Pin: "1", Pad: "1"},
+						{Gate: "G$1", Pin: "2", Pad: "2"},
+					},
+					Technologies: []*lib.EagleLibraryTechnology{
+						{
+							Attributes: []*lib.EagleLibraryAttribute{
+								{Name: "PROD_ID", Value: capacitor.CID()},
+								{Name: "VALUE", Value: value},
+							},
+						},
+					},
+				})
+			}
+
+			devicesets = append(devicesets, deviceset)
+		}
+
+		elibrary.DevicesSets = devicesets
+
+		enc := xml.NewEncoder(fpdst)
+		err = enc.Encode(elibrary)
+		if err != nil {
+			fmt.Printf("failed to encode library: %s\n", err)
+			return
+		}
+
+		fpsrc.Close()
+		fpdst.Close()
 	},
 }
 

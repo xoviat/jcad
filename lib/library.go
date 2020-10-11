@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
+	"strings"
 
 	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/blevesearch/bleve"
@@ -38,7 +40,7 @@ func (l *Library) Index() error {
 
 			Unmarshal(bytes, &component)
 
-			l.index.Index(toID(component.ID), component)
+			l.index.Index(component.CID(), component)
 			bunindexed.Delete(k)
 		}
 
@@ -52,6 +54,15 @@ func (l *Library) Index() error {
 	Import a library from an excel file
 */
 func (l *Library) Import(src string) error {
+	fromID := func(ID string) int {
+		i, err := strconv.Atoi(strings.TrimPrefix(ID, "C"))
+		if err != nil {
+			return 0
+		}
+
+		return i
+	}
+
 	f, err := excelize.OpenFile(src)
 	if err != nil {
 		return err
@@ -139,7 +150,7 @@ func (l *Library) Import(src string) error {
 					return err
 				}
 
-				err = components.Put([]byte(toID(component.ID)), bytes)
+				err = components.Put([]byte(component.CID()), bytes)
 				if err != nil {
 					return err
 				}
@@ -147,7 +158,7 @@ func (l *Library) Import(src string) error {
 				/*
 					ids are removed from unindexed once they are indexed
 				*/
-				err = unindexed.Put([]byte(toID(component.ID)), []byte(""))
+				err = unindexed.Put([]byte(component.CID()), []byte(""))
 				if err != nil {
 					return err
 				}
@@ -238,6 +249,10 @@ type LibraryComponent struct {
 	Rotation       float64
 }
 
+func (lc *LibraryComponent) CID() string {
+	return "C" + strconv.Itoa(lc.ID)
+}
+
 /*
 	Find library components, given a search string
 */
@@ -291,7 +306,7 @@ func (l *Library) SetRotation(ID string, rotation float64) {
 			return err
 		}
 
-		err = bcomponents.Put([]byte(toID(component.ID)), bytes)
+		err = bcomponents.Put([]byte(component.CID()), bytes)
 		if err != nil {
 			return err
 		}
@@ -359,8 +374,7 @@ func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
 		bcomponents := tx.Bucket([]byte("components"))
 
 		ID := ""
-		key := bcKey(bcomponent)
-		if bytes := bassociations.Get(key); bytes != nil {
+		if bytes := bassociations.Get(bcomponent.Key()); bytes != nil {
 			ID = string(bytes)
 		}
 
@@ -392,7 +406,7 @@ func (l *Library) FindInCategory(category string) []*LibraryComponent {
 
 		for _, ID := range IDs {
 			component := LibraryComponent{}
-			if bytes := bcomponents.Get([]byte(toID(ID))); bytes != nil {
+			if bytes := bcomponents.Get([]byte((&LibraryComponent{ID: ID}).CID())); bytes != nil {
 				Unmarshal(bytes, &component)
 			}
 
@@ -410,9 +424,7 @@ func (l *Library) Associate(bcomponent *BoardComponent, lcomponent *LibraryCompo
 		bassociations := tx.Bucket([]byte("component-associations"))
 		bfootprints := tx.Bucket([]byte("package-associations"))
 
-		key := bcKey(bcomponent)
-
-		err := bassociations.Put(key, []byte(toID(lcomponent.ID)))
+		err := bassociations.Put(bcomponent.Key(), []byte(lcomponent.CID()))
 		if err != nil {
 			return err
 		}

@@ -19,6 +19,16 @@ type BoardComponent struct {
 	Layer      string
 }
 
+func (bc *BoardComponent) Key() []byte {
+	key, _ := Marshal([]string{
+		re1.ReplaceAllString(bc.Designator, ""),
+		bc.Comment,
+		bc.Package,
+	})
+
+	return key
+}
+
 type BOMEntry struct {
 	Comment     string
 	Designators []string
@@ -87,7 +97,7 @@ func WriteBOM(dst string, entries []*BOMEntry) {
 			entry.Comment,
 			strings.Join(entry.Designators, ","),
 			entry.Component.Package,
-			toID(entry.Component.ID),
+			entry.Component.CID(),
 		})
 	}
 

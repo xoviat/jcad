@@ -6,8 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strconv"
-	"strings"
 	"syscall"
 
 	"github.com/lxn/win"
@@ -72,35 +70,4 @@ func ExecuteScript(script string, args []string) {
 	command.Stderr = os.Stderr
 
 	command.Run()
-}
-
-func bcKey(component *BoardComponent) []byte {
-	key, _ := Marshal([]string{
-		re1.ReplaceAllString(component.Designator, ""),
-		component.Comment,
-		component.Package,
-	})
-
-	return key
-}
-
-func BcKey(component *BoardComponent) []byte {
-	return bcKey(component)
-}
-
-func fromID(ID string) int {
-	i, err := strconv.Atoi(strings.TrimPrefix(ID, "C"))
-	if err != nil {
-		return 0
-	}
-
-	return i
-}
-
-func toID(i int) string {
-	return "C" + strconv.Itoa(i)
-}
-
-func ToID(i int) string {
-	return toID(i)
 }

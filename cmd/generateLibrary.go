@@ -80,7 +80,11 @@ to quickly create a Cobra application.`,
 		}
 
 		cname := "Resistors"
-		sname := "RESISTOR"
+		symbol := library.GetSymbol(cname)
+		if symbol.Name == "" {
+			fmt.Printf("failed to find symbol\n")
+			return
+		}
 
 		sets := make(map[string][]*lib.LibraryComponent)
 		for _, component := range library.FindInCategory(cname) {
@@ -110,7 +114,7 @@ to quickly create a Cobra application.`,
 				Gates: []*lib.EagleLibraryGate{
 					{
 						Name:   "G$1",
-						Symbol: sname,
+						Symbol: symbol.Name,
 						X:      "0",
 						Y:      "0",
 					},

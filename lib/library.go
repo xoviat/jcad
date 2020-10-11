@@ -521,3 +521,34 @@ func (l *Library) AddSymbols(symbols []*EagleLibrarySymbol) {
 		return nil
 	})
 }
+
+func (l *Library) GetPackage(name string) *EagleLibraryPackage {
+	pkg := EagleLibraryPackage{}
+	l.db.View(func(tx *bolt.Tx) error {
+		bpackages := tx.Bucket([]byte("packages"))
+		bytes := bpackages.Get([]byte(name))
+
+		return Unmarshal(bytes, &pkg)
+	})
+
+	return &pkg
+}
+
+func (l *Library) GetSymbol(name string) *EagleLibrarySymbol {
+	symbol := EagleLibrarySymbol{}
+	l.db.View(func(tx *bolt.Tx) error {
+		bsymbols := tx.Bucket([]byte("symbols"))
+		bassociations := tx.Bucket([]byte("symbol-associations"))
+
+		name = string(bassociations.Get([]byte(name)))
+		bytes := bsymbols.Get([]byte(name))
+
+		return Unmarshal(bytes, &symbol)
+	})
+
+	if symbol.Name == "" {
+		symbol.Name = name
+	}
+
+	return &symbol
+}

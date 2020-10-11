@@ -44,12 +44,7 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		src := args[0]
-		fpsrc, err := os.Open(src)
-		if err != nil {
-			fmt.Printf("failed to open file: %s\n", err)
-			return
-		}
+		cname := args[0]
 
 		dst := args[1]
 		fpdst, err := os.Create(dst)
@@ -58,14 +53,7 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		elibrary := lib.EagleLibrary{}
-		dec := xml.NewDecoder(fpsrc)
-		err = dec.Decode(&elibrary)
-		if err != nil {
-			fmt.Printf("failed to decode library: %s\n", err)
-			return
-		}
-
+		elibrary := lib.NewEagleLibrary()
 		/*
 			Goal: load an lbr file, and modify the devicesets
 		*/
@@ -79,12 +67,16 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		cname := "Resistors"
+		symbols := make(map[string]*lib.EagleLibrarySymbol)
+		packages := make(map[string]*lib.EagleLibraryPackage)
+
 		symbol := library.GetSymbol(cname)
 		if symbol.Name == "" {
 			fmt.Printf("failed to find symbol\n")
 			return
 		}
+
+		symbols[symbol.Name] = symbol
 
 		sets := make(map[string][]*lib.LibraryComponent)
 		for _, component := range library.FindInCategory(cname) {
@@ -121,7 +113,7 @@ to quickly create a Cobra application.`,
 				},
 			}
 
-			for _, capacitor := range set {
+			for _, component := range set {
 				/*
 					<device name="-0603-50V-10%" package="0603">
 						<connects>
@@ -137,9 +129,13 @@ to quickly create a Cobra application.`,
 					</device>
 				*/
 
+				if _, ok := packages[component.Package]; !ok {
+					packages[component.Package] = library.GetPackage(component.Package)
+				}
+
 				deviceset.Devices = append(deviceset.Devices, &lib.EagleLibraryDevice{
-					Name:    capacitor.Description,
-					Package: capacitor.Package,
+					Name:    component.Description,
+					Package: component.Package,
 					Connects: []*lib.EagleLibraryConnect{
 						{Gate: "G$1", Pin: "1", Pad: "1"},
 						{Gate: "G$1", Pin: "2", Pad: "2"},
@@ -147,7 +143,7 @@ to quickly create a Cobra application.`,
 					Technologies: []*lib.EagleLibraryTechnology{
 						{
 							Attributes: []*lib.EagleLibraryAttribute{
-								{Name: "PROD_ID", Value: capacitor.CID()},
+								{Name: "PROD_ID", Value: component.CID()},
 								{Name: "VALUE", Value: value},
 							},
 						},
@@ -159,6 +155,17 @@ to quickly create a Cobra application.`,
 		}
 
 		elibrary.DevicesSets = devicesets
+		for _, symbol := range symbols {
+			elibrary.Symbols = append(elibrary.Symbols, symbol)
+		}
+
+		for _, pkg := range packages {
+			if pkg.Name == "" {
+				continue
+			}
+
+			elibrary.Packages = append(elibrary.Packages, pkg)
+		}
 
 		enc := xml.NewEncoder(fpdst)
 		err = enc.Encode(elibrary)
@@ -167,7 +174,6 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		fpsrc.Close()
 		fpdst.Close()
 	},
 }

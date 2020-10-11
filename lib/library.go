@@ -546,6 +546,10 @@ func (l *Library) GetSymbol(name string) *EagleLibrarySymbol {
 		return Unmarshal(bytes, &symbol)
 	})
 
+	//	if err != nil {
+	//		fmt.Printf("err in GetSymbol: %s\n", err)
+	//	}
+
 	if symbol.Name == "" {
 		symbol.Name = name
 	}

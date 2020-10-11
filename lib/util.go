@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"syscall"
 
 	"github.com/lxn/win"
@@ -84,4 +86,21 @@ func bcKey(component *BoardComponent) []byte {
 
 func BcKey(component *BoardComponent) []byte {
 	return bcKey(component)
+}
+
+func fromID(ID string) int {
+	i, err := strconv.Atoi(strings.TrimPrefix(ID, "C"))
+	if err != nil {
+		return 0
+	}
+
+	return i
+}
+
+func toID(i int) string {
+	return "C" + strconv.Itoa(i)
+}
+
+func ToID(i int) string {
+	return toID(i)
 }

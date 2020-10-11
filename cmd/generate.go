@@ -83,7 +83,7 @@ to quickly create a Cobra application.`,
 					suggestions := []prompt.Suggest{}
 					for _, lcomponent := range library.FindMatching(component) {
 						suggestions = append(suggestions, prompt.Suggest{
-							Text: lcomponent.ID, Description: lcomponent.Part + " " + lcomponent.Package,
+							Text: lib.ToID(lcomponent.ID), Description: lcomponent.Part + " " + lcomponent.Package,
 						})
 					}
 
@@ -106,15 +106,17 @@ to quickly create a Cobra application.`,
 
 			components = append(components, component)
 
+			toID := func(i int) string { return lib.ToID(i) }
+
 			/*
 				Then, add it to the designator map
 			*/
-			if _, ok := entries[lcomponent.ID]; !ok {
-				entries[lcomponent.ID] = &lib.BOMEntry{}
-				entries[lcomponent.ID].Comment = component.Comment
-				entries[lcomponent.ID].Component = lcomponent
+			if _, ok := entries[toID(lcomponent.ID)]; !ok {
+				entries[toID(lcomponent.ID)] = &lib.BOMEntry{}
+				entries[toID(lcomponent.ID)].Comment = component.Comment
+				entries[toID(lcomponent.ID)].Component = lcomponent
 			}
-			entries[lcomponent.ID].Designators = append(entries[lcomponent.ID].Designators, component.Designator)
+			entries[toID(lcomponent.ID)].Designators = append(entries[toID(lcomponent.ID)].Designators, component.Designator)
 
 			rotation, err := strconv.ParseFloat(component.Rotation, 64)
 			if err != nil {

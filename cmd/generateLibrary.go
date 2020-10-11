@@ -71,6 +71,25 @@ to quickly create a Cobra application.`,
 
 		fpsrc.Close()
 		fpdst.Close()
+
+		/*
+			Goal: load an lbr file, and modify the devicesets
+		*/
+
+		/*
+			First, get a list of all capacitors in the library
+		*/
+		library, err := lib.NewDefaultLibrary()
+		if err != nil {
+			fmt.Printf("failed to encode library: %s\n", err)
+			return
+		}
+
+		capacitors := library.FindInCategory("Capacitors")
+		for _, capacitor := range capacitors {
+			fmt.Println(capacitor.Description)
+		}
+
 	},
 }
 

@@ -87,7 +87,7 @@ func WriteBOM(dst string, entries []*BOMEntry) {
 			entry.Comment,
 			strings.Join(entry.Designators, ","),
 			entry.Component.Package,
-			entry.Component.ID,
+			toID(entry.Component.ID),
 		})
 	}
 

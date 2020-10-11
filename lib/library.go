@@ -38,7 +38,7 @@ func (l *Library) Index() error {
 
 			Unmarshal(bytes, &component)
 
-			l.index.Index(component.ID, component)
+			l.index.Index(toID(component.ID), component)
 			bunindexed.Delete(k)
 		}
 
@@ -101,6 +101,7 @@ func (l *Library) Import(src string) error {
 	*/
 	k := 2000
 	row := []string{""}
+	categories := make(map[string][]int)
 	for len(row) != 0 {
 		if err := l.db.Update(func(tx *bolt.Tx) error {
 			components := tx.Bucket([]byte("components"))
@@ -115,7 +116,7 @@ func (l *Library) Import(src string) error {
 				}
 
 				component := LibraryComponent{
-					ID:             row[0],
+					ID:             fromID(row[0]),
 					FirstCategory:  row[1],
 					SecondCategory: row[2],
 					Part:           row[3],
@@ -126,12 +127,19 @@ func (l *Library) Import(src string) error {
 					Description:    row[8],
 				}
 
+				for _, each := range []string{component.FirstCategory, component.SecondCategory} {
+					if _, ok := categories[each]; !ok {
+						categories[each] = []int{}
+					}
+					categories[each] = append(categories[each], component.ID)
+				}
+
 				bytes, err := Marshal(component)
 				if err != nil {
 					return err
 				}
 
-				err = components.Put([]byte(component.ID), bytes)
+				err = components.Put([]byte(toID(component.ID)), bytes)
 				if err != nil {
 					return err
 				}
@@ -139,7 +147,7 @@ func (l *Library) Import(src string) error {
 				/*
 					ids are removed from unindexed once they are indexed
 				*/
-				err = unindexed.Put([]byte(component.ID), []byte(""))
+				err = unindexed.Put([]byte(toID(component.ID)), []byte(""))
 				if err != nil {
 					return err
 				}
@@ -153,7 +161,24 @@ func (l *Library) Import(src string) error {
 		}
 	}
 
-	return nil
+	return l.db.Update(func(tx *bolt.Tx) error {
+		bcategories := tx.Bucket([]byte("categories"))
+		for category, components := range categories {
+			bytes, err := Marshal(components)
+			if err != nil {
+				return err
+			}
+
+			// fmt.Println(category)
+
+			err = bcategories.Put([]byte(category), bytes)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }
 
 func NewDefaultLibrary() (*Library, error) {
@@ -175,8 +200,9 @@ func NewLibrary(root string) (*Library, error) {
 	db.Update(func(tx *bolt.Tx) error {
 		tx.CreateBucketIfNotExists([]byte("components"))
 		tx.CreateBucketIfNotExists([]byte("unindexed"))
-		tx.CreateBucketIfNotExists([]byte("associations"))
-		tx.CreateBucketIfNotExists([]byte("packages"))
+		tx.CreateBucketIfNotExists([]byte("component-associations"))
+		tx.CreateBucketIfNotExists([]byte("package-associations"))
+		tx.CreateBucketIfNotExists([]byte("categories"))
 
 		return nil
 	})
@@ -200,7 +226,7 @@ func NewLibrary(root string) (*Library, error) {
 	referred to as 'component'
 */
 type LibraryComponent struct {
-	ID             string
+	ID             int
 	FirstCategory  string
 	SecondCategory string
 	Part           string
@@ -265,7 +291,7 @@ func (l *Library) SetRotation(ID string, rotation float64) {
 			return err
 		}
 
-		err = bcomponents.Put([]byte(component.ID), bytes)
+		err = bcomponents.Put([]byte(toID(component.ID)), bytes)
 		if err != nil {
 			return err
 		}
@@ -329,7 +355,7 @@ func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
 	component := LibraryComponent{}
 
 	l.db.View(func(tx *bolt.Tx) error {
-		bassociations := tx.Bucket([]byte("associations"))
+		bassociations := tx.Bucket([]byte("component-associations"))
 		bcomponents := tx.Bucket([]byte("components"))
 
 		ID := ""
@@ -345,21 +371,48 @@ func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
 		return nil
 	})
 
-	if component.ID == "" {
+	if component.ID == 0 {
 		return nil
 	}
 
 	return &component
 }
 
+func (l *Library) FindInCategory(category string) []*LibraryComponent {
+	components := []*LibraryComponent{}
+
+	l.db.View(func(tx *bolt.Tx) error {
+		bcategories := tx.Bucket([]byte("categories"))
+		bcomponents := tx.Bucket([]byte("components"))
+
+		IDs := []int{}
+		if bytes := bcategories.Get([]byte(category)); bytes != nil {
+			Unmarshal(bytes, &IDs)
+		}
+
+		for _, ID := range IDs {
+			component := LibraryComponent{}
+			if bytes := bcomponents.Get([]byte(toID(ID))); bytes != nil {
+				Unmarshal(bytes, &component)
+			}
+
+			components = append(components, &component)
+		}
+
+		return nil
+	})
+
+	return components
+}
+
 func (l *Library) Associate(bcomponent *BoardComponent, lcomponent *LibraryComponent) {
 	l.db.Update(func(tx *bolt.Tx) error {
-		bassociations := tx.Bucket([]byte("associations"))
-		bfootprints := tx.Bucket([]byte("packages"))
+		bassociations := tx.Bucket([]byte("component-associations"))
+		bfootprints := tx.Bucket([]byte("package-associations"))
 
 		key := bcKey(bcomponent)
 
-		err := bassociations.Put(key, []byte(lcomponent.ID))
+		err := bassociations.Put(key, []byte(toID(lcomponent.ID)))
 		if err != nil {
 			return err
 		}

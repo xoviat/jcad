@@ -17,6 +17,7 @@ var (
 	re1 *regexp.Regexp = regexp.MustCompile("[^a-zA-Z]+")
 	re2 *regexp.Regexp = regexp.MustCompile("[0-9\\.]+(nF|pF|uF)")
 	re3 *regexp.Regexp = regexp.MustCompile("[0-9\\.]+(MOhms|KOhms|Ohms)")
+	re4 *regexp.Regexp = regexp.MustCompile("[0-9\\.]+(uH|mH)")
 )
 
 type Library struct {
@@ -285,6 +286,8 @@ func (lc *LibraryComponent) Value() string {
 		return re2.FindString(lc.Description)
 	case "Resistors":
 		return re3.FindString(lc.Description)
+	case "Inductors & Chokes & Transformers":
+		return re4.FindString(lc.Description)
 	}
 
 	return ""

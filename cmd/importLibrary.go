@@ -52,6 +52,14 @@ to quickly create a Cobra application.`,
 			return
 		}
 
+		for _, pkg := range elibrary.Packages {
+			fmt.Println("importing package: " + pkg.Name)
+		}
+
+		for _, symbol := range elibrary.Symbols {
+			fmt.Println("importing symbol: " + symbol.Name)
+		}
+
 		library.AddPackages(elibrary.Packages)
 		library.AddSymbols(elibrary.Symbols)
 	},

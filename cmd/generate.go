@@ -46,6 +46,7 @@ to quickly create a Cobra application.`,
 		}
 
 		pcb := args[0]
+		reassociations := args[1:len(args)]
 
 		library, _ := lib.NewDefaultLibrary()
 
@@ -71,6 +72,13 @@ to quickly create a Cobra application.`,
 			}
 
 			lcomponent := library.FindAssociated(component)
+			for _, reassociation := range reassociations {
+				if reassociation == component.Designator {
+					lcomponent = nil
+					break
+				}
+			}
+
 			if lcomponent == nil {
 				sKey := string(component.Key())
 				if _, ok := smap[sKey]; ok {

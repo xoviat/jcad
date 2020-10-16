@@ -2,7 +2,9 @@ package lib
 
 import (
 	"encoding/csv"
+	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -27,6 +29,18 @@ func (bc *BoardComponent) Key() []byte {
 	})
 
 	return key
+}
+
+func (bc *BoardComponent) Rotate(drotation float64) error {
+	rotation, err := strconv.ParseFloat(bc.Rotation, 64)
+	if err != nil {
+		return fmt.Errorf("failed to parse board component rotation: %s\n", bc.Rotation)
+	}
+
+	rotation += drotation
+	bc.Rotation = fmt.Sprintf("%.1f", rotation)
+
+	return nil
 }
 
 type BOMEntry struct {

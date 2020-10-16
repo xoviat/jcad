@@ -29,6 +29,11 @@ import (
 	"github.com/xoviat/JCAD/lib"
 )
 
+var (
+	lredesignate string
+	lrotate      string
+)
+
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
 	Use:   "generate",
@@ -46,9 +51,31 @@ to quickly create a Cobra application.`,
 		}
 
 		pcb := args[0]
-		reassociations := args[1:len(args)]
 
 		library, _ := lib.NewDefaultLibrary()
+
+		mredesignations := make(map[string]bool)
+		mrotations := make(map[string]float64)
+
+		if lredesignate != "" {
+			redesignations := strings.Split(lredesignate, ",")
+			for _, redesignation := range redesignations {
+				mredesignations[redesignation] = true
+			}
+		}
+
+		if lrotate != "" {
+			rotations := strings.Split(lrotate, ",")
+			for i := 0; i < len(rotations); i += 2 {
+				rotation, err := strconv.ParseFloat(rotations[i+1], 64)
+				if err != nil {
+					fmt.Printf("failed to parse board component rotation: %s\n", rotation)
+					continue
+				}
+
+				mrotations[rotations[i]] = rotation
+			}
+		}
 
 		rname := strings.TrimSuffix(filepath.Base(pcb), path.Ext(pcb))
 		scpl := filepath.Join(filepath.Dir(pcb), rname+"-data.cpl")
@@ -72,11 +99,8 @@ to quickly create a Cobra application.`,
 			}
 
 			lcomponent := library.FindAssociated(component)
-			for _, reassociation := range reassociations {
-				if reassociation == component.Designator {
-					lcomponent = nil
-					break
-				}
+			if _, ok := mredesignations[component.Designator]; ok {
+				lcomponent = nil
 			}
 
 			if lcomponent == nil {
@@ -123,14 +147,16 @@ to quickly create a Cobra application.`,
 			}
 			entries[lcomponent.CID()].Designators = append(entries[lcomponent.CID()].Designators, component.Designator)
 
-			rotation, err := strconv.ParseFloat(component.Rotation, 64)
-			if err != nil {
-				fmt.Printf("failed to parse board component rotation: %s\n", component.Rotation)
+			if rotation, ok := mrotations[component.Designator]; ok {
+				library.SetRotation(lcomponent, rotation)
+				delete(mrotations, component.Designator)
+			}
+
+			if lcomponent.Rotation == 0 {
 				continue
 			}
 
-			rotation += lcomponent.Rotation
-			component.Rotation = fmt.Sprintf("%.1f", rotation)
+			component.Rotate(lcomponent.Rotation)
 		}
 
 		sentries := []*lib.BOMEntry{}
@@ -150,6 +176,9 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(generateCmd)
+
+	generateCmd.PersistentFlags().StringVarP(&lredesignate, "redesignate", "d", "", "components to redesignate")
+	generateCmd.PersistentFlags().StringVarP(&lrotate, "rotate", "r", "", "components to rotate")
 
 	// Here you will define your flags and configuration settings.
 

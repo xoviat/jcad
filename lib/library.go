@@ -330,15 +330,9 @@ func (l *Library) CanAssemble(bcomponent *BoardComponent) bool {
 	return true
 }
 
-func (l *Library) SetRotation(ID string, rotation float64) {
-	component := LibraryComponent{}
+func (l *Library) SetRotation(component *LibraryComponent, rotation float64) {
 	err := l.db.Update(func(tx *bolt.Tx) error {
 		bcomponents := tx.Bucket([]byte("components"))
-
-		if bytes := bcomponents.Get([]byte(ID)); bytes != nil {
-			Unmarshal(bytes, &component)
-		}
-
 		component.Rotation = rotation
 
 		bytes, err := Marshal(component)

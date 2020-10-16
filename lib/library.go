@@ -258,7 +258,7 @@ type LibraryComponent struct {
 }
 
 func (lc *LibraryComponent) CID() string {
-	return "C" + strconv.Itoa(lc.ID)
+	return fmt.Sprintf("C%1.2d", lc.ID)
 }
 
 func (lc *LibraryComponent) Prefix() string {

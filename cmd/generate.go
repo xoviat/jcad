@@ -69,7 +69,7 @@ to quickly create a Cobra application.`,
 			for i := 0; i < len(rotations); i += 2 {
 				rotation, err := strconv.ParseFloat(rotations[i+1], 64)
 				if err != nil {
-					fmt.Printf("failed to parse board component rotation: %s\n", rotation)
+					fmt.Printf("failed to parse board component rotation: %1.2f\n", rotation)
 					continue
 				}
 

@@ -72,13 +72,12 @@ to quickly create a Cobra application.`,
 
 			lcomponent := library.FindAssociated(component)
 			if lcomponent == nil {
-				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Package)
-
 				sKey := string(component.Key())
 				if _, ok := smap[sKey]; ok {
 					continue
 				}
 
+				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Package)
 				id := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
 					suggestions := []prompt.Suggest{}
 					for _, lcomponent := range library.FindMatching(component) {

@@ -402,6 +402,7 @@ func (l *Library) Exact(id string) *LibraryComponent {
 
 func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
 	component := LibraryComponent{}
+	skip := false
 
 	l.db.View(func(tx *bolt.Tx) error {
 		bassociations := tx.Bucket([]byte("component-associations"))
@@ -412,6 +413,8 @@ func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
 			ID = string(bytes)
 		}
 
+		skip = ID == "C0"
+
 		if bytes := bcomponents.Get([]byte(ID)); bytes != nil {
 			Unmarshal(bytes, &component)
 		}
@@ -419,7 +422,7 @@ func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
 		return nil
 	})
 
-	if component.ID == 0 {
+	if component.ID == 0 && !skip {
 		return nil
 	}
 

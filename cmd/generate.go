@@ -86,13 +86,15 @@ to quickly create a Cobra application.`,
 
 		lib.ExecuteScript("generate_cpl.py", []string{pcb, scpl})
 
-		smap := make(map[string]bool)
-
 		/*
 			Includes ONLY SMT components
 		*/
 		components := []*lib.BoardComponent{}
 		entries := map[string]*lib.BOMEntry{}
+		/*
+			TODO: Read ahead the board components and reorganize the redesignations and rotations
+		*/
+
 		for _, component := range lib.ReadCPL(scpl) {
 			if !library.CanAssemble(component) {
 				continue
@@ -103,12 +105,14 @@ to quickly create a Cobra application.`,
 				lcomponent = nil
 			}
 
-			if lcomponent == nil {
-				sKey := string(component.Key())
-				if _, ok := smap[sKey]; ok {
-					continue
-				}
+			/*
+				If we have marked this as a component to skip
+			*/
+			if lcomponent != nil && lcomponent.ID == 0 {
+				continue
+			}
 
+			if lcomponent == nil {
 				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Package)
 				id := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
 					suggestions := []prompt.Suggest{}
@@ -122,11 +126,11 @@ to quickly create a Cobra application.`,
 				})
 
 				if id == "" {
-					smap[sKey] = true
-					continue
+					lcomponent = &lib.LibraryComponent{}
+				} else {
+					lcomponent = library.Exact(id)
 				}
 
-				lcomponent = library.Exact(id)
 				library.Associate(component, lcomponent)
 			}
 

@@ -52,6 +52,11 @@ to quickly create a Cobra application.`,
 
 		pcb := args[0]
 
+		if _, err := os.Stat(pcb); os.IsNotExist(err) {
+			fmt.Println("pcb does not exist")
+			return
+		}
+
 		library, _ := lib.NewDefaultLibrary()
 
 		mredesignations := make(map[string]bool)

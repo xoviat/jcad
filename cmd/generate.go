@@ -89,6 +89,9 @@ to quickly create a Cobra application.`,
 		gerbers := filepath.Join(filepath.Dir(pcb), rname+"-gerber")
 		zip := filepath.Join(filepath.Dir(pcb), rname+"-gerber.zip")
 
+		os.RemoveAll(gerbers)
+		os.MkdirAll(gerbers, 0777)
+
 		lib.ExecuteScript("generate_cpl.py", []string{pcb, scpl})
 
 		/*

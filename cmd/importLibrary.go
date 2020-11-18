@@ -27,7 +27,7 @@ import (
 // importLibraryCmd represents the importLibrary command
 var importLibraryCmd = &cobra.Command{
 	Use:   "import-library",
-	Short: "A brief description of your command",
+	Short: "Import an eagle library.",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 

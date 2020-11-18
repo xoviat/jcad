@@ -22,6 +22,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/xoviat/JCAD/lib"
+	"github.com/c-bata/go-prompt"
 )
 
 var (
@@ -31,7 +32,7 @@ var (
 // generateLibraryCmd represents the generateLibrary command
 var generateLibraryCmd = &cobra.Command{
 	Use:   "generate-library",
-	Short: "A brief description of your command",
+	Short: "Generate an eagle library from the database.",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -72,8 +73,15 @@ to quickly create a Cobra application.`,
 
 		symbol := library.GetSymbol(cname)
 		if symbol.Name == "" {
-			fmt.Printf("failed to find symbol\n")
-			return
+			fmt.Printf("Enter symbol for %s\n:", cname)
+			sname := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
+				suggestions := []prompt.Suggest{}
+
+				return prompt.FilterHasPrefix(suggestions, d.GetWordBeforeCursor(), true)
+			})
+
+			library.AssociateSymbol(cname, sname)
+			symbol = library.GetSymbol(cname)
 		}
 
 		symbols[symbol.Name] = symbol

@@ -52,6 +52,16 @@ var createCmd = &cobra.Command{
 			fmt.Println("dst does not end with lbr")
 		}
 
+		/*
+			First, get a list of all capacitors in the library 
+		*/
+		library, err := lib.NewDefaultLibrary()
+		if err != nil {
+			fmt.Printf("failed to encode library: %s\n", err)
+			return
+		}
+
+
 		for _, extended := range []bool{false, true} {
 			if extended {
 				dst = strings.TrimSuffix(dst, ".lbr") + "-Extended.lbr"
@@ -68,14 +78,6 @@ var createCmd = &cobra.Command{
 				Goal: load an lbr file, and modify the devicesets
 			*/
 	
-			/*
-				First, get a list of all capacitors in the library
-			*/
-			library, err := lib.NewDefaultLibrary()
-			if err != nil {
-				fmt.Printf("failed to encode library: %s\n", err)
-				return
-			}
 	
 			symbols := make(map[string]*lib.EagleLibrarySymbol)
 			packages := make(map[string]*lib.EagleLibraryPackage)

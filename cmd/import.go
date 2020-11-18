@@ -25,7 +25,7 @@ import (
 // importCmd represents the import command
 var importCmd = &cobra.Command{
 	Use:   "import",
-	Short: "A brief description of your command",
+	Short: "Import the JLCPCB library.",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 

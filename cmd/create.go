@@ -29,16 +29,16 @@ var (
 	includeExtended bool
 )
 
-// generateLibraryCmd represents the generateLibrary command
-var generateLibraryCmd = &cobra.Command{
-	Use:   "generate-library",
-	Short: "Generate an eagle library from the database.",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+// createCmd represents the generateLibrary command
+var createCmd = &cobra.Command{
+	Use:   "create",
+	Short: "Create an eagle library from the database.",
+	Long: `Create an eagle library from the database of symbols.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+		Arguments are:
+			- category: the category to use
+			- output file: the file to output
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
 			fmt.Println("invalid number of args")
@@ -187,15 +187,15 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(generateLibraryCmd)
+	rootCmd.AddCommand(createCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// generateLibraryCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// createCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	generateLibraryCmd.Flags().BoolVarP(&includeExtended, "extended", "e", false, "Whether to include extended parts")
+	createCmd.Flags().BoolVarP(&includeExtended, "extended", "e", false, "Whether to include extended parts")
 }

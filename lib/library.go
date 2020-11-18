@@ -219,9 +219,9 @@ func NewLibrary(root string) (*Library, error) {
 		tx.CreateBucketIfNotExists([]byte("categories"))             // Associates the categories with all contained within
 		tx.CreateBucketIfNotExists([]byte("packages"))               // Contains a list of eagle packages
 		tx.CreateBucketIfNotExists([]byte("symbols"))                // Contains a list of eagle symbols
-		tx.CreateBucketIfNotExists([]byte("component-associations")) // Associates a BoardComponent Key with a LibraryComponetn
+		tx.CreateBucketIfNotExists([]byte("component-associations")) // Associates a BoardComponent Key with a LibraryComponent
 		tx.CreateBucketIfNotExists([]byte("package-associations"))   // Associates a KiCad package with a JLCPCB package
-		tx.CreateBucketIfNotExists([]byte("symbol-associations"))    // Associates a JLCPCB category with a symbol
+		tx.CreateBucketIfNotExists([]byte("symbol-associations"))    // Associates a JLCPCB category with an Eagle symbol
 
 		return nil
 	})

@@ -21,9 +21,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/spf13/cobra"
-	"github.com/xoviat/JCAD/lib"
 	"github.com/c-bata/go-prompt"
+	"github.com/spf13/cobra"
+	"github.com/xoviat/jcad/lib"
 )
 
 // var (
@@ -40,27 +40,22 @@ var createCmd = &cobra.Command{
 			- category: the category to use
 			- output file: the file to output
 	`,
+	Args: cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) != 2 {
-			fmt.Println("invalid number of args")
-			return
-		}
-
 		cname := args[0]
 		dst := args[1]
 		if !strings.HasSuffix(dst, ".lbr") {
 			fmt.Println("dst does not end with lbr")
 		}
-
+ 
 		/*
-			First, get a list of all capacitors in the library 
+			First, get a list of all capacitors in the library
 		*/
 		library, err := lib.NewDefaultLibrary()
 		if err != nil {
 			fmt.Printf("failed to encode library: %s\n", err)
 			return
 		}
-
 
 		for _, extended := range []bool{false, true} {
 			if extended {
@@ -72,44 +67,43 @@ var createCmd = &cobra.Command{
 				fmt.Printf("failed to open file: %s\n", err)
 				return
 			}
-	
+
 			elibrary := lib.NewEagleLibrary()
 			/*
 				Goal: load an lbr file, and modify the devicesets
 			*/
-	
-	
+
 			symbols := make(map[string]*lib.EagleLibrarySymbol)
 			packages := make(map[string]*lib.EagleLibraryPackage)
-	
+
 			symbol := library.GetSymbol(cname)
 			if symbol.Name == "" {
 				fmt.Printf("Enter symbol for %s\n:", cname)
 				sname := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
 					suggestions := []prompt.Suggest{}
-	
+
 					return prompt.FilterHasPrefix(suggestions, d.GetWordBeforeCursor(), true)
 				})
-	
+
 				library.AssociateSymbol(cname, sname)
 				symbol = library.GetSymbol(cname)
 			}
-	
+
 			symbols[symbol.Name] = symbol
-	
+
 			sets := make(map[string][]*lib.LibraryComponent)
 			for _, component := range library.FindInCategory(cname) {
 				if !extended && component.LibraryType != "Basic" {
 					continue
 				}
-	
+
 				value := component.Value()
 				if _, ok := sets[value]; !ok {
 					sets[value] = []*lib.LibraryComponent{}
 				}
 				sets[value] = append(sets[value], component)
 			}
-	
+
 			devicesets := []*lib.EagleLibraryDeviceSet{}
 			for value, set := range sets {
 				/*
@@ -117,7 +111,7 @@ var createCmd = &cobra.Command{
 						<gate name="G$1" symbol="CAP" x="0" y="0"/>
 					</gates>
 				*/
-	
+
 				deviceset := &lib.EagleLibraryDeviceSet{
 					Description: value,
 					Name:        value,
@@ -131,7 +125,7 @@ var createCmd = &cobra.Command{
 						},
 					},
 				}
-	
+
 				for _, component := range set {
 					/*
 						<device name="-0603-50V-10%" package="0603">
@@ -147,11 +141,11 @@ var createCmd = &cobra.Command{
 							</technologies>
 						</device>
 					*/
-	
+
 					if _, ok := packages[component.Package]; !ok {
 						packages[component.Package] = library.GetPackage(component.Package)
 					}
-	
+
 					deviceset.Devices = append(deviceset.Devices, &lib.EagleLibraryDevice{
 						Name:    component.Description,
 						Package: component.Package,
@@ -169,30 +163,30 @@ var createCmd = &cobra.Command{
 						},
 					})
 				}
-	
+
 				devicesets = append(devicesets, deviceset)
 			}
-	
+
 			elibrary.DevicesSets = devicesets
 			for _, symbol := range symbols {
 				elibrary.Symbols = append(elibrary.Symbols, symbol)
 			}
-	
+
 			for _, pkg := range packages {
 				if pkg.Name == "" {
 					continue
 				}
-	
+
 				elibrary.Packages = append(elibrary.Packages, pkg)
 			}
-	
+
 			enc := xml.NewEncoder(fpdst)
 			err = enc.Encode(elibrary)
 			if err != nil {
 				fmt.Printf("failed to encode library: %s\n", err)
 				return
 			}
-	
+
 			fpdst.Close()
 		}
 

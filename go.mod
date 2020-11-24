@@ -1,4 +1,4 @@
-module github.com/xoviat/JCAD
+module github.com/xoviat/jcad
 
 go 1.15
 

@@ -1,4 +1,4 @@
-# JCAD
+# jcad
 
 This project aims to simplify and clarify the process of ordering SMT assembly boards from JLCPCB.
 The problem is as such: given a KiCAD .sch and .kicad_pcb file, what is the simpliest and fastest way

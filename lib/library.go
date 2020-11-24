@@ -198,7 +198,7 @@ func (l *Library) Import(src string) error {
 }
 
 func NewDefaultLibrary() (*Library, error) {
-	path := filepath.Join(GetLocalAppData(), "JCAD")
+	path := filepath.Join(GetLocalAppData(), "jcad")
 	os.MkdirAll(path, 0777)
 
 	return NewLibrary(path)
@@ -208,7 +208,7 @@ func NewDefaultLibrary() (*Library, error) {
 	Create or open library from root
 */
 func NewLibrary(root string) (*Library, error) {
-	db, err := bolt.Open(filepath.Join(root, "JCAD.db"), 0777, nil)
+	db, err := bolt.Open(filepath.Join(root, "jcad.db"), 0777, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -227,7 +227,7 @@ func NewLibrary(root string) (*Library, error) {
 	})
 
 	var index bleve.Index
-	ipath := filepath.Join(root, "JCAD.index")
+	ipath := filepath.Join(root, "jcad.index")
 	if Exists(ipath) {
 		index, err = bleve.Open(ipath)
 	} else {

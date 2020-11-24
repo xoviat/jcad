@@ -26,7 +26,7 @@ import (
 	"github.com/c-bata/go-prompt"
 	"github.com/mholt/archiver"
 	"github.com/spf13/cobra"
-	"github.com/xoviat/JCAD/lib"
+	"github.com/xoviat/jcad/lib"
 )
 
 var (
@@ -37,19 +37,15 @@ var (
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
 	Use:   "generate",
-	Short: "A brief description of your command",
+	Short: "Generate JLCPCB input files, given a KiCAD or Altium project.",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
+	Args : cobra.ExactArgs(1), 
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) < 1 {
-			fmt.Println("len(args) < 1")
-			return
-		}
-
 		pcb := args[0]
 
 		if _, err := os.Stat(pcb); os.IsNotExist(err) {

@@ -21,18 +21,20 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/xoviat/JCAD/lib"
+	"github.com/xoviat/jcad/lib"
 )
 
 // consumeCmd represents the importLibrary command
 var consumeCmd = &cobra.Command{
 	Use:   "consume",
 	Short: "Consume an eagle library.",
-	Long: `Consume the symbols and footprints in an eagle library.`,
+	Long:  `Consume the symbols and footprints in an eagle library.`,
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		src := args[0]
+
 		library, _ := lib.NewDefaultLibrary()
 
-		src := args[0]
 		fpsrc, err := os.Open(src)
 		if err != nil {
 			fmt.Printf("failed to open file: %s\n", err)

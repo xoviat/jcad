@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="34" viewBox="-12 -18 64 34">
+    <title></title>
+    <style type="text/css">\npath, polyline, polygon {stroke-linejoin:round;}\nrect, circle, ellipse, polyline, line, polygon, path {shape-rendering:crispEdges;}\n</style>
+    <rect x="-12" y="-18" width="64" height="34" fill="#FFFFFF" stroke="none" />
+    <g c_origin="20,0" c_para="pre`R?`name`CMFB103F3950FANT`Value`NTC`package`0805`BOM_Supplier`LCSC`BOM_Manufacturer`FH`BOM_Manufacturer Part`CMFB103F3950FANT`nameAlias`Value`BOM_Supplier Part`C51597`BOM_LCSC Assembly`Yes`SMT Type`Extend`">
+        <g c_partid="part_pin" c_etype="pinpart" c_shapetype="group" c_show="show" c_elec="1" c_spicepin="2" c_origin="40,0" id="gge7" c_rotation="0">
+            <circle c_pindot="true" class="pindot" cx="40" cy="0" r="2" fill="#4F4F4F" stroke="none" />
+            <path d="M 40 0 h -10" fill="none" stroke="#000000" stroke-width="1" />
+            <text x="25" y="3" font-family="Verdana" font-size="7pt" fill="#000000" text-anchor="end" display="none">2</text>
+            <text x="35" y="-1" font-family="Verdana" font-size="7pt" fill="#000000" text-anchor="start" display="none">2</text>
+            <circle cx="33" cy="0" r="3" stroke="#000000" fill="none" stroke-width="1" display="none" />
+            <path d="M 30 -3 L 27 0 L 30 3" fill="none" stroke="#000000" stroke-width="1" display="none" />
+        </g>
+        <g c_partid="part_pin" c_etype="pinpart" c_shapetype="group" c_show="show" c_elec="1" c_spicepin="1" c_origin="0,0" id="gge14" c_rotation="180">
+            <circle c_pindot="true" class="pindot" cx="0" cy="0" r="2" fill="#4F4F4F" stroke="none" />
+            <path d="M 0 0 h 10" fill="none" stroke="#000000" stroke-width="1" />
+            <text x="15" y="3" font-family="Verdana" font-size="7pt" fill="#000000" text-anchor="start" display="none">1</text>
+            <text x="5" y="-1" font-family="Verdana" font-size="7pt" fill="#000000" text-anchor="end" display="none">1</text>
+            <circle cx="7" cy="0" r="3" stroke="#000000" fill="none" stroke-width="1" display="none" />
+            <path d="M 10 3 L 13 0 L 10 -3" fill="none" stroke="#000000" stroke-width="1" display="none" />
+        </g>
+        <rect id="gge21" x="10" y="-4" width="20" height="8" stroke="#880000" stroke-width="1" fill="none" c_shapetype="line" />
+        <polyline points="10 6 15 6 29 -8" stroke="#880000" id="gge22" stroke-width="1" c_shapetype="line" fill="none" stroke-linecap="round" />
+    </g>
+</svg>

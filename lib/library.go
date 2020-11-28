@@ -461,6 +461,10 @@ func (l *Library) Associate(bcomponent *BoardComponent, lcomponent *LibraryCompo
 		bassociations := tx.Bucket([]byte("component-associations"))
 		bfootprints := tx.Bucket([]byte("package-associations"))
 
+		if lcomponent == nil {
+			return bassociations.Delete(bcomponent.Key())
+		}
+
 		err := bassociations.Put(bcomponent.Key(), []byte(lcomponent.CID()))
 		if err != nil {
 			return err

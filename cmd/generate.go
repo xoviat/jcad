@@ -44,7 +44,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Args : cobra.ExactArgs(1), 
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		pcb := args[0]
 
@@ -95,20 +95,31 @@ to quickly create a Cobra application.`,
 		*/
 		components := []*lib.BoardComponent{}
 		entries := map[string]*lib.BOMEntry{}
+		clist := lib.ReadCPL(scpl)
+
+		for _, component := range clist {
+			if !library.CanAssemble(component) {
+				continue
+			}
+
+			if rotation, ok := mrotations[component.Designator]; ok {
+				library.SetRotation(library.FindAssociated(component), rotation)
+			}
+
+			if _, ok := mredesignations[component.Designator]; ok {
+				library.Associate(component, nil)
+			}
+		}
+
 		/*
 			TODO: Read ahead the board components and reorganize the redesignations and rotations
 		*/
-
-		for _, component := range lib.ReadCPL(scpl) {
+		for _, component := range clist {
 			if !library.CanAssemble(component) {
 				continue
 			}
 
 			lcomponent := library.FindAssociated(component)
-			if _, ok := mredesignations[component.Designator]; ok {
-				lcomponent = nil
-			}
-
 			/*
 				If we have marked this as a component to skip
 			*/
@@ -154,11 +165,6 @@ to quickly create a Cobra application.`,
 				entries[lcomponent.CID()].Component = lcomponent
 			}
 			entries[lcomponent.CID()].Designators = append(entries[lcomponent.CID()].Designators, component.Designator)
-
-			if rotation, ok := mrotations[component.Designator]; ok {
-				library.SetRotation(lcomponent, rotation)
-				delete(mrotations, component.Designator)
-			}
 
 			if lcomponent.Rotation == 0 {
 				continue

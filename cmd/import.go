@@ -16,6 +16,11 @@ limitations under the License.
 package cmd
 
 import (
+	"encoding/xml"
+	"fmt"
+	"os"
+	"strings"
+
 	"github.com/spf13/cobra"
 	"github.com/xoviat/jcad/lib"
 )
@@ -23,19 +28,44 @@ import (
 // importCmd represents the import command
 var importCmd = &cobra.Command{
 	Use:   "import",
-	Short: "Import the JLCPCB library.",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Import databases or libraries.",
+	Long: `Import databases or libraries.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+		- A JLCPCB component library, in the xlsx format.
+		- An Eagle library, in the .lbr format.`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		db := args[0]
-
+		src := args[0]
 		library, _ := lib.NewDefaultLibrary()
-		library.Import(db)
+
+		if !strings.HasSuffix(src, ".lbr") {
+			library.Import(src)
+		} else {
+			fpsrc, err := os.Open(src)
+			if err != nil {
+				fmt.Printf("failed to open file: %s\n", err)
+				return
+			}
+
+			elibrary := lib.EagleLibrary{}
+			dec := xml.NewDecoder(fpsrc)
+			err = dec.Decode(&elibrary)
+			if err != nil {
+				fmt.Printf("failed to decode library: %s\n", err)
+				return
+			}
+
+			for _, pkg := range elibrary.Packages {
+				fmt.Println("importing package: " + pkg.Name)
+			}
+
+			for _, symbol := range elibrary.Symbols {
+				fmt.Println("importing symbol: " + symbol.Name)
+			}
+
+			library.AddPackages(elibrary.Packages)
+			library.AddSymbols(elibrary.Symbols)
+		}
 	},
 }
 

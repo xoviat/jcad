@@ -26,9 +26,9 @@ import (
 	"github.com/xoviat/jcad/lib"
 )
 
-// var (
-// 	includeExtended bool
-// )
+var (
+	rename bool
+)
 
 // createCmd represents the generateLibrary command
 var createCmd = &cobra.Command{
@@ -47,7 +47,7 @@ var createCmd = &cobra.Command{
 		if !strings.HasSuffix(dst, ".lbr") {
 			fmt.Println("dst does not end with lbr")
 		}
- 
+
 		/*
 			First, get a list of all capacitors in the library
 		*/
@@ -77,7 +77,7 @@ var createCmd = &cobra.Command{
 			packages := make(map[string]*lib.EagleLibraryPackage)
 
 			symbol := library.GetSymbol(cname)
-			if symbol.Name == "" {
+			if symbol.Name == "" || rename {
 				fmt.Printf("Enter symbol for %s\n:", cname)
 				sname := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
 					suggestions := []prompt.Suggest{}
@@ -85,6 +85,7 @@ var createCmd = &cobra.Command{
 					return prompt.FilterHasPrefix(suggestions, d.GetWordBeforeCursor(), true)
 				})
 
+				rename = false
 				library.AssociateSymbol(cname, sname)
 				symbol = library.GetSymbol(cname)
 			}
@@ -204,5 +205,5 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// createCmd.Flags().BoolVarP(&includeExtended, "extended", "e", false, "Whether to include extended parts")
+	createCmd.Flags().BoolVarP(&rename, "rename", "r", false, "Whether to rename the references symobol.")
 }

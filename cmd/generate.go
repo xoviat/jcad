@@ -48,6 +48,16 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		pcb := args[0]
 
+		if strings.HasPrefix(pcb, "~") {
+			home, err := os.UserHomeDir()
+			if err != nil {
+				fmt.Println("failed to obtain home dir")
+				return
+			}
+
+			pcb = home + strings.TrimPrefix(pcb, "~")
+		}
+
 		if _, err := os.Stat(pcb); os.IsNotExist(err) {
 			fmt.Println("pcb does not exist")
 			return

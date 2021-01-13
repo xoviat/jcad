@@ -329,6 +329,10 @@ func (l *Library) CanAssemble(bcomponent *BoardComponent) bool {
 		return false
 	case "DRA":
 		return false
+	case "DS":
+		return false
+	case "SW":
+		return false
 	}
 
 	return true

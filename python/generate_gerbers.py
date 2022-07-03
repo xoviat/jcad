@@ -27,7 +27,7 @@ def convert(pcb, dir):
 
     # Set some important plot options (see pcb_plot_params.h):
     popt.SetPlotFrameRef(False)  # do not change it
-    popt.SetLineWidth(pcbnew.FromMM(0.35))
+    popt.SetSketchPadLineWidth(pcbnew.FromMM(0.35))
 
     popt.SetAutoScale(False)  # do not change it
     popt.SetScale(1)  # do not change it
@@ -77,12 +77,12 @@ def convert(pcb, dir):
         pctl.SetLayer(layer_info[1])
         pctl.OpenPlotfile(
             layer_info[0], pcbnew.PLOT_FORMAT_GERBER, layer_info[2])
-        print 'plot %s' % pctl.GetPlotFileName()
+        print('plot {}'.format(pctl.GetPlotFileName()))
         if gen_job_file == True:
             jobfile_writer.AddGbrFile(
                 layer_info[1], os.path.basename(pctl.GetPlotFileName()))
         if pctl.PlotLayer() == False:
-            print "plot error"
+            print('plot error')
 
     # generate internal copper layers, if any
     lyrcnt = board.GetCopperLayerCount()
@@ -92,9 +92,9 @@ def convert(pcb, dir):
         pctl.SetLayer(innerlyr)
         lyrname = 'In%s_Cu' % innerlyr
         pctl.OpenPlotfile(lyrname, pcbnew.PLOT_FORMAT_GERBER, "inner")
-        print 'plot %s' % pctl.GetPlotFileName()
+        print('plot {}'.format(pctl.GetPlotFileName()))
         if pctl.PlotLayer() == False:
-            print "plot error"
+            print('plot error')
 
     # At the end you have to close the last plot, otherwise you don't know when
     # the object will be recycled!
@@ -118,7 +118,7 @@ def convert(pcb, dir):
 
     genDrl = True
     genMap = True
-    print 'create drill and map files in %s' % pctl.GetPlotDirName()
+    print('create drill and map files in {}'.format(pctl.GetPlotDirName()))
     drlwriter.CreateDrillandMapFilesSet(pctl.GetPlotDirName(), genDrl, genMap)
 
 

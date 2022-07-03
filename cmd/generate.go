@@ -46,20 +46,14 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		pcb := args[0]
-
-		if strings.HasPrefix(pcb, "~") {
-			home, err := os.UserHomeDir()
-			if err != nil {
-				fmt.Println("failed to obtain home dir")
-				return
-			}
-
-			pcb = home + strings.TrimPrefix(pcb, "~")
+		pcb, err := lib.Normalize(args[0])
+		if err != nil {
+			fmt.Printf("failed to normalize path: %s\n", err)
+			return
 		}
 
-		if _, err := os.Stat(pcb); os.IsNotExist(err) {
-			fmt.Println("pcb does not exist")
+		if !lib.Exists(pcb) || !strings.HasSuffix(pcb, ".kicad_pcb") {
+			fmt.Println("pcb does not exist or is not KiCad PCB")
 			return
 		}
 

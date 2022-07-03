@@ -3,9 +3,11 @@ package lib
 import (
 	"bytes"
 	"encoding/gob"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"syscall"
 
 	"github.com/lxn/win"
@@ -19,6 +21,19 @@ func Exists(path string) bool {
 	}
 
 	return true
+}
+
+func Normalize(src string) (string, error) {
+	if !strings.HasPrefix(src, "~") {
+		return src, nil
+	}
+
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("failed to obtain user home dir: %s", err)
+	}
+
+	return home + strings.TrimPrefix(src, "~"), nil
 }
 
 /*
@@ -56,7 +71,23 @@ func GetLocalAppData() string {
 }
 
 func FindkPython() string {
-	return filepath.Join(GetProgramFiles(), "KiCad", "bin", "python.exe")
+	programFiles := GetProgramFiles()
+	bins := []string{
+		filepath.Join(programFiles, "KiCad", "bin"),
+		filepath.Join(programFiles, "KiCad", "6.0", "bin"),
+	}
+
+	bin := ""
+	for _, b := range bins {
+		if _, err := os.Stat(b); err != nil {
+			continue
+		}
+
+		bin = b
+		break
+	}
+
+	return filepath.Join(bin, "python.exe")
 }
 
 func FindScripts() string {
@@ -68,6 +99,9 @@ func ExecuteScript(script string, args []string) {
 	command := exec.Command(FindkPython(), args...)
 	command.Stdout = os.Stdout
 	command.Stderr = os.Stderr
+
+	// fmt.Println(FindkPython())
+	// fmt.Println(args)
 
 	command.Run()
 }

@@ -35,11 +35,25 @@ var importCmd = &cobra.Command{
 		- An Eagle library, in the .lbr format.`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		src := args[0]
+		src, err := lib.Normalize(args[0])
+		if err != nil {
+			fmt.Printf("failed to normalize path: %s\n", src)
+			return
+		}
+
 		library, _ := lib.NewDefaultLibrary()
 
+		if !lib.Exists(src) {
+			fmt.Printf("failed to stat file: %s\n", src)
+			return
+		}
+
 		if !strings.HasSuffix(src, ".lbr") {
-			library.Import(src)
+			err := library.Import(src)
+			if err != nil {
+				fmt.Printf("failed to import library: %s\n", err)
+				return
+			}
 		} else {
 			fpsrc, err := os.Open(src)
 			if err != nil {

@@ -56,20 +56,19 @@ def convert(pcb, brd):
 
     # Board outline
     outlines = pcbnew.SHAPE_POLY_SET()
-    pcb.GetBoardPolygonOutlines(outlines, "")
+    pcb.GetBoardPolygonOutlines(outlines)
     outline = outlines.Outline(0)
-    outline_points = [outline.Point(n) for n in range(outline.PointCount())]
+    outline_points = [outline.GetPoint(n) for n in range(outline.PointCount())]
     outline_maxx = max(map(lambda p: p.x, outline_points))
     outline_maxy = max(map(lambda p: p.y, outline_points))
-    m_place_offset = pcb.GetDesignSettings().m_AuxOrigin
+    m_place_offset = pcb.GetDesignSettings().GetAuxOrigin()
 
     # Parts
-    module_list = pcb.GetModules()
+    module_list = pcb.GetFootprints()
     modules = []
-    while module_list:
-        if not skip_module(module_list):
-            modules.append(module_list)
-        module_list = module_list.Next()
+    for module in module_list:
+        if not skip_module(module):
+            modules.append(module)
 
     pin_at = 0
 
@@ -112,7 +111,7 @@ def main():
     parser.add_argument(
         "cpl_file",
         metavar="CPL-FILE",
-        type=argparse.FileType("wb"),
+        type=argparse.FileType("w"),
         help="output in .cpl format",
     )
 

@@ -37,14 +37,9 @@ var (
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
 	Use:   "generate",
-	Short: "Generate JLCPCB input files, given a KiCAD or Altium project.",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Args: cobra.ExactArgs(1),
+	Short: "Generate JLCPCB input files, given a KiCAD board file.",
+	Long:  ``,
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		pcb, err := lib.Normalize(args[0])
 		if err != nil {
@@ -57,7 +52,37 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		library, _ := lib.NewDefaultLibrary()
+		library, err := lib.NewDefaultLibrary()
+		if err != nil {
+			fmt.Printf("failed to open or create default library: %s\n", err)
+			return
+		}
+
+		rname := strings.TrimSuffix(filepath.Base(pcb), path.Ext(pcb))
+		filenames := struct {
+			Name    string
+			KCPL    string
+			BOM     string
+			CPL     string
+			Gerbers string
+			ZIP     string
+		}{
+			Name:    rname,
+			KCPL:    filepath.Join(filepath.Dir(pcb), rname+"-data.cpl"),
+			BOM:     filepath.Join(filepath.Dir(pcb), rname+"-BOM.csv"),
+			CPL:     filepath.Join(filepath.Dir(pcb), rname+"-all-pos.csv"),
+			Gerbers: filepath.Join(filepath.Dir(pcb), rname+"-gerber"),
+			ZIP:     filepath.Join(filepath.Dir(pcb), rname+"-gerber.zip"),
+		}
+
+		fmt.Println("JCAD: KiCAD -> JLCPCB PCB assembly output generator")
+		fmt.Printf("Processing %s\n", pcb)
+
+		os.RemoveAll(filenames.Gerbers)
+		os.MkdirAll(filenames.Gerbers, 0777)
+
+		lib.ExecuteScript("generate_cpl.py", []string{pcb, filenames.KCPL})
+		lib.ExecuteScript("generate_gerbers.py", []string{pcb, filenames.Gerbers})
 
 		mredesignations := make(map[string]bool)
 		mrotations := make(map[string]float64)
@@ -82,24 +107,12 @@ to quickly create a Cobra application.`,
 			}
 		}
 
-		rname := strings.TrimSuffix(filepath.Base(pcb), path.Ext(pcb))
-		scpl := filepath.Join(filepath.Dir(pcb), rname+"-data.cpl")
-		bom := filepath.Join(filepath.Dir(pcb), rname+"-BOM.csv")
-		cpl := filepath.Join(filepath.Dir(pcb), rname+"-all-pos.csv")
-		gerbers := filepath.Join(filepath.Dir(pcb), rname+"-gerber")
-		zip := filepath.Join(filepath.Dir(pcb), rname+"-gerber.zip")
-
-		os.RemoveAll(gerbers)
-		os.MkdirAll(gerbers, 0777)
-
-		lib.ExecuteScript("generate_cpl.py", []string{pcb, scpl})
-
 		/*
 			Includes ONLY SMT components
 		*/
 		components := []*lib.BoardComponent{}
 		entries := map[string]*lib.BOMEntry{}
-		clist := lib.ReadCPL(scpl)
+		clist := lib.ReadKCPL(filenames.KCPL)
 
 		for _, component := range clist {
 			if !library.CanAssemble(component) {
@@ -182,13 +195,11 @@ to quickly create a Cobra application.`,
 			sentries = append(sentries, entry)
 		}
 
-		lib.WriteBOM(bom, sentries)
-		lib.WriteCPL(cpl, components)
+		lib.WriteBOM(filenames.BOM, sentries)
+		lib.WriteCPL(filenames.CPL, components)
 
-		lib.ExecuteScript("generate_gerbers.py", []string{pcb, gerbers})
-
-		os.Remove(zip)
-		archiver.Archive([]string{gerbers}, zip)
+		os.Remove(filenames.ZIP)
+		archiver.Archive([]string{filenames.Gerbers}, filenames.ZIP)
 	},
 }
 

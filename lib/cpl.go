@@ -49,7 +49,12 @@ type BOMEntry struct {
 	Component   *LibraryComponent
 }
 
-func ReadCPL(src string) []*BoardComponent {
+/*
+	Read a KiCAD CPL file produced by generate_cpl.py
+
+	Return a list of Board Components
+*/
+func ReadKCPL(src string) []*BoardComponent {
 	fp, err := os.Open(src)
 	if err != nil {
 		return []*BoardComponent{}

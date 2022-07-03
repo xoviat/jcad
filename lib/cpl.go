@@ -34,7 +34,7 @@ func (bc *BoardComponent) Key() []byte {
 func (bc *BoardComponent) Rotate(drotation float64) error {
 	rotation, err := strconv.ParseFloat(bc.Rotation, 64)
 	if err != nil {
-		return fmt.Errorf("failed to parse board component rotation: %s\n", bc.Rotation)
+		return fmt.Errorf("failed to parse board component rotation: %s", bc.Rotation)
 	}
 
 	rotation += drotation
@@ -47,6 +47,27 @@ type BOMEntry struct {
 	Comment     string
 	Designators []string
 	Component   *LibraryComponent
+}
+
+type LinkedComponent struct {
+	BoardComponent   *BoardComponent
+	LibraryComponent *LibraryComponent
+}
+
+type BOM map[string]*BOMEntry
+
+func (bom BOM) AddComponent(component *LinkedComponent) {
+	if _, ok := bom[component.LibraryComponent.CID()]; !ok {
+		bom[component.LibraryComponent.CID()] = &BOMEntry{
+			Comment:   component.BoardComponent.Comment,
+			Component: component.LibraryComponent,
+		}
+	}
+
+	bom[component.LibraryComponent.CID()].Designators = append(
+		bom[component.LibraryComponent.CID()].Designators,
+		component.BoardComponent.Designator,
+	)
 }
 
 /*
@@ -73,8 +94,6 @@ func ReadKCPL(src string) []*BoardComponent {
 			Rotation:   line[5],
 			Layer:      line[6],
 		})
-
-		line = []string{}
 	}
 
 	return components
@@ -102,7 +121,7 @@ func WriteCPL(dst string, components []*BoardComponent) {
 	writer.Flush()
 }
 
-func WriteBOM(dst string, entries []*BOMEntry) {
+func WriteBOM(dst string, bom BOM) {
 	fp, err := os.Create(dst)
 	if err != nil {
 		return
@@ -111,12 +130,12 @@ func WriteBOM(dst string, entries []*BOMEntry) {
 
 	writer := csv.NewWriter(fp)
 	writer.Write([]string{"Comment", "Designator", "Footprint", "LCSC Part #"})
-	for _, entry := range entries {
+	for cid, entry := range bom {
 		writer.Write([]string{
 			entry.Comment,
 			strings.Join(entry.Designators, ","),
 			entry.Component.Package,
-			entry.Component.CID(),
+			cid,
 		})
 	}
 

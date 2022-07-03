@@ -111,7 +111,7 @@ var generateCmd = &cobra.Command{
 			Includes ONLY SMT components
 		*/
 		components := []*lib.BoardComponent{}
-		entries := map[string]*lib.BOMEntry{}
+		bom := make(lib.BOM)
 		clist := lib.ReadKCPL(filenames.KCPL)
 
 		for _, component := range clist {
@@ -174,14 +174,12 @@ var generateCmd = &cobra.Command{
 			components = append(components, component)
 
 			/*
-				Then, add it to the designator map
+				Then, add it to the BOM
 			*/
-			if _, ok := entries[lcomponent.CID()]; !ok {
-				entries[lcomponent.CID()] = &lib.BOMEntry{}
-				entries[lcomponent.CID()].Comment = component.Comment
-				entries[lcomponent.CID()].Component = lcomponent
-			}
-			entries[lcomponent.CID()].Designators = append(entries[lcomponent.CID()].Designators, component.Designator)
+			bom.AddComponent(&lib.LinkedComponent{
+				BoardComponent:   component,
+				LibraryComponent: lcomponent,
+			})
 
 			if lcomponent.Rotation == 0 {
 				continue
@@ -190,12 +188,7 @@ var generateCmd = &cobra.Command{
 			component.Rotate(lcomponent.Rotation)
 		}
 
-		sentries := []*lib.BOMEntry{}
-		for _, entry := range entries {
-			sentries = append(sentries, entry)
-		}
-
-		lib.WriteBOM(filenames.BOM, sentries)
+		lib.WriteBOM(filenames.BOM, bom)
 		lib.WriteCPL(filenames.CPL, components)
 
 		os.Remove(filenames.ZIP)

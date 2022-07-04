@@ -107,44 +107,61 @@ var generateCmd = &cobra.Command{
 			}
 		}
 
-		/*
-			Includes ONLY SMT components
-		*/
-		components := []*lib.BoardComponent{}
 		bom := make(lib.BOM)
-		clist := lib.ReadKCPL(filenames.KCPL)
+		components := lib.ReadKCPL(filenames.KCPL)
+		assocations := make(map[string]*lib.LibraryComponent)
 
-		for _, component := range clist {
+		/*
+			filter components that we may possibly assemble
+			and retreive component associations from the database
+		*/
+		i := 0
+		for _, component := range components {
 			if !library.CanAssemble(component) {
+				i++
 				continue
-			}
-
-			if rotation, ok := mrotations[component.Designator]; ok {
-				library.SetRotation(library.FindAssociated(component), rotation)
 			}
 
 			if _, ok := mredesignations[component.Designator]; ok {
 				library.Associate(component, nil)
+				delete(assocations, string(component.Key()))
 			}
+
+			if _, ok := assocations[string(component.Key())]; !ok {
+				assocations[string(component.Key())] = library.FindAssociated(component)
+			}
+
+			component.LibraryComponent = assocations[string(component.Key())]
+			components[i] = component
+
+			if rotation, ok := mrotations[component.Designator]; ok {
+				library.SetRotation(component.LibraryComponent, rotation)
+			}
+			i++
 		}
+		components = components[:i]
 
 		/*
-			TODO: Read ahead the board components and reorganize the redesignations and rotations
+			retreive associations that we haven't from the user
 		*/
-		for _, component := range clist {
-			if !library.CanAssemble(component) {
-				continue
-			}
-
-			lcomponent := library.FindAssociated(component)
+		i = 0
+		for _, component := range components {
 			/*
-				If we have marked this as a component to skip
+				if we already retreived the assocation from the user
 			*/
-			if lcomponent != nil && lcomponent.ID == 0 {
+			if _, ok := assocations[string(component.Key())]; ok && component.LibraryComponent == nil {
+				component.LibraryComponent = assocations[string(component.Key())]
+			}
+
+			/*
+				if we have marked this as a component to skip
+			*/
+			if component.LibraryComponent != nil && component.LibraryComponent.ID == 0 {
+				i++
 				continue
 			}
 
-			if lcomponent == nil {
+			if component.LibraryComponent == nil {
 				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Package)
 				id := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
 					suggestions := []prompt.Suggest{}
@@ -158,35 +175,43 @@ var generateCmd = &cobra.Command{
 				})
 
 				if id == "" {
-					lcomponent = &lib.LibraryComponent{}
+					component.LibraryComponent = &lib.LibraryComponent{}
 				} else {
-					lcomponent = library.Exact(id)
+					component.LibraryComponent = library.Exact(id)
 				}
 
-				library.Associate(component, lcomponent)
+				assocations[string(component.Key())] = component.LibraryComponent
+				library.Associate(component, component.LibraryComponent)
 			}
 
-			if lcomponent == nil {
-				fmt.Println("notice: unexpected condition")
-				continue
+			if component.LibraryComponent == nil {
+				panic("unexpected condition")
 			}
-
-			components = append(components, component)
 
 			/*
-				Then, add it to the BOM
+				if we have marked this as a component to skip
 			*/
-			bom.AddComponent(&lib.LinkedComponent{
-				BoardComponent:   component,
-				LibraryComponent: lcomponent,
-			})
-
-			if lcomponent.Rotation == 0 {
+			if component.LibraryComponent.ID == 0 {
+				i++
 				continue
 			}
 
-			component.Rotate(lcomponent.Rotation)
+			components[i] = component
+			/*
+				add the component to the BOM
+			*/
+			bom.AddComponent(component)
+
+			/*
+				increase the rotation of the component by the preset amount
+			*/
+			if component.LibraryComponent.Rotation != 0 {
+				component.Rotate(component.LibraryComponent.Rotation)
+			}
+
+			i++
 		}
+		components = components[:i]
 
 		lib.WriteBOM(filenames.BOM, bom)
 		lib.WriteCPL(filenames.CPL, components)

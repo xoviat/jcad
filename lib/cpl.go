@@ -9,16 +9,19 @@ import (
 )
 
 /*
-	referred to as 'bcomponent'
+	Represents a Board Component
+
+	May contain a Library Component, if linked
 */
 type BoardComponent struct {
-	Designator string
-	Comment    string
-	Package    string
-	X          string
-	Y          string
-	Rotation   string
-	Layer      string
+	Designator       string
+	Comment          string
+	Package          string
+	X                string
+	Y                string
+	Rotation         string
+	Layer            string
+	LibraryComponent *LibraryComponent
 }
 
 func (bc *BoardComponent) Key() []byte {
@@ -38,6 +41,9 @@ func (bc *BoardComponent) Rotate(drotation float64) error {
 	}
 
 	rotation += drotation
+	/*
+		todo: normalize within 360 degrees
+	*/
 	bc.Rotation = fmt.Sprintf("%.1f", rotation)
 
 	return nil
@@ -49,24 +55,23 @@ type BOMEntry struct {
 	Component   *LibraryComponent
 }
 
-type LinkedComponent struct {
-	BoardComponent   *BoardComponent
-	LibraryComponent *LibraryComponent
-}
-
 type BOM map[string]*BOMEntry
 
-func (bom BOM) AddComponent(component *LinkedComponent) {
+func (bom BOM) AddComponent(component *BoardComponent) {
+	if component.LibraryComponent == nil {
+		panic("LibraryComponent must be set")
+	}
+
 	if _, ok := bom[component.LibraryComponent.CID()]; !ok {
 		bom[component.LibraryComponent.CID()] = &BOMEntry{
-			Comment:   component.BoardComponent.Comment,
+			Comment:   component.Comment,
 			Component: component.LibraryComponent,
 		}
 	}
 
 	bom[component.LibraryComponent.CID()].Designators = append(
 		bom[component.LibraryComponent.CID()].Designators,
-		component.BoardComponent.Designator,
+		component.Designator,
 	)
 }
 

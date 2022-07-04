@@ -258,7 +258,7 @@ type LibraryComponent struct {
 }
 
 func (lc *LibraryComponent) CID() string {
-	return fmt.Sprintf("C%1.2d", lc.ID)
+	return fmt.Sprintf("C%1.1d", lc.ID)
 }
 
 func (lc *LibraryComponent) Prefix() string {
@@ -394,6 +394,10 @@ func (l *Library) FindMatching(bcomponent *BoardComponent) []*LibraryComponent {
 }
 
 func (l *Library) Exact(id string) *LibraryComponent {
+	if id == "C0" {
+		return &LibraryComponent{}
+	}
+
 	component := LibraryComponent{}
 
 	l.db.View(func(tx *bolt.Tx) error {
@@ -465,6 +469,7 @@ func (l *Library) FindInCategory(category string) []*LibraryComponent {
 }
 
 func (l *Library) Associate(bcomponent *BoardComponent, lcomponent *LibraryComponent) {
+	// fmt.Printf("associating %s with %s\n", string(bcomponent.Key()), lcomponent.CID())
 	l.db.Update(func(tx *bolt.Tx) error {
 		bassociations := tx.Bucket([]byte("component-associations"))
 		bfootprints := tx.Bucket([]byte("package-associations"))

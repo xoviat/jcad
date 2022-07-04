@@ -118,7 +118,6 @@ var generateCmd = &cobra.Command{
 		i := 0
 		for _, component := range components {
 			if !library.CanAssemble(component) {
-				i++
 				continue
 			}
 
@@ -133,11 +132,18 @@ var generateCmd = &cobra.Command{
 
 			component.LibraryComponent = assocations[string(component.Key())]
 			components[i] = component
+			i++
+
+			//			if component.LibraryComponent != nil {
+			//				fmt.Printf(
+			//					"key %s associated with %s\n",
+			//					string(component.Key()), component.LibraryComponent.CID(),
+			//				)
+			//			}
 
 			if rotation, ok := mrotations[component.Designator]; ok {
 				library.SetRotation(component.LibraryComponent, rotation)
 			}
-			i++
 		}
 		components = components[:i]
 
@@ -157,7 +163,6 @@ var generateCmd = &cobra.Command{
 				if we have marked this as a component to skip
 			*/
 			if component.LibraryComponent != nil && component.LibraryComponent.ID == 0 {
-				i++
 				continue
 			}
 
@@ -192,11 +197,11 @@ var generateCmd = &cobra.Command{
 				if we have marked this as a component to skip
 			*/
 			if component.LibraryComponent.ID == 0 {
-				i++
 				continue
 			}
 
 			components[i] = component
+			i++
 			/*
 				add the component to the BOM
 			*/
@@ -209,7 +214,6 @@ var generateCmd = &cobra.Command{
 				component.Rotate(component.LibraryComponent.Rotation)
 			}
 
-			i++
 		}
 		components = components[:i]
 

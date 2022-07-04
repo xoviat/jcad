@@ -420,6 +420,7 @@ func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
 		bassociations := tx.Bucket([]byte("component-associations"))
 		bcomponents := tx.Bucket([]byte("components"))
 
+		// fmt.Printf("FindAssociated: %s\n", bcomponent.Key())
 		ID := ""
 		if bytes := bassociations.Get(bcomponent.Key()); bytes != nil {
 			ID = string(bytes)

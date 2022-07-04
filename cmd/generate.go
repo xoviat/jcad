@@ -123,26 +123,25 @@ var generateCmd = &cobra.Command{
 
 			if _, ok := mredesignations[component.Designator]; ok {
 				library.Associate(component, nil)
-				delete(assocations, string(component.Key()))
+				delete(assocations, component.StringKey())
 			}
 
-			if _, ok := assocations[string(component.Key())]; !ok {
-				assocations[string(component.Key())] = library.FindAssociated(component)
+			if _, ok := assocations[component.StringKey()]; !ok {
+				assocations[component.StringKey()] = library.FindAssociated(component)
 			}
 
-			component.LibraryComponent = assocations[string(component.Key())]
 			components[i] = component
 			i++
 
 			//			if component.LibraryComponent != nil {
 			//				fmt.Printf(
 			//					"key %s associated with %s\n",
-			//					string(component.Key()), component.LibraryComponent.CID(),
+			//					component.StringKey(), component.LibraryComponent.CID(),
 			//				)
 			//			}
 
 			if rotation, ok := mrotations[component.Designator]; ok {
-				library.SetRotation(component.LibraryComponent, rotation)
+				library.SetRotation(assocations[component.StringKey()], rotation)
 			}
 		}
 		components = components[:i]
@@ -153,20 +152,13 @@ var generateCmd = &cobra.Command{
 		i = 0
 		for _, component := range components {
 			/*
-				if we already retreived the assocation from the user
+				if we've marked this as a component to skip
 			*/
-			if _, ok := assocations[string(component.Key())]; ok && component.LibraryComponent == nil {
-				component.LibraryComponent = assocations[string(component.Key())]
-			}
-
-			/*
-				if we have marked this as a component to skip
-			*/
-			if component.LibraryComponent != nil && component.LibraryComponent.ID == 0 {
+			if lc := assocations[component.StringKey()]; lc != nil && lc.ID == 0 {
 				continue
 			}
 
-			if component.LibraryComponent == nil {
+			if lc := assocations[component.StringKey()]; lc == nil {
 				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Package)
 				id := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
 					suggestions := []prompt.Suggest{}
@@ -180,23 +172,18 @@ var generateCmd = &cobra.Command{
 				})
 
 				if id == "" {
-					component.LibraryComponent = &lib.LibraryComponent{}
+					assocations[component.StringKey()] = &lib.LibraryComponent{}
 				} else {
-					component.LibraryComponent = library.Exact(id)
+					assocations[component.StringKey()] = library.Exact(id)
 				}
 
-				assocations[string(component.Key())] = component.LibraryComponent
-				library.Associate(component, component.LibraryComponent)
-			}
-
-			if component.LibraryComponent == nil {
-				panic("unexpected condition")
+				library.Associate(component, assocations[component.StringKey()])
 			}
 
 			/*
-				if we have marked this as a component to skip
+				if we've marked this as a component to skip
 			*/
-			if component.LibraryComponent.ID == 0 {
+			if lc := assocations[component.StringKey()]; lc != nil && lc.ID == 0 {
 				continue
 			}
 
@@ -205,15 +192,14 @@ var generateCmd = &cobra.Command{
 			/*
 				add the component to the BOM
 			*/
-			bom.AddComponent(component)
+			bom.AddComponent(component, assocations[component.StringKey()])
 
 			/*
 				increase the rotation of the component by the preset amount
 			*/
-			if component.LibraryComponent.Rotation != 0 {
-				component.Rotate(component.LibraryComponent.Rotation)
+			if assocations[component.StringKey()].Rotation != 0 {
+				component.Rotate(assocations[component.StringKey()].Rotation)
 			}
-
 		}
 		components = components[:i]
 

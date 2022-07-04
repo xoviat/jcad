@@ -14,14 +14,13 @@ import (
 	May contain a Library Component, if linked
 */
 type BoardComponent struct {
-	Designator       string
-	Comment          string
-	Package          string
-	X                string
-	Y                string
-	Rotation         string
-	Layer            string
-	LibraryComponent *LibraryComponent
+	Designator string
+	Comment    string
+	Package    string
+	X          string
+	Y          string
+	Rotation   string
+	Layer      string
 }
 
 func (bc *BoardComponent) Key() []byte {
@@ -32,6 +31,10 @@ func (bc *BoardComponent) Key() []byte {
 	)
 }
 
+func (bc *BoardComponent) StringKey() string {
+	return string(bc.Key())
+}
+
 func (bc *BoardComponent) Rotate(drotation float64) error {
 	rotation, err := strconv.ParseFloat(bc.Rotation, 64)
 	if err != nil {
@@ -39,9 +42,13 @@ func (bc *BoardComponent) Rotate(drotation float64) error {
 	}
 
 	rotation += drotation
-	/*
-		todo: normalize within 360 degrees
-	*/
+	for rotation < 0 {
+		rotation += 360
+	}
+	for rotation > 360 {
+		rotation -= 360
+	}
+
 	bc.Rotation = fmt.Sprintf("%.1f", rotation)
 
 	return nil
@@ -55,21 +62,17 @@ type BOMEntry struct {
 
 type BOM map[string]*BOMEntry
 
-func (bom BOM) AddComponent(component *BoardComponent) {
-	if component.LibraryComponent == nil {
-		panic("LibraryComponent must be set")
-	}
-
-	if _, ok := bom[component.LibraryComponent.CID()]; !ok {
-		bom[component.LibraryComponent.CID()] = &BOMEntry{
-			Comment:   component.Comment,
-			Component: component.LibraryComponent,
+func (bom BOM) AddComponent(bcomponent *BoardComponent, lcomponent *LibraryComponent) {
+	if _, ok := bom[lcomponent.CID()]; !ok {
+		bom[lcomponent.CID()] = &BOMEntry{
+			Comment:   bcomponent.Comment,
+			Component: lcomponent,
 		}
 	}
 
-	bom[component.LibraryComponent.CID()].Designators = append(
-		bom[component.LibraryComponent.CID()].Designators,
-		component.Designator,
+	bom[lcomponent.CID()].Designators = append(
+		bom[lcomponent.CID()].Designators,
+		bcomponent.Designator,
 	)
 }
 

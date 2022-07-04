@@ -55,6 +55,9 @@ func (l *Library) Index() error {
 
 /*
 	Import a library from an excel file
+
+	todo: support csv file
+	todo: index on import
 */
 func (l *Library) Import(src string) error {
 	fromID := func(ID string) int {

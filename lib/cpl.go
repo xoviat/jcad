@@ -25,13 +25,11 @@ type BoardComponent struct {
 }
 
 func (bc *BoardComponent) Key() []byte {
-	key, _ := Marshal([]string{
-		re1.ReplaceAllString(bc.Designator, ""),
-		bc.Comment,
-		bc.Package,
-	})
-
-	return key
+	return []byte(
+		re1.ReplaceAllString(bc.Designator, "") + ":" +
+			strings.ReplaceAll(bc.Comment, ":", "_") + ":" +
+			strings.ReplaceAll(bc.Package, ":", "_"),
+	)
 }
 
 func (bc *BoardComponent) Rotate(drotation float64) error {

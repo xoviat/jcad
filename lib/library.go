@@ -18,9 +18,9 @@ import (
 
 var (
 	re1 *regexp.Regexp = regexp.MustCompile("[^a-zA-Z]+")
-	re2 *regexp.Regexp = regexp.MustCompile("[0-9\\.]+(nF|pF|uF)")
-	re3 *regexp.Regexp = regexp.MustCompile("[0-9\\.]+(MOhms|KOhms|Ohms)")
-	re4 *regexp.Regexp = regexp.MustCompile("[0-9\\.]+(uH|mH)")
+	re2 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(nF|pF|uF)`)
+	re3 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(k|MOhms|KOhms|Ohms)`)
+	re4 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(uH|mH)`)
 )
 
 type Library struct {
@@ -30,36 +30,7 @@ type Library struct {
 }
 
 /*
-	Indexes the library. This function may take a long time.
-*/
-func (l *Library) Index() error {
-	// l.index.Index(component.ID, *component)
-
-	l.db.Update(func(tx *bolt.Tx) error {
-		bcomponents := tx.Bucket([]byte("components"))
-		bunindexed := tx.Bucket([]byte("unindexed"))
-
-		c := bunindexed.Cursor()
-		for k, _ := c.First(); k != nil; k, _ = c.Next() {
-			bytes := bcomponents.Get(k)
-			component := LibraryComponent{}
-
-			Unmarshal(bytes, &component)
-
-			l.index.Index(component.CID(), component)
-			bunindexed.Delete(k)
-		}
-
-		return nil
-	})
-
-	return nil
-}
-
-/*
-	Import a library from an excel file
-
-	todo: index on import
+	Import a library from an excel or csv file
 */
 func (l *Library) Import(src string) error {
 	fromID := func(ID string) int {
@@ -74,12 +45,16 @@ func (l *Library) Import(src string) error {
 	chrows := make(chan []string, 100)
 	l.db.Update(func(tx *bolt.Tx) error {
 		tx.DeleteBucket([]byte("components"))
-		tx.DeleteBucket([]byte("unindexed"))
 		tx.DeleteBucket([]byte("categories"))
+		tx.DeleteBucket([]byte("index-resistors"))
+		tx.DeleteBucket([]byte("index-capacitors"))
+		tx.DeleteBucket([]byte("index-inductors"))
 
 		tx.CreateBucket([]byte("components"))
-		tx.CreateBucket([]byte("unindexed"))
 		tx.CreateBucket([]byte("categories"))
+		tx.CreateBucket([]byte("index-resistors"))
+		tx.CreateBucket([]byte("index-capacitors"))
+		tx.CreateBucket([]byte("index-inductors"))
 
 		return nil
 	})
@@ -96,7 +71,6 @@ func (l *Library) Import(src string) error {
 
 			for row, _ := reader.Read(); len(row) > 0; row, _ = reader.Read() {
 				if len(row) < 9 {
-					// fmt.Println(row)
 					continue
 				}
 
@@ -113,8 +87,7 @@ func (l *Library) Import(src string) error {
 			return err
 		}
 
-		sheet := f.GetSheetList()[0]
-		rows, err := f.Rows(sheet)
+		rows, err := f.Rows(f.GetSheetList()[0])
 		if err != nil {
 			return err
 		}
@@ -128,11 +101,7 @@ func (l *Library) Import(src string) error {
 				}
 
 				row, err := rows.Columns()
-				if err != nil {
-					continue
-				}
-
-				if len(row) < 9 {
+				if err != nil || len(row) < 9 {
 					continue
 				}
 
@@ -147,13 +116,17 @@ func (l *Library) Import(src string) error {
 	/*
 		amount per transaction
 	*/
-	k := 2000
+	k := 10000
 	row := []string{""}
 	categories := make(map[string][]int)
+	indexes := make(map[string]map[string][]int)
+	indexes["R"] = make(map[string][]int)
+	indexes["C"] = make(map[string][]int)
+	indexes["L"] = make(map[string][]int)
+
 	for len(row) != 0 {
 		if err := l.db.Update(func(tx *bolt.Tx) error {
 			components := tx.Bucket([]byte("components"))
-			unindexed := tx.Bucket([]byte("unindexed"))
 
 			/*
 				Do it this way to save memory
@@ -182,20 +155,29 @@ func (l *Library) Import(src string) error {
 					categories[each] = append(categories[each], component.ID)
 				}
 
+				if component.LibraryType == "Basic" && component.Prefix() != "" &&
+					component.Value() != "" {
+
+					if _, ok := indexes[component.Prefix()][component.Value()]; !ok {
+						indexes[component.Prefix()][component.Value()] = []int{}
+					}
+					indexes[component.Prefix()][component.Value()] = append(
+						indexes[component.Prefix()][component.Value()], component.ID,
+					)
+
+					//					if component.Prefix() == "R" {
+					//						fmt.Printf(
+					//							"%s + %s: %1.0d\n", component.Prefix(), component.Value(), component.ID,
+					//						)
+					//					}
+				}
+
 				bytes, err := Marshal(component)
 				if err != nil {
 					return err
 				}
 
 				err = components.Put([]byte(component.CID()), bytes)
-				if err != nil {
-					return err
-				}
-
-				/*
-					ids are removed from unindexed once they are indexed
-				*/
-				err = unindexed.Put([]byte(component.CID()), []byte(""))
 				if err != nil {
 					return err
 				}
@@ -225,6 +207,27 @@ func (l *Library) Import(src string) error {
 			}
 		}
 
+		prefixes := map[string]string{
+			"R": "index-resistors",
+			"C": "index-capacitors",
+			"L": "index-inductors",
+		}
+
+		for prefix, bname := range prefixes {
+			bucket := tx.Bucket([]byte(bname))
+			for value, components := range indexes[prefix] {
+				bytes, err := Marshal(components)
+				if err != nil {
+					return err
+				}
+
+				err = bucket.Put([]byte(value), bytes)
+				if err != nil {
+					return err
+				}
+			}
+		}
+
 		return nil
 	})
 }
@@ -247,13 +250,15 @@ func NewLibrary(root string) (*Library, error) {
 
 	db.Update(func(tx *bolt.Tx) error {
 		tx.CreateBucketIfNotExists([]byte("components"))             // Contains all of the JLCPCB components
-		tx.CreateBucketIfNotExists([]byte("unindexed"))              // Contains the keys of the components unindexed
 		tx.CreateBucketIfNotExists([]byte("categories"))             // Associates the categories with all contained within
 		tx.CreateBucketIfNotExists([]byte("packages"))               // Contains a list of eagle packages
 		tx.CreateBucketIfNotExists([]byte("symbols"))                // Contains a list of eagle symbols
 		tx.CreateBucketIfNotExists([]byte("component-associations")) // Associates a BoardComponent Key with a LibraryComponent
 		tx.CreateBucketIfNotExists([]byte("package-associations"))   // Associates a KiCad package with a JLCPCB package
 		tx.CreateBucketIfNotExists([]byte("symbol-associations"))    // Associates a JLCPCB category with an Eagle symbol
+		tx.CreateBucketIfNotExists([]byte("index-resistors"))        // Associates a resistor value with a list of actual resistors
+		tx.CreateBucketIfNotExists([]byte("index-capacitors"))       // Associates a capacitor value with a list of actual capacitors
+		tx.CreateBucketIfNotExists([]byte("index-inductors"))        // Associates an inductor value with a list of actual inductors
 
 		return nil
 	})
@@ -264,6 +269,9 @@ func NewLibrary(root string) (*Library, error) {
 		index, err = bleve.Open(ipath)
 	} else {
 		index, err = bleve.New(ipath, bleve.NewIndexMapping())
+	}
+	if err != nil {
+		return nil, err
 	}
 
 	return &Library{
@@ -301,8 +309,6 @@ func (lc *LibraryComponent) Prefix() string {
 		return "R"
 	case "Inductors & Chokes & Transformers":
 		return "L"
-	case "Filters":
-		return "FB"
 	}
 
 	return ""
@@ -314,7 +320,6 @@ func (lc *LibraryComponent) Prefix() string {
 func (lc *LibraryComponent) Value() string {
 	switch lc.FirstCategory {
 	case "Capacitors":
-		// XX(pF|uF|nF)
 		return re2.FindString(lc.Description)
 	case "Resistors":
 		return re3.FindString(lc.Description)
@@ -323,27 +328,6 @@ func (lc *LibraryComponent) Value() string {
 	}
 
 	return ""
-}
-
-/*
-	Find library components, given a search string
-*/
-func (l *Library) Find(description string) []*LibraryComponent {
-	query := bleve.NewMatchQuery(description)
-	query.SetField("Description")
-
-	result, err := l.index.Search(bleve.NewSearchRequest(query))
-	if err != nil {
-		return []*LibraryComponent{}
-	}
-
-	components := []*LibraryComponent{}
-	for _, hit := range result.Hits {
-		_ = hit
-		components = append(components, &LibraryComponent{})
-	}
-
-	return []*LibraryComponent{}
 }
 
 /*

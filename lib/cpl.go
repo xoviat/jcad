@@ -23,9 +23,13 @@ type BoardComponent struct {
 	Layer      string
 }
 
+func (bc *BoardComponent) Prefix() string {
+	return re1.ReplaceAllString(bc.Designator, "")
+}
+
 func (bc *BoardComponent) Key() []byte {
 	return []byte(
-		re1.ReplaceAllString(bc.Designator, "") + ":" +
+		bc.Prefix() + ":" +
 			strings.ReplaceAll(bc.Comment, ":", "_") + ":" +
 			strings.ReplaceAll(bc.Package, ":", "_"),
 	)

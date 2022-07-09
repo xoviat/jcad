@@ -21,6 +21,12 @@ var (
 	re2 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(nF|pF|uF)`)
 	re3 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(k|MOhms|KOhms|Ohms)`)
 	re4 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(uH|mH)`)
+
+	iprefixes = map[string]string{
+		"R": "index-resistors",
+		"C": "index-capacitors",
+		"L": "index-inductors",
+	}
 )
 
 type Library struct {
@@ -206,14 +212,7 @@ func (l *Library) Import(src string) error {
 				return err
 			}
 		}
-
-		prefixes := map[string]string{
-			"R": "index-resistors",
-			"C": "index-capacitors",
-			"L": "index-inductors",
-		}
-
-		for prefix, bname := range prefixes {
+		for prefix, bname := range iprefixes {
 			bucket := tx.Bucket([]byte(bname))
 			for value, components := range indexes[prefix] {
 				bytes, err := Marshal(components)
@@ -406,7 +405,36 @@ func (l *Library) FindMatching(bcomponent *BoardComponent) []*LibraryComponent {
 		N/A
 	*/
 
-	return []*LibraryComponent{}
+	iname, ok := iprefixes[bcomponent.Prefix()]
+	if !ok {
+		return []*LibraryComponent{}
+	}
+
+	// todo: filter further using package associations
+	// todo: derive value from comment
+	components := []*LibraryComponent{}
+	l.db.View(func(tx *bolt.Tx) error {
+		bcomponents := tx.Bucket([]byte("components"))
+		bindex := tx.Bucket([]byte(iname))
+
+		IDs := []int{}
+		if bytes := bindex.Get([]byte(bcomponent.Comment)); bytes != nil {
+			Unmarshal(bytes, &IDs)
+		}
+
+		components = make([]*LibraryComponent, len(IDs))
+		for i, ID := range IDs {
+			if bytes := bcomponents.Get(
+				[]byte((&LibraryComponent{ID: ID}).CID()),
+			); bytes != nil {
+				Unmarshal(bytes, &components[i])
+			}
+		}
+
+		return nil
+	})
+
+	return components
 }
 
 func (l *Library) Exact(id string) *LibraryComponent {

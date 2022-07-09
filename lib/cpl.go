@@ -19,7 +19,7 @@ type BoardComponent struct {
 	Package    string
 	X          string
 	Y          string
-	Rotation   string
+	Rotation   float64
 	Layer      string
 }
 
@@ -36,22 +36,44 @@ func (bc *BoardComponent) StringKey() string {
 }
 
 func (bc *BoardComponent) Rotate(drotation float64) error {
-	rotation, err := strconv.ParseFloat(bc.Rotation, 64)
-	if err != nil {
-		return fmt.Errorf("failed to parse board component rotation: %s", bc.Rotation)
+	bc.Rotation += drotation
+	for bc.Rotation < 0 {
+		bc.Rotation += 360
 	}
-
-	rotation += drotation
-	for rotation < 0 {
-		rotation += 360
+	for bc.Rotation > 360 {
+		bc.Rotation -= 360
 	}
-	for rotation > 360 {
-		rotation -= 360
-	}
-
-	bc.Rotation = fmt.Sprintf("%.1f", rotation)
 
 	return nil
+}
+
+type AssocationMap struct {
+	library     *Library
+	assocations map[string]*LibraryComponent
+}
+
+func NewAssociationMap(library *Library) *AssocationMap {
+	return &AssocationMap{library, make(map[string]*LibraryComponent)}
+}
+
+func (am *AssocationMap) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
+	key := bcomponent.StringKey()
+	if lcomponent, ok := am.assocations[key]; ok {
+		return lcomponent
+	}
+
+	lcomponent := am.library.FindAssociated(bcomponent)
+	am.assocations[key] = lcomponent
+
+	return lcomponent
+}
+
+func (am *AssocationMap) Associate(bcomponent *BoardComponent, lcomponent *LibraryComponent) {
+	if lcomponent == nil {
+		delete(am.assocations, bcomponent.StringKey())
+	}
+
+	am.library.Associate(bcomponent, lcomponent)
 }
 
 type BOMEntry struct {
@@ -91,13 +113,18 @@ func ReadKCPL(src string) []*BoardComponent {
 	components := []*BoardComponent{}
 	reader := csv.NewReader(fp)
 	for line, _ := reader.Read(); len(line) > 0; line, _ = reader.Read() {
+		rotation, err := strconv.ParseFloat(line[5], 32)
+		if err != nil {
+			rotation = 0
+		}
+
 		components = append(components, &BoardComponent{
 			Designator: line[0],
 			Comment:    line[1],
 			Package:    line[2],
 			X:          line[3],
 			Y:          line[4],
-			Rotation:   line[5],
+			Rotation:   rotation,
 			Layer:      line[6],
 		})
 	}
@@ -120,7 +147,7 @@ func WriteCPL(dst string, components []*BoardComponent) {
 			component.X,
 			component.Y,
 			component.Layer,
-			component.Rotation,
+			fmt.Sprintf("%1.0f", component.Rotation),
 		})
 	}
 

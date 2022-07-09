@@ -416,6 +416,10 @@ func (l *Library) Exact(id string) *LibraryComponent {
 }
 
 func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
+	if !l.CanAssemble(bcomponent) {
+		return &LibraryComponent{}
+	}
+
 	component := LibraryComponent{}
 	skip := false
 

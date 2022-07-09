@@ -37,9 +37,11 @@ var (
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
 	Use:   "generate",
-	Short: "Generate JLCPCB input files, given a KiCAD board file.",
-	Long:  ``,
-	Args:  cobra.ExactArgs(1),
+	Short: "Generate manufacturing outputs from a KiCAD board file.",
+	Long: `Generate manufacturing outputs for JLCPCB from a KiCAD board file:
+		- A ZIP file containing the gerber files used to create the PCB.
+		- CPL and BOM files used to place the SMT components.`,
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		pcb, err := lib.Normalize(args[0])
 		if err != nil {
@@ -109,7 +111,7 @@ var generateCmd = &cobra.Command{
 
 		bom := make(lib.BOM)
 		components := lib.ReadKCPL(filenames.KCPL)
-		assocations := make(map[string]*lib.LibraryComponent)
+		assocations := lib.NewAssociationMap(library)
 
 		/*
 			filter components that we may possibly assemble
@@ -117,17 +119,8 @@ var generateCmd = &cobra.Command{
 		*/
 		i := 0
 		for _, component := range components {
-			if !library.CanAssemble(component) {
-				continue
-			}
-
 			if _, ok := mredesignations[component.Designator]; ok {
-				library.Associate(component, nil)
-				delete(assocations, component.StringKey())
-			}
-
-			if _, ok := assocations[component.StringKey()]; !ok {
-				assocations[component.StringKey()] = library.FindAssociated(component)
+				assocations.Associate(component, nil)
 			}
 
 			components[i] = component
@@ -141,7 +134,7 @@ var generateCmd = &cobra.Command{
 			//			}
 
 			if rotation, ok := mrotations[component.Designator]; ok {
-				library.SetRotation(assocations[component.StringKey()], rotation)
+				library.SetRotation(assocations.FindAssociated(component), rotation)
 			}
 		}
 		components = components[:i]
@@ -154,11 +147,11 @@ var generateCmd = &cobra.Command{
 			/*
 				if we've marked this as a component to skip
 			*/
-			if lc := assocations[component.StringKey()]; lc != nil && lc.ID == 0 {
+			if lc := assocations.FindAssociated(component); lc != nil && lc.ID == 0 {
 				continue
 			}
 
-			if lc := assocations[component.StringKey()]; lc == nil {
+			if lc := assocations.FindAssociated(component); lc == nil {
 				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Package)
 				id := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
 					suggestions := []prompt.Suggest{}
@@ -172,34 +165,34 @@ var generateCmd = &cobra.Command{
 				})
 
 				if id == "" {
-					assocations[component.StringKey()] = &lib.LibraryComponent{}
+					assocations.Associate(component, &lib.LibraryComponent{})
 				} else {
-					assocations[component.StringKey()] = library.Exact(id)
+					assocations.Associate(component, library.Exact(id))
 				}
-
-				library.Associate(component, assocations[component.StringKey()])
 			}
 
 			/*
 				if we've marked this as a component to skip
 			*/
-			if lc := assocations[component.StringKey()]; lc != nil && lc.ID == 0 {
+			if lc := assocations.FindAssociated(component); lc != nil && lc.ID == 0 {
 				continue
 			}
 
 			components[i] = component
 			i++
+
+			lc := assocations.FindAssociated(component)
 			/*
 				add the component to the BOM
 			*/
-			bom.AddComponent(component, assocations[component.StringKey()])
+			bom.AddComponent(component, lc)
 
 			/*
 				increase the rotation of the component by the preset amount
+
+				rotate is always called in order to normalize within 360 degrees
 			*/
-			if assocations[component.StringKey()].Rotation != 0 {
-				component.Rotate(assocations[component.StringKey()].Rotation)
-			}
+			component.Rotate(lc.Rotation)
 		}
 		components = components[:i]
 

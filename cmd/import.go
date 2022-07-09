@@ -41,7 +41,11 @@ var importCmd = &cobra.Command{
 			return
 		}
 
-		library, _ := lib.NewDefaultLibrary()
+		library, err := lib.NewDefaultLibrary()
+		if err != nil {
+			fmt.Printf("failed to open or create default library: %s\n", err)
+			return
+		}
 
 		if !lib.Exists(src) {
 			fmt.Printf("failed to stat file: %s\n", src)

@@ -1,6 +1,9 @@
 package lib
 
 import (
+	"bufio"
+	"encoding/csv"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -56,7 +59,6 @@ func (l *Library) Index() error {
 /*
 	Import a library from an excel file
 
-	todo: support csv file
 	todo: index on import
 */
 func (l *Library) Import(src string) error {
@@ -69,17 +71,7 @@ func (l *Library) Import(src string) error {
 		return i
 	}
 
-	f, err := excelize.OpenFile(src)
-	if err != nil {
-		return err
-	}
-
-	sheet := f.GetSheetList()[0]
-	rows, err := f.Rows(sheet)
-	if err != nil {
-		return err
-	}
-
+	chrows := make(chan []string, 100)
 	l.db.Update(func(tx *bolt.Tx) error {
 		tx.DeleteBucket([]byte("components"))
 		tx.DeleteBucket([]byte("unindexed"))
@@ -92,27 +84,64 @@ func (l *Library) Import(src string) error {
 		return nil
 	})
 
-	chrows := make(chan []string, 100)
-	go func() {
-		for {
-			if end := !rows.Next(); end {
-				chrows <- []string{}
-
-				return
-			}
-
-			row, err := rows.Columns()
-			if err != nil {
-				continue
-			}
-
-			if len(row) < 9 {
-				continue
-			}
-
-			chrows <- row
+	if strings.HasSuffix(strings.ToLower(src), ".csv") {
+		fp, err := os.Open(src)
+		if err != nil {
+			return err
 		}
-	}()
+
+		reader := csv.NewReader(bufio.NewReader(fp))
+		go func() {
+			defer fp.Close()
+
+			for row, _ := reader.Read(); len(row) > 0; row, _ = reader.Read() {
+				if len(row) < 9 {
+					// fmt.Println(row)
+					continue
+				}
+
+				chrows <- row
+			}
+
+			chrows <- []string{}
+		}()
+	} else if strings.HasSuffix(strings.ToLower(src), ".xls") ||
+		strings.HasSuffix(strings.ToLower(src), ".xlsx") {
+
+		f, err := excelize.OpenFile(src)
+		if err != nil {
+			return err
+		}
+
+		sheet := f.GetSheetList()[0]
+		rows, err := f.Rows(sheet)
+		if err != nil {
+			return err
+		}
+
+		go func() {
+			for {
+				if end := !rows.Next(); end {
+					chrows <- []string{}
+
+					return
+				}
+
+				row, err := rows.Columns()
+				if err != nil {
+					continue
+				}
+
+				if len(row) < 9 {
+					continue
+				}
+
+				chrows <- row
+			}
+		}()
+	} else {
+		return errors.New("unknown file type")
+	}
 
 	i := 0
 	/*

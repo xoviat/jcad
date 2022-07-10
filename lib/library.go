@@ -412,13 +412,19 @@ func (l *Library) FindMatching(bcomponent *BoardComponent) []*LibraryComponent {
 
 	// todo: filter further using package associations
 	components := []*LibraryComponent{}
+	pkg := ""
 	l.db.View(func(tx *bolt.Tx) error {
 		bcomponents := tx.Bucket([]byte("components"))
 		bindex := tx.Bucket([]byte(iname))
+		bpackages := tx.Bucket([]byte("package-associations"))
 
 		IDs := []int{}
 		if bytes := bindex.Get([]byte(bcomponent.Value())); bytes != nil {
 			Unmarshal(bytes, &IDs)
+		}
+
+		if bytes := bpackages.Get([]byte(bcomponent.Package)); bytes != nil {
+			pkg = string(bytes)
 		}
 
 		components = make([]*LibraryComponent, len(IDs))
@@ -432,6 +438,21 @@ func (l *Library) FindMatching(bcomponent *BoardComponent) []*LibraryComponent {
 
 		return nil
 	})
+
+	if pkg == "" {
+		return components
+	}
+
+	i := 0
+	for _, component := range components {
+		if component.Package != pkg {
+			continue
+		}
+
+		components[i] = component
+		i++
+	}
+	components = components[:i]
 
 	return components
 }

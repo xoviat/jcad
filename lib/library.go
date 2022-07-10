@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/360EntSecGroup-Skylar/excelize/v2"
 	"github.com/blevesearch/bleve"
 	"github.com/boltdb/bolt"
+	"github.com/xuri/excelize/v2"
 )
 
 var (

@@ -27,6 +27,10 @@ func (bc *BoardComponent) Prefix() string {
 	return re1.ReplaceAllString(bc.Designator, "")
 }
 
+func (bc *BoardComponent) Value() string {
+	return NormalizeValue(bc.Comment)
+}
+
 func (bc *BoardComponent) Key() []byte {
 	return []byte(
 		bc.Prefix() + ":" +
@@ -73,11 +77,15 @@ func (am *AssocationMap) FindAssociated(bcomponent *BoardComponent) *LibraryComp
 }
 
 func (am *AssocationMap) Associate(bcomponent *BoardComponent, lcomponent *LibraryComponent) {
+	key := bcomponent.StringKey()
 	if lcomponent == nil {
-		delete(am.assocations, bcomponent.StringKey())
+		delete(am.assocations, key)
 	}
 
 	am.library.Associate(bcomponent, lcomponent)
+	if lcomponent != nil {
+		am.assocations[key] = lcomponent
+	}
 }
 
 type BOMEntry struct {

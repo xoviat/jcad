@@ -52,15 +52,15 @@ func (l *Library) Import(src string) error {
 	l.db.Update(func(tx *bolt.Tx) error {
 		tx.DeleteBucket([]byte("components"))
 		tx.DeleteBucket([]byte("categories"))
-		tx.DeleteBucket([]byte("index-resistors"))
-		tx.DeleteBucket([]byte("index-capacitors"))
-		tx.DeleteBucket([]byte("index-inductors"))
+		for _, iprefix := range iprefixes {
+			tx.DeleteBucket([]byte(iprefix))
+		}
 
 		tx.CreateBucket([]byte("components"))
 		tx.CreateBucket([]byte("categories"))
-		tx.CreateBucket([]byte("index-resistors"))
-		tx.CreateBucket([]byte("index-capacitors"))
-		tx.CreateBucket([]byte("index-inductors"))
+		for _, iprefix := range iprefixes {
+			tx.CreateBucket([]byte(iprefix))
+		}
 
 		return nil
 	})
@@ -255,9 +255,9 @@ func NewLibrary(root string) (*Library, error) {
 		tx.CreateBucketIfNotExists([]byte("component-associations")) // Associates a BoardComponent Key with a LibraryComponent
 		tx.CreateBucketIfNotExists([]byte("package-associations"))   // Associates a KiCad package with a JLCPCB package
 		tx.CreateBucketIfNotExists([]byte("symbol-associations"))    // Associates a JLCPCB category with an Eagle symbol
-		tx.CreateBucketIfNotExists([]byte("index-resistors"))        // Associates a resistor value with a list of actual resistors
-		tx.CreateBucketIfNotExists([]byte("index-capacitors"))       // Associates a capacitor value with a list of actual capacitors
-		tx.CreateBucketIfNotExists([]byte("index-inductors"))        // Associates an inductor value with a list of actual inductors
+		for _, iprefix := range iprefixes {                          // Associates a component value with a list of actual components
+			tx.CreateBucketIfNotExists([]byte(iprefix))
+		}
 
 		return nil
 	})
@@ -319,11 +319,11 @@ func (lc *LibraryComponent) Prefix() string {
 func (lc *LibraryComponent) Value() string {
 	switch lc.FirstCategory {
 	case "Capacitors":
-		return re2.FindString(lc.Description)
+		return NormalizeValue(re2.FindString(lc.Description))
 	case "Resistors":
-		return re3.FindString(lc.Description)
+		return NormalizeValue(re3.FindString(lc.Description))
 	case "Inductors & Chokes & Transformers":
-		return re4.FindString(lc.Description)
+		return NormalizeValue(re4.FindString(lc.Description))
 	}
 
 	return ""
@@ -411,14 +411,13 @@ func (l *Library) FindMatching(bcomponent *BoardComponent) []*LibraryComponent {
 	}
 
 	// todo: filter further using package associations
-	// todo: derive value from comment
 	components := []*LibraryComponent{}
 	l.db.View(func(tx *bolt.Tx) error {
 		bcomponents := tx.Bucket([]byte("components"))
 		bindex := tx.Bucket([]byte(iname))
 
 		IDs := []int{}
-		if bytes := bindex.Get([]byte(bcomponent.Comment)); bytes != nil {
+		if bytes := bindex.Get([]byte(bcomponent.Value())); bytes != nil {
 			Unmarshal(bytes, &IDs)
 		}
 

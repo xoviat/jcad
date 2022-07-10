@@ -37,6 +37,29 @@ func Normalize(src string) (string, error) {
 }
 
 /*
+	return a normalized resistor, capacitor, or inductor value
+
+	- 10k -> 10k
+	- 10kOhms -> 10k
+	- 10uF -> 10u
+	- 10uH -> 10u
+	- 1200 -> 1.2k
+	- 0.01u -> 10n
+	- 0.01n -> 10p
+*/
+func NormalizeValue(val string) string {
+	for _, suffix := range []string{
+		"Ohms", "Ohm", "F", "H", "f", "h",
+	} {
+		val = strings.TrimSuffix(val, suffix)
+	}
+
+	// todo: normalize 2k2, 1200, 0.01u, 0.01n
+
+	return val
+}
+
+/*
 	return an encoded object as bytes
 */
 func Marshal(v interface{}) ([]byte, error) {

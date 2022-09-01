@@ -9,16 +9,16 @@ import (
 )
 
 /*
-	Represents a Board Component
+Represents a Board Component
 
-	May contain a Library Component, if linked
+May contain a Library Component, if linked
 */
 type BoardComponent struct {
 	Designator string
 	Comment    string
 	Package    string
-	X          string
-	Y          string
+	X          float64
+	Y          float64
 	Rotation   float64
 	Layer      string
 }
@@ -111,9 +111,9 @@ func (bom BOM) AddComponent(bcomponent *BoardComponent, lcomponent *LibraryCompo
 }
 
 /*
-	Read a KiCAD CPL file produced by generate_cpl.py
+Read a KiCAD CPL file produced by generate_cpl.py
 
-	Return a list of Board Components
+Return a list of Board Components
 */
 func ReadKCPL(src string) []*BoardComponent {
 	fp, err := os.Open(src)
@@ -130,14 +130,24 @@ func ReadKCPL(src string) []*BoardComponent {
 			rotation = 0
 		}
 
+		x, err := strconv.ParseFloat(line[3], 32)
+		if err != nil {
+			rotation = 0
+		}
+
+		y, err := strconv.ParseFloat(line[4], 32)
+		if err != nil {
+			rotation = 0
+		}
+
 		components = append(components, &BoardComponent{
-			Designator: line[0],
-			Comment:    line[1],
-			Package:    line[2],
-			X:          line[3],
-			Y:          line[4],
+			Designator: strings.TrimSpace(line[0]),
+			Comment:    strings.TrimSpace(line[1]),
+			Package:    strings.TrimSpace(line[2]),
+			X:          x,
+			Y:          y,
 			Rotation:   rotation,
-			Layer:      line[6],
+			Layer:      strings.TrimSpace(line[6]),
 		})
 	}
 
@@ -156,8 +166,8 @@ func WriteCPL(dst string, components []*BoardComponent) {
 	for _, component := range components {
 		writer.Write([]string{
 			component.Designator,
-			component.X,
-			component.Y,
+			fmt.Sprintf("%1.4f", component.X),
+			fmt.Sprintf("%1.4f", component.Y),
 			component.Layer,
 			fmt.Sprintf("%1.0f", component.Rotation),
 		})

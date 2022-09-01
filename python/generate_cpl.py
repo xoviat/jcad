@@ -5,7 +5,6 @@ The purpose of this script is to generate a cpl file, given a pcb file
 usage: generate_cpl.py <pcb_file.pcb> <cpl_file.cpl>
 """
 
-import sys
 import csv
 import re
 import argparse
@@ -64,13 +63,10 @@ def convert(pcb, brd):
     m_place_offset = pcb.GetDesignSettings().GetAuxOrigin()
 
     # Parts
-    module_list = pcb.GetFootprints()
-    modules = []
-    for module in module_list:
-        if not skip_module(module):
-            modules.append(module)
-
-    pin_at = 0
+    modules = [
+        module for module in pcb.GetFootprints()
+        if not skip_module(module)
+    ]
 
     writer = csv.writer(brd)
     # Logic taken from pcbnew/exporters/export_footprints_placefile.cpp
@@ -86,7 +82,6 @@ def convert(pcb, brd):
         if(layer == pcbnew.B_Cu):
             footprint_pos.x = - footprint_pos.x
 
-        module_bbox = module.GetBoundingBox()
         writer.writerow([
             module.GetReference(),
             module.GetValue(),
@@ -96,8 +91,6 @@ def convert(pcb, brd):
             module.GetOrientation() / 10.0,
             "top" if layer == pcbnew.F_Cu else "bottom",
         ])
-
-        pin_at += module.GetPadCount()
 
 
 def main():

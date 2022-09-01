@@ -6,8 +6,6 @@ usage: generate_gerbers.py <pcb_file.pcb> <target_folder>
 """
 
 import os
-import sys
-import re
 import argparse
 import pcbnew
 

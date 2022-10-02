@@ -24,8 +24,16 @@ func Exists(path string) bool {
 }
 
 func Normalize(src string) (string, error) {
-	if !strings.HasPrefix(src, "~") {
+	validate := func(src string) (string, error) {
+		if !Exists(src) {
+			return "", fmt.Errorf("failed to stat file: %s", src)
+		}
+
 		return src, nil
+	}
+
+	if !strings.HasPrefix(src, "~") {
+		return validate(src)
 	}
 
 	home, err := os.UserHomeDir()
@@ -33,19 +41,19 @@ func Normalize(src string) (string, error) {
 		return "", fmt.Errorf("failed to obtain user home dir: %s", err)
 	}
 
-	return home + strings.TrimPrefix(src, "~"), nil
+	return validate(home + strings.TrimPrefix(src, "~"))
 }
 
 /*
-	return a normalized resistor, capacitor, or inductor value
+return a normalized resistor, capacitor, or inductor value
 
-	- 10k -> 10k
-	- 10kOhms -> 10k
-	- 10uF -> 10u
-	- 10uH -> 10u
-	- 1200 -> 1.2k
-	- 0.01u -> 10n
-	- 0.01n -> 10p
+- 10k -> 10k
+- 10kOhms -> 10k
+- 10uF -> 10u
+- 10uH -> 10u
+- 1200 -> 1.2k
+- 0.01u -> 10n
+- 0.01n -> 10p
 */
 func NormalizeValue(val string) string {
 	for _, suffix := range []string{
@@ -60,7 +68,7 @@ func NormalizeValue(val string) string {
 }
 
 /*
-	return an encoded object as bytes
+return an encoded object as bytes
 */
 func Marshal(v interface{}) ([]byte, error) {
 	b := new(bytes.Buffer)
@@ -72,7 +80,7 @@ func Marshal(v interface{}) ([]byte, error) {
 }
 
 /*
-	return a decoded object from bytes
+return a decoded object from bytes
 */
 func Unmarshal(data []byte, v interface{}) error {
 	b := bytes.NewBuffer(data)

@@ -23,3 +23,12 @@ the JLCPCB files.
 In the event that a component has a rotational mismatch or needs to be changed to a different
 component, JCAD includes options to do just that. However, this workflow may be subject to change in
 future updates.
+
+Note: Component rotations should always be specified within KiCad footprints. Because component rotation
+is set during DFM review, the JCAD rotation database may be removed in a future release.
+
+# Terminology
+
+*Component Database* - The database downloaded from jlcpcb.com/parts
+*Association Database* - The internal database created to associate a KiCad part with a JLCPCB part.
+

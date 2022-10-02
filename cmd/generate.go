@@ -49,7 +49,7 @@ var generateCmd = &cobra.Command{
 			return
 		}
 
-		if !lib.Exists(pcb) || !strings.HasSuffix(pcb, ".kicad_pcb") {
+		if !strings.HasSuffix(pcb, ".kicad_pcb") {
 			fmt.Println("pcb does not exist or is not KiCad PCB")
 			return
 		}

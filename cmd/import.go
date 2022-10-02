@@ -28,11 +28,10 @@ import (
 // importCmd represents the import command
 var importCmd = &cobra.Command{
 	Use:   "import",
-	Short: "Import databases or libraries.",
-	Long: `Import databases or libraries.
-
-		- A JLCPCB component library, in the xlsx format.
-		- An Eagle library, in the .lbr format.`,
+	Short: "Import a component or association database.",
+	Long: `Import one of the following:
+		- A component database, in an xlsx or csv format. 
+		- An association database, in an xlsx format.`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		src, err := lib.Normalize(args[0])
@@ -44,11 +43,6 @@ var importCmd = &cobra.Command{
 		library, err := lib.NewDefaultLibrary()
 		if err != nil {
 			fmt.Printf("failed to open or create default library: %s\n", err)
-			return
-		}
-
-		if !lib.Exists(src) {
-			fmt.Printf("failed to stat file: %s\n", src)
 			return
 		}
 

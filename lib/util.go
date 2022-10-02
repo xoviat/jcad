@@ -122,6 +122,22 @@ func FindkPython() string {
 }
 
 func FindScripts() string {
+	/* check homedir for jcad */
+	home, err := os.UserHomeDir()
+	if scripts := filepath.Join(
+		home, "workspace", "jcad", "python",
+	); err == nil && Exists(scripts) {
+		return scripts
+	}
+
+	gopath := os.Getenv("gopath")
+	if scripts := filepath.Join(
+		gopath, "pkg", "mod", "github.com",
+		"xoviat", "jcad", "python",
+	); err == nil && Exists(scripts) {
+		return scripts
+	}
+
 	return "python"
 }
 

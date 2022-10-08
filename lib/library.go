@@ -36,7 +36,7 @@ type Library struct {
 }
 
 /*
-	Import a library from an excel or csv file
+Import a library from an excel or csv file
 */
 func (l *Library) Import(src string) error {
 	fromID := func(ID string) int {
@@ -239,7 +239,7 @@ func NewDefaultLibrary() (*Library, error) {
 }
 
 /*
-	Create or open library from root
+Create or open library from root
 */
 func NewLibrary(root string) (*Library, error) {
 	db, err := bolt.Open(filepath.Join(root, "jcad.db"), 0777, nil)
@@ -281,7 +281,7 @@ func NewLibrary(root string) (*Library, error) {
 }
 
 /*
-	referred to as 'component'
+referred to as 'component'
 */
 type LibraryComponent struct {
 	ID             int
@@ -314,7 +314,7 @@ func (lc *LibraryComponent) Prefix() string {
 }
 
 /*
-	Attempt to determine the value from the description
+Attempt to determine the value from the description
 */
 func (lc *LibraryComponent) Value() string {
 	switch lc.FirstCategory {
@@ -330,7 +330,7 @@ func (lc *LibraryComponent) Value() string {
 }
 
 /*
-	Determine whether it is possible to place the component using the SMT process
+Determine whether it is possible to place the component using the SMT process
 */
 func (l *Library) CanAssemble(bcomponent *BoardComponent) bool {
 	switch re1.ReplaceAllString(bcomponent.Designator, "") {
@@ -377,12 +377,12 @@ func (l *Library) SetRotation(component *LibraryComponent, rotation float64) {
 }
 
 /*
-	Find the best suitable library componentx, given the board components
+Find the best suitable library componentx, given the board components
 
-	Prefer a basic part, if available
-	Require the package (footprint) to match
+Prefer a basic part, if available
+Require the package (footprint) to match
 
-	Return nil if no part found
+Return nil if no part found
 */
 func (l *Library) FindMatching(bcomponent *BoardComponent) []*LibraryComponent {
 	/*
@@ -568,77 +568,4 @@ func (l *Library) AssociateSymbol(category, symbol string) {
 
 		return nil
 	})
-}
-
-func (l *Library) AddPackages(packages []*EagleLibraryPackage) {
-	l.db.Update(func(tx *bolt.Tx) error {
-		bpackages := tx.Bucket([]byte("packages"))
-		for _, pkg := range packages {
-			bytes, err := Marshal(pkg)
-			if err != nil {
-				return err
-			}
-
-			err = bpackages.Put([]byte(pkg.Name), bytes)
-			if err != nil {
-				return err
-			}
-		}
-
-		return nil
-	})
-}
-
-func (l *Library) AddSymbols(symbols []*EagleLibrarySymbol) {
-	l.db.Update(func(tx *bolt.Tx) error {
-		bsymbols := tx.Bucket([]byte("symbols"))
-		for _, symbol := range symbols {
-			bytes, err := Marshal(symbol)
-			if err != nil {
-				return err
-			}
-
-			err = bsymbols.Put([]byte(symbol.Name), bytes)
-			if err != nil {
-				return err
-			}
-		}
-
-		return nil
-	})
-}
-
-func (l *Library) GetPackage(name string) *EagleLibraryPackage {
-	pkg := EagleLibraryPackage{}
-	l.db.View(func(tx *bolt.Tx) error {
-		bpackages := tx.Bucket([]byte("packages"))
-		bytes := bpackages.Get([]byte(name))
-
-		return Unmarshal(bytes, &pkg)
-	})
-
-	return &pkg
-}
-
-func (l *Library) GetSymbol(name string) *EagleLibrarySymbol {
-	symbol := EagleLibrarySymbol{}
-	l.db.View(func(tx *bolt.Tx) error {
-		bsymbols := tx.Bucket([]byte("symbols"))
-		bassociations := tx.Bucket([]byte("symbol-associations"))
-
-		name = string(bassociations.Get([]byte(name)))
-		bytes := bsymbols.Get([]byte(name))
-
-		return Unmarshal(bytes, &symbol)
-	})
-
-	//	if err != nil {
-	//		fmt.Printf("err in GetSymbol: %s\n", err)
-	//	}
-
-	if symbol.Name == "" {
-		symbol.Name = name
-	}
-
-	return &symbol
 }

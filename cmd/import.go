@@ -16,10 +16,7 @@ limitations under the License.
 package cmd
 
 import (
-	"encoding/xml"
 	"fmt"
-	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/xoviat/jcad/lib"
@@ -46,37 +43,10 @@ var importCmd = &cobra.Command{
 			return
 		}
 
-		if !strings.HasSuffix(src, ".lbr") {
-			err := library.Import(src)
-			if err != nil {
-				fmt.Printf("failed to import library: %s\n", err)
-				return
-			}
-		} else {
-			fpsrc, err := os.Open(src)
-			if err != nil {
-				fmt.Printf("failed to open file: %s\n", err)
-				return
-			}
-
-			elibrary := lib.EagleLibrary{}
-			dec := xml.NewDecoder(fpsrc)
-			err = dec.Decode(&elibrary)
-			if err != nil {
-				fmt.Printf("failed to decode library: %s\n", err)
-				return
-			}
-
-			for _, pkg := range elibrary.Packages {
-				fmt.Println("importing package: " + pkg.Name)
-			}
-
-			for _, symbol := range elibrary.Symbols {
-				fmt.Println("importing symbol: " + symbol.Name)
-			}
-
-			library.AddPackages(elibrary.Packages)
-			library.AddSymbols(elibrary.Symbols)
+		err = library.Import(src)
+		if err != nil {
+			fmt.Printf("failed to import library: %s\n", err)
+			return
 		}
 	},
 }

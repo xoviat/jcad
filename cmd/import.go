@@ -16,10 +16,15 @@ limitations under the License.
 package cmd
 
 import (
+	"bufio"
+	"encoding/csv"
 	"fmt"
+	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/xoviat/jcad/lib"
+	"github.com/xuri/excelize/v2"
 )
 
 // importCmd represents the import command
@@ -43,7 +48,64 @@ var importCmd = &cobra.Command{
 			return
 		}
 
-		err = library.Import(src)
+		rows := make(chan []string, 100)
+		if strings.HasSuffix(strings.ToLower(src), ".csv") {
+			fp, err := os.Open(src)
+			if err != nil {
+				fmt.Printf("failed to open csv file: %s\n", src)
+				return
+			}
+
+			reader := csv.NewReader(bufio.NewReader(fp))
+			go func() {
+				defer fp.Close()
+
+				for row, _ := reader.Read(); len(row) > 0; row, _ = reader.Read() {
+					if len(row) < 9 {
+						continue
+					}
+
+					rows <- row
+				}
+
+				close(rows)
+			}()
+		} else if strings.HasSuffix(strings.ToLower(src), ".xls") ||
+			strings.HasSuffix(strings.ToLower(src), ".xlsx") {
+
+			f, err := excelize.OpenFile(src)
+			if err != nil {
+				fmt.Printf("failed to open excel file: %s\n", src)
+				return
+			}
+
+			erows, err := f.Rows(f.GetSheetList()[0])
+			if err != nil {
+				fmt.Printf("failed to get sheet list: %s\n", src)
+				return
+			}
+
+			go func() {
+				for {
+					if end := !erows.Next(); end {
+						close(rows)
+						return
+					}
+
+					row, err := erows.Columns()
+					if err != nil || len(row) < 9 {
+						continue
+					}
+
+					rows <- row
+				}
+			}()
+		} else {
+			fmt.Printf("unknown file type: %s\n", src)
+			return
+		}
+
+		err = library.Import(rows)
 		if err != nil {
 			fmt.Printf("failed to import library: %s\n", err)
 			return

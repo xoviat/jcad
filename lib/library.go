@@ -1,9 +1,6 @@
 package lib
 
 import (
-	"bufio"
-	"encoding/csv"
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -13,7 +10,6 @@ import (
 
 	"github.com/blevesearch/bleve"
 	"github.com/boltdb/bolt"
-	"github.com/xuri/excelize/v2"
 )
 
 var (
@@ -38,7 +34,7 @@ type Library struct {
 /*
 Import a library from an excel or csv file
 */
-func (l *Library) Import(src string) error {
+func (l *Library) Import(rows <-chan []string) error {
 	fromID := func(ID string) int {
 		i, err := strconv.Atoi(strings.TrimPrefix(ID, "C"))
 		if err != nil {
@@ -48,7 +44,6 @@ func (l *Library) Import(src string) error {
 		return i
 	}
 
-	chrows := make(chan []string, 100)
 	l.db.Update(func(tx *bolt.Tx) error {
 		tx.DeleteBucket([]byte("components"))
 		tx.DeleteBucket([]byte("categories"))
@@ -65,65 +60,13 @@ func (l *Library) Import(src string) error {
 		return nil
 	})
 
-	if strings.HasSuffix(strings.ToLower(src), ".csv") {
-		fp, err := os.Open(src)
-		if err != nil {
-			return err
-		}
-
-		reader := csv.NewReader(bufio.NewReader(fp))
-		go func() {
-			defer fp.Close()
-
-			for row, _ := reader.Read(); len(row) > 0; row, _ = reader.Read() {
-				if len(row) < 9 {
-					continue
-				}
-
-				chrows <- row
-			}
-
-			chrows <- []string{}
-		}()
-	} else if strings.HasSuffix(strings.ToLower(src), ".xls") ||
-		strings.HasSuffix(strings.ToLower(src), ".xlsx") {
-
-		f, err := excelize.OpenFile(src)
-		if err != nil {
-			return err
-		}
-
-		rows, err := f.Rows(f.GetSheetList()[0])
-		if err != nil {
-			return err
-		}
-
-		go func() {
-			for {
-				if end := !rows.Next(); end {
-					chrows <- []string{}
-
-					return
-				}
-
-				row, err := rows.Columns()
-				if err != nil || len(row) < 9 {
-					continue
-				}
-
-				chrows <- row
-			}
-		}()
-	} else {
-		return errors.New("unknown file type")
-	}
-
 	i := 0
 	/*
 		amount per transaction
 	*/
 	k := 10000
 	row := []string{""}
+	ok := true
 	categories := make(map[string][]int)
 	indexes := make(map[string]map[string][]int)
 	indexes["R"] = make(map[string][]int)
@@ -138,7 +81,7 @@ func (l *Library) Import(src string) error {
 				Do it this way to save memory
 			*/
 			for j := 0; j < k; j++ {
-				if row = <-chrows; len(row) == 0 {
+				if row, ok = <-rows; !ok {
 					return nil
 				}
 
@@ -153,6 +96,11 @@ func (l *Library) Import(src string) error {
 					LibraryType:    row[7],
 					Description:    row[8],
 				}
+
+				//				fmt.Printf(
+				//					"%1.0d, %s, %s, %s\n",
+				//					component.ID, component.FirstCategory, component.SecondCategory, component.Part,
+				//				)
 
 				for _, each := range []string{component.FirstCategory, component.SecondCategory} {
 					if _, ok := categories[each]; !ok {

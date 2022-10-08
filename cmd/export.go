@@ -35,7 +35,10 @@ var exportCmd = &cobra.Command{
 			return
 		}
 
-		_ = library
+		assocations := library.ExportAssociations()
+		for asc := range assocations {
+			fmt.Printf("%s: %s\n", asc[0], asc[1])
+		}
 
 		// TODO: Export component associations
 	},

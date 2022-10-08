@@ -13,12 +13,21 @@ import (
 )
 
 var (
+	COMPONENTS_BKT     = []byte("components")             // Contains all of the JLCPCB components
+	CATEGORIES_BKT     = []byte("categories")             // Associates the categories with all contained within
+	PACKAGES_BKT       = []byte("packages")               // Contains a list of eagle packages
+	SYMBOLS_BKT        = []byte("symbols")                // Contains a list of eagle symbols
+	COMPONENTS_ASC_BKT = []byte("component-associations") // Associates a BoardComponent Key with a LibraryComponent
+	PACKAGE_ASC_BKT    = []byte("package-associations")   // Associates a KiCad package with a JLCPCB package
+)
+
+var (
 	re1 *regexp.Regexp = regexp.MustCompile("[^a-zA-Z]+")
 	re2 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(nF|pF|uF)`)
 	re3 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(k|MOhms|KOhms|Ohms)`)
 	re4 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(uH|mH)`)
 
-	iprefixes = map[string]string{
+	iprefixes = map[string]string{ // Associates a component value with a list of actual components
 		"R": "index-resistors",
 		"C": "index-capacitors",
 		"L": "index-inductors",
@@ -45,14 +54,14 @@ func (l *Library) Import(rows <-chan []string) error {
 	}
 
 	l.db.Update(func(tx *bolt.Tx) error {
-		tx.DeleteBucket([]byte("components"))
-		tx.DeleteBucket([]byte("categories"))
+		tx.DeleteBucket(COMPONENTS_BKT)
+		tx.DeleteBucket(CATEGORIES_BKT)
 		for _, iprefix := range iprefixes {
 			tx.DeleteBucket([]byte(iprefix))
 		}
 
-		tx.CreateBucket([]byte("components"))
-		tx.CreateBucket([]byte("categories"))
+		tx.CreateBucket(COMPONENTS_BKT)
+		tx.CreateBucket(CATEGORIES_BKT)
 		for _, iprefix := range iprefixes {
 			tx.CreateBucket([]byte(iprefix))
 		}
@@ -75,7 +84,7 @@ func (l *Library) Import(rows <-chan []string) error {
 
 	for len(row) != 0 {
 		if err := l.db.Update(func(tx *bolt.Tx) error {
-			components := tx.Bucket([]byte("components"))
+			components := tx.Bucket(COMPONENTS_BKT)
 
 			/*
 				Do it this way to save memory
@@ -146,7 +155,7 @@ func (l *Library) Import(rows <-chan []string) error {
 	}
 
 	return l.db.Update(func(tx *bolt.Tx) error {
-		bcategories := tx.Bucket([]byte("categories"))
+		bcategories := tx.Bucket(CATEGORIES_BKT)
 		for category, components := range categories {
 			bytes, err := Marshal(components)
 			if err != nil {
@@ -179,6 +188,25 @@ func (l *Library) Import(rows <-chan []string) error {
 	})
 }
 
+func (l *Library) ExportAssociations() <-chan []string {
+	rows := make(chan []string, 100)
+	go func() {
+		defer close(rows)
+		l.db.View(func(tx *bolt.Tx) error {
+			bassociations := tx.Bucket(COMPONENTS_ASC_BKT)
+			cur := bassociations.Cursor()
+
+			for key, val := cur.First(); key != nil; key, val = cur.Next() {
+				rows <- []string{string(key), string(val)}
+			}
+
+			return nil
+		})
+	}()
+
+	return rows
+}
+
 func NewDefaultLibrary() (*Library, error) {
 	path := filepath.Join(GetLocalAppData(), "jcad")
 	os.MkdirAll(path, 0777)
@@ -196,14 +224,13 @@ func NewLibrary(root string) (*Library, error) {
 	}
 
 	db.Update(func(tx *bolt.Tx) error {
-		tx.CreateBucketIfNotExists([]byte("components"))             // Contains all of the JLCPCB components
-		tx.CreateBucketIfNotExists([]byte("categories"))             // Associates the categories with all contained within
-		tx.CreateBucketIfNotExists([]byte("packages"))               // Contains a list of eagle packages
-		tx.CreateBucketIfNotExists([]byte("symbols"))                // Contains a list of eagle symbols
-		tx.CreateBucketIfNotExists([]byte("component-associations")) // Associates a BoardComponent Key with a LibraryComponent
-		tx.CreateBucketIfNotExists([]byte("package-associations"))   // Associates a KiCad package with a JLCPCB package
-		tx.CreateBucketIfNotExists([]byte("symbol-associations"))    // Associates a JLCPCB category with an Eagle symbol
-		for _, iprefix := range iprefixes {                          // Associates a component value with a list of actual components
+		tx.CreateBucketIfNotExists(COMPONENTS_BKT)
+		tx.CreateBucketIfNotExists(CATEGORIES_BKT)
+		tx.CreateBucketIfNotExists(PACKAGES_BKT)
+		tx.CreateBucketIfNotExists(SYMBOLS_BKT)
+		tx.CreateBucketIfNotExists(COMPONENTS_ASC_BKT)
+		tx.CreateBucketIfNotExists(PACKAGE_ASC_BKT)
+		for _, iprefix := range iprefixes {
 			tx.CreateBucketIfNotExists([]byte(iprefix))
 		}
 
@@ -303,7 +330,7 @@ func (l *Library) CanAssemble(bcomponent *BoardComponent) bool {
 
 func (l *Library) SetRotation(component *LibraryComponent, rotation float64) {
 	err := l.db.Update(func(tx *bolt.Tx) error {
-		bcomponents := tx.Bucket([]byte("components"))
+		bcomponents := tx.Bucket(COMPONENTS_BKT)
 		component.Rotation = rotation
 
 		bytes, err := Marshal(component)
@@ -362,9 +389,9 @@ func (l *Library) FindMatching(bcomponent *BoardComponent) []*LibraryComponent {
 	components := []*LibraryComponent{}
 	pkg := ""
 	l.db.View(func(tx *bolt.Tx) error {
-		bcomponents := tx.Bucket([]byte("components"))
+		bcomponents := tx.Bucket(COMPONENTS_BKT)
 		bindex := tx.Bucket([]byte(iname))
-		bpackages := tx.Bucket([]byte("package-associations"))
+		bpackages := tx.Bucket(PACKAGE_ASC_BKT)
 
 		IDs := []int{}
 		if bytes := bindex.Get([]byte(bcomponent.Value())); bytes != nil {
@@ -413,7 +440,7 @@ func (l *Library) Exact(id string) *LibraryComponent {
 	component := LibraryComponent{}
 
 	l.db.View(func(tx *bolt.Tx) error {
-		bcomponents := tx.Bucket([]byte("components"))
+		bcomponents := tx.Bucket(COMPONENTS_BKT)
 		if bytes := bcomponents.Get([]byte(id)); bytes != nil {
 			Unmarshal(bytes, &component)
 		}
@@ -433,8 +460,8 @@ func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
 	skip := false
 
 	l.db.View(func(tx *bolt.Tx) error {
-		bassociations := tx.Bucket([]byte("component-associations"))
-		bcomponents := tx.Bucket([]byte("components"))
+		bassociations := tx.Bucket(COMPONENTS_ASC_BKT)
+		bcomponents := tx.Bucket(COMPONENTS_BKT)
 
 		// fmt.Printf("FindAssociated: %s\n", bcomponent.Key())
 		ID := ""
@@ -462,8 +489,8 @@ func (l *Library) FindInCategory(category string) []*LibraryComponent {
 	components := []*LibraryComponent{}
 
 	l.db.View(func(tx *bolt.Tx) error {
-		bcategories := tx.Bucket([]byte("categories"))
-		bcomponents := tx.Bucket([]byte("components"))
+		bcategories := tx.Bucket(CATEGORIES_BKT)
+		bcomponents := tx.Bucket(COMPONENTS_BKT)
 
 		IDs := []int{}
 		if bytes := bcategories.Get([]byte(category)); bytes != nil {
@@ -488,8 +515,8 @@ func (l *Library) FindInCategory(category string) []*LibraryComponent {
 func (l *Library) Associate(bcomponent *BoardComponent, lcomponent *LibraryComponent) {
 	// fmt.Printf("associating %s with %s\n", string(bcomponent.Key()), lcomponent.CID())
 	l.db.Update(func(tx *bolt.Tx) error {
-		bassociations := tx.Bucket([]byte("component-associations"))
-		bfootprints := tx.Bucket([]byte("package-associations"))
+		bassociations := tx.Bucket(COMPONENTS_ASC_BKT)
+		bfootprints := tx.Bucket(PACKAGE_ASC_BKT)
 
 		if lcomponent == nil {
 			return bassociations.Delete(bcomponent.Key())
@@ -503,17 +530,4 @@ func (l *Library) Associate(bcomponent *BoardComponent, lcomponent *LibraryCompo
 		return bfootprints.Put([]byte(bcomponent.Package), []byte(lcomponent.Package))
 	})
 
-}
-
-func (l *Library) AssociateSymbol(category, symbol string) {
-	l.db.Update(func(tx *bolt.Tx) error {
-		bassociations := tx.Bucket([]byte("symbol-associations"))
-
-		err := bassociations.Put([]byte(category), []byte(symbol))
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
 }

@@ -188,6 +188,9 @@ func (l *Library) Import(rows <-chan []string) error {
 	})
 }
 
+/*
+export assocations to an excel file
+*/
 func (l *Library) ExportAssociations() <-chan []string {
 	rows := make(chan []string, 100)
 	go func() {
@@ -205,6 +208,31 @@ func (l *Library) ExportAssociations() <-chan []string {
 	}()
 
 	return rows
+}
+
+/*
+import assocations from an excel file
+*/
+func (l *Library) ImportAssocations(rows <-chan []string) error {
+	// Skip processing footprint assocations for now
+
+	//	l.db.Update(func(tx *bolt.Tx) error {
+	//		bassociations := tx.Bucket(COMPONENTS_ASC_BKT)
+	//		bfootprints := tx.Bucket(PACKAGE_ASC_BKT)
+	//
+	//		if lcomponent == nil {
+	//			return bassociations.Delete(bcomponent.Key())
+	//		}
+	//
+	//		err := bassociations.Put(bcomponent.Key(), []byte(lcomponent.CID()))
+	//		if err != nil {
+	//			return err
+	//		}
+	//
+	//		return bfootprints.Put([]byte(bcomponent.Package), []byte(lcomponent.Package))
+	//	})
+
+	return nil
 }
 
 func NewDefaultLibrary() (*Library, error) {

@@ -105,6 +105,9 @@ var importCmd = &cobra.Command{
 			return
 		}
 
+		// TODO: Import assocations if sheet name is component-assocations
+		//  library.ImportAssocations
+
 		err = library.Import(rows)
 		if err != nil {
 			fmt.Printf("failed to import library: %s\n", err)

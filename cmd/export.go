@@ -17,9 +17,12 @@ package cmd
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/xoviat/jcad/lib"
+	"github.com/xuri/excelize/v2"
 )
 
 // exportCmd represents the export command
@@ -29,18 +32,36 @@ var exportCmd = &cobra.Command{
 	Long:  `Export an association database in the xlsx format.`,
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		src := args[0]
+		if !strings.HasSuffix(src, "xlsx") && !strings.HasSuffix(src, "xls") {
+			fmt.Printf("export file name must be excel file\n")
+			return
+		}
+
 		library, err := lib.NewDefaultLibrary()
 		if err != nil {
 			fmt.Printf("failed to open or create default library: %s\n", err)
 			return
 		}
 
+		f := excelize.NewFile()
+		f.NewSheet(string(lib.COMPONENTS_ASC_BKT))
+		f.DeleteSheet("Sheet1")
+		f.SaveAs(src)
+
 		assocations := library.ExportAssociations()
+		i := 1
 		for asc := range assocations {
 			fmt.Printf("%s: %s\n", asc[0], asc[1])
+			f.SetSheetRow(
+				string(lib.COMPONENTS_ASC_BKT),
+				"A"+strconv.Itoa(i), &[]interface{}{asc[0], asc[1]},
+			)
+
+			i++
 		}
 
-		// TODO: Export component associations
+		f.Save()
 	},
 }
 

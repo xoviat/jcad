@@ -52,7 +52,7 @@ var exportCmd = &cobra.Command{
 		assocations := library.ExportAssociations()
 		i := 1
 		for asc := range assocations {
-			fmt.Printf("%s: %s\n", asc[0], asc[1])
+			// fmt.Printf("%s: %s\n", asc[0], asc[1])
 			f.SetSheetRow(
 				string(lib.COMPONENTS_ASC_BKT),
 				"A"+strconv.Itoa(i), &[]interface{}{asc[0], asc[1]},

@@ -216,23 +216,19 @@ import assocations from an excel file
 func (l *Library) ImportAssocations(rows <-chan []string) error {
 	// Skip processing footprint assocations for now
 
-	//	l.db.Update(func(tx *bolt.Tx) error {
-	//		bassociations := tx.Bucket(COMPONENTS_ASC_BKT)
-	//		bfootprints := tx.Bucket(PACKAGE_ASC_BKT)
-	//
-	//		if lcomponent == nil {
-	//			return bassociations.Delete(bcomponent.Key())
-	//		}
-	//
-	//		err := bassociations.Put(bcomponent.Key(), []byte(lcomponent.CID()))
-	//		if err != nil {
-	//			return err
-	//		}
-	//
-	//		return bfootprints.Put([]byte(bcomponent.Package), []byte(lcomponent.Package))
-	//	})
+	return l.db.Update(func(tx *bolt.Tx) error {
+		tx.DeleteBucket(COMPONENTS_ASC_BKT)
+		bassociations, err := tx.CreateBucket(COMPONENTS_ASC_BKT)
+		if err != nil {
+			return err
+		}
 
-	return nil
+		for row := range rows {
+			bassociations.Put([]byte(row[0]), []byte(row[1]))
+		}
+
+		return nil
+	})
 }
 
 func NewDefaultLibrary() (*Library, error) {

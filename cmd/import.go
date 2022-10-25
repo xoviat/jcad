@@ -48,6 +48,7 @@ var importCmd = &cobra.Command{
 			return
 		}
 
+		isAssociations := false
 		rows := make(chan []string, 100)
 		if strings.HasSuffix(strings.ToLower(src), ".csv") {
 			fp, err := os.Open(src)
@@ -79,6 +80,7 @@ var importCmd = &cobra.Command{
 				return
 			}
 
+			isAssociations = f.GetSheetName(0) == "component-associations"
 			erows, err := f.Rows(f.GetSheetList()[0])
 			if err != nil {
 				fmt.Printf("failed to get sheet list: %s\n", src)
@@ -93,7 +95,7 @@ var importCmd = &cobra.Command{
 					}
 
 					row, err := erows.Columns()
-					if err != nil || len(row) < 9 {
+					if err != nil || len(row) < 2 || (!isAssociations && len(row) < 9) {
 						continue
 					}
 
@@ -108,7 +110,11 @@ var importCmd = &cobra.Command{
 		// TODO: Import assocations if sheet name is component-assocations
 		//  library.ImportAssocations
 
-		err = library.Import(rows)
+		if isAssociations {
+			err = library.ImportAssocations(rows)
+		} else {
+			err = library.Import(rows)
+		}
 		if err != nil {
 			fmt.Printf("failed to import library: %s\n", err)
 			return

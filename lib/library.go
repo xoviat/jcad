@@ -472,6 +472,39 @@ func (l *Library) Exact(id string) *LibraryComponent {
 		return nil
 	})
 
+	if component.ID != 0 {
+		return &component
+	}
+
+	/* If the component is not found in the library, then add it */
+	fromID := func(ID string) int {
+		i, err := strconv.Atoi(strings.TrimPrefix(ID, "C"))
+		if err != nil {
+			return 0
+		}
+
+		return i
+	}
+
+	component = LibraryComponent{ID: fromID(id)}
+	if err := l.db.Update(func(tx *bolt.Tx) error {
+		components := tx.Bucket(COMPONENTS_BKT)
+
+		bytes, err := Marshal(component)
+		if err != nil {
+			return err
+		}
+
+		err = components.Put([]byte(component.CID()), bytes)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return &LibraryComponent{}
+	}
+
 	return &component
 }
 

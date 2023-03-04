@@ -111,11 +111,11 @@ func (bom BOM) AddComponent(bcomponent *BoardComponent, lcomponent *LibraryCompo
 }
 
 /*
-Read a KiCAD CPL file produced by generate_cpl.py
+Read a KiCAD POS file produced by kicad-cli export pcb pos
 
 Return a list of Board Components
 */
-func ReadKCPL(src string) []*BoardComponent {
+func ReadPOS(src string) []*BoardComponent {
 	fp, err := os.Open(src)
 	if err != nil {
 		return []*BoardComponent{}
@@ -125,6 +125,10 @@ func ReadKCPL(src string) []*BoardComponent {
 	components := []*BoardComponent{}
 	reader := csv.NewReader(fp)
 	for line, _ := reader.Read(); len(line) > 0; line, _ = reader.Read() {
+		if strings.TrimSpace(line[0]) == "Ref" {
+			continue
+		}
+
 		rotation, err := strconv.ParseFloat(line[5], 32)
 		if err != nil {
 			rotation = 0

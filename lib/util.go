@@ -87,6 +87,19 @@ func Unmarshal(data []byte, v interface{}) error {
 	return gob.NewDecoder(b).Decode(v)
 }
 
+/*
+execute a kicad-cli command
+*/
+func ExecuteKiCadCommand(args []string, cwd string) {
+	cmd := exec.Command(
+		filepath.Join(GetKiCadBinPath(), "kicad-cli"), args...,
+	)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Dir = cwd
+	cmd.Run()
+}
+
 func GetProgramFiles() string {
 	buf := make([]uint16, win.MAX_PATH)
 	win.SHGetSpecialFolderPath(win.HWND(0), &buf[0], win.CSIDL_PROGRAM_FILES, false)
@@ -94,61 +107,17 @@ func GetProgramFiles() string {
 	return syscall.UTF16ToString(buf)
 }
 
+func GetKiCadBinPath() string {
+	/* TODO: scan for multiple versions and use latest */
+
+	return filepath.Join(
+		GetProgramFiles(), "KiCad", "7.0", "bin",
+	)
+}
+
 func GetLocalAppData() string {
 	buf := make([]uint16, win.MAX_PATH)
 	win.SHGetSpecialFolderPath(win.HWND(0), &buf[0], win.CSIDL_LOCAL_APPDATA, false)
 
 	return syscall.UTF16ToString(buf)
-}
-
-func FindkPython() string {
-	programFiles := GetProgramFiles()
-	bins := []string{
-		filepath.Join(programFiles, "KiCad", "bin"),
-		filepath.Join(programFiles, "KiCad", "6.0", "bin"),
-	}
-
-	bin := ""
-	for _, b := range bins {
-		if _, err := os.Stat(b); err != nil {
-			continue
-		}
-
-		bin = b
-		break
-	}
-
-	return filepath.Join(bin, "python.exe")
-}
-
-func FindScripts() string {
-	/* check homedir for jcad */
-	home, err := os.UserHomeDir()
-	if scripts := filepath.Join(
-		home, "workspace", "jcad", "python",
-	); err == nil && Exists(scripts) {
-		return scripts
-	}
-
-	gopath := os.Getenv("gopath")
-	if scripts := filepath.Join(
-		gopath, "pkg", "mod", "github.com",
-		"xoviat", "jcad", "python",
-	); err == nil && Exists(scripts) {
-		return scripts
-	}
-
-	return "python"
-}
-
-func ExecuteScript(script string, args []string) {
-	args = append([]string{filepath.Join(FindScripts(), script)}, args...)
-	command := exec.Command(FindkPython(), args...)
-	command.Stdout = os.Stdout
-	command.Stderr = os.Stderr
-
-	// fmt.Println(FindkPython())
-	// fmt.Println(args)
-
-	command.Run()
 }

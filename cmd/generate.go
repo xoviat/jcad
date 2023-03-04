@@ -63,14 +63,14 @@ var generateCmd = &cobra.Command{
 		rname := strings.TrimSuffix(filepath.Base(pcb), path.Ext(pcb))
 		filenames := struct {
 			Name    string
-			KCPL    string
+			POS     string
 			BOM     string
 			CPL     string
 			Gerbers string
 			ZIP     string
 		}{
 			Name:    rname,
-			KCPL:    filepath.Join(filepath.Dir(pcb), rname+"-data.cpl"),
+			POS:     filepath.Join(filepath.Dir(pcb), rname+"-data.pos"),
 			BOM:     filepath.Join(filepath.Dir(pcb), rname+"-BOM.csv"),
 			CPL:     filepath.Join(filepath.Dir(pcb), rname+"-all-pos.csv"),
 			Gerbers: filepath.Join(filepath.Dir(pcb), rname+"-gerber"),
@@ -83,8 +83,24 @@ var generateCmd = &cobra.Command{
 		os.RemoveAll(filenames.Gerbers)
 		os.MkdirAll(filenames.Gerbers, 0777)
 
-		lib.ExecuteScript("generate_cpl.py", []string{pcb, filenames.KCPL})
-		lib.ExecuteScript("generate_gerbers.py", []string{pcb, filenames.Gerbers})
+		lib.ExecuteKiCadCommand(
+			[]string{
+				"pcb", "export", "gerbers", filepath.Join("..", filepath.Base(pcb)),
+			}, filenames.Gerbers,
+		)
+		lib.ExecuteKiCadCommand(
+			[]string{
+				"pcb", "export", "drill", filepath.Join("..", filepath.Base(pcb)),
+			}, filenames.Gerbers,
+		)
+		lib.ExecuteKiCadCommand(
+			[]string{
+				"pcb", "export", "pos", filepath.Base(pcb),
+				"--output", filenames.POS,
+				"--units", "mm",
+				"--format", "csv",
+			}, filepath.Dir(pcb),
+		)
 
 		mredesignations := make(map[string]bool)
 		mrotations := make(map[string]float64)
@@ -110,7 +126,7 @@ var generateCmd = &cobra.Command{
 		}
 
 		bom := make(lib.BOM)
-		components := lib.ReadKCPL(filenames.KCPL)
+		components := lib.ReadPOS(filenames.POS)
 		assocations := lib.NewAssociationMap(library)
 
 		/*

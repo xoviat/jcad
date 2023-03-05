@@ -281,7 +281,6 @@ type LibraryComponent struct {
 	Manufacturer   string
 	LibraryType    string
 	Description    string
-	Rotation       float64
 }
 
 func (lc LibraryComponent) CID() string {
@@ -339,29 +338,6 @@ func (l *Library) CanAssemble(bcomponent *BoardComponent) bool {
 	}
 
 	return true
-}
-
-func (l *Library) SetRotation(component *LibraryComponent, rotation float64) {
-	err := l.db.Update(func(tx *bolt.Tx) error {
-		bcomponents := tx.Bucket(COMPONENTS_BKT)
-		component.Rotation = rotation
-
-		bytes, err := Marshal(component)
-		if err != nil {
-			return err
-		}
-
-		err = bcomponents.Put([]byte(component.CID()), bytes)
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		fmt.Printf("error in set-rotation: %s\n", err)
-	}
 }
 
 /*

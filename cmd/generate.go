@@ -167,13 +167,6 @@ var generateCmd = &cobra.Command{
 				add the component to the BOM
 			*/
 			bom.AddComponent(component, lc)
-
-			/*
-				increase the rotation of the component by the preset amount
-
-				rotate is always called in order to normalize within 360 degrees
-			*/
-			component.Rotate(lc.Rotation)
 		}
 		components = components[:i]
 

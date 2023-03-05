@@ -20,7 +20,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/c-bata/go-prompt"
@@ -30,8 +29,7 @@ import (
 )
 
 var (
-	lredesignate string
-	lrotate      string
+	lclear []string
 )
 
 // generateCmd represents the generate command
@@ -102,27 +100,10 @@ var generateCmd = &cobra.Command{
 			}, filepath.Dir(pcb),
 		)
 
-		mredesignations := make(map[string]bool)
-		mrotations := make(map[string]float64)
-
-		if lredesignate != "" {
-			redesignations := strings.Split(lredesignate, ",")
-			for _, redesignation := range redesignations {
-				mredesignations[redesignation] = true
-			}
-		}
-
-		if lrotate != "" {
-			rotations := strings.Split(lrotate, ",")
-			for i := 0; i < len(rotations); i += 2 {
-				rotation, err := strconv.ParseFloat(rotations[i+1], 64)
-				if err != nil {
-					fmt.Printf("failed to parse board component rotation: %1.2f\n", rotation)
-					continue
-				}
-
-				mrotations[rotations[i]] = rotation
-			}
+		/* map of components to clear */
+		mclear := make(map[string]struct{})
+		for _, designator := range lclear {
+			mclear[designator] = struct{}{}
 		}
 
 		bom := make(lib.BOM)
@@ -133,32 +114,16 @@ var generateCmd = &cobra.Command{
 			filter components that we may possibly assemble
 			and retreive component associations from the database
 		*/
-		i := 0
 		for _, component := range components {
-			if _, ok := mredesignations[component.Designator]; ok {
+			if _, ok := mclear[component.Designator]; ok {
 				assocations.Associate(component, nil)
 			}
-
-			components[i] = component
-			i++
-
-			//			if component.LibraryComponent != nil {
-			//				fmt.Printf(
-			//					"key %s associated with %s\n",
-			//					component.StringKey(), component.LibraryComponent.CID(),
-			//				)
-			//			}
-
-			if rotation, ok := mrotations[component.Designator]; ok {
-				library.SetRotation(assocations.FindAssociated(component), rotation)
-			}
 		}
-		components = components[:i]
 
 		/*
 			retreive associations that we haven't from the user
 		*/
-		i = 0
+		i := 0
 		for _, component := range components {
 			/*
 				if we've marked this as a component to skip
@@ -223,8 +188,9 @@ var generateCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(generateCmd)
 
-	generateCmd.PersistentFlags().StringVarP(&lredesignate, "redesignate", "d", "", "components to redesignate")
-	generateCmd.PersistentFlags().StringVarP(&lrotate, "rotate", "r", "", "components to rotate")
+	generateCmd.PersistentFlags().StringSliceVarP(
+		&lclear, "clear", "c", []string{}, "list of component associations to clear",
+	)
 
 	// Here you will define your flags and configuration settings.
 

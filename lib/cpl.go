@@ -1,8 +1,10 @@
 package lib
 
 import (
+	"bufio"
 	"encoding/csv"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -90,23 +92,24 @@ func (am *AssocationMap) Associate(bcomponent *BoardComponent, lcomponent *Libra
 
 type BOMEntry struct {
 	Comment     string
+	Package     string
 	Designators []string
 	Component   *LibraryComponent
 }
 
-type BOM map[string]*BOMEntry
+type BOM map[int64]*BOMEntry
 
-func (bom BOM) AddComponent(bcomponent *BoardComponent, lcomponent *LibraryComponent) {
-	if _, ok := bom[lcomponent.CID()]; !ok {
-		bom[lcomponent.CID()] = &BOMEntry{
-			Comment:   bcomponent.Comment,
-			Component: lcomponent,
+func (bom BOM) AddComponent(component *BoardComponent, lc *LibraryComponent) {
+	if _, ok := bom[lc.ID]; !ok {
+		bom[lc.ID] = &BOMEntry{
+			Comment:   component.Comment,
+			Package:   component.Package,
+			Component: lc,
 		}
 	}
 
-	bom[lcomponent.CID()].Designators = append(
-		bom[lcomponent.CID()].Designators,
-		bcomponent.Designator,
+	bom[lc.ID].Designators = append(
+		bom[lc.ID].Designators, component.Designator,
 	)
 }
 
@@ -123,8 +126,8 @@ func ReadPOS(src string) []*BoardComponent {
 	defer fp.Close()
 
 	components := []*BoardComponent{}
-	reader := csv.NewReader(fp)
-	for line, _ := reader.Read(); len(line) > 0; line, _ = reader.Read() {
+	reader := csv.NewReader(bufio.NewReader(fp))
+	for line, err := reader.Read(); err != io.EOF; line, err = reader.Read() {
 		if strings.TrimSpace(line[0]) == "Ref" {
 			continue
 		}
@@ -189,12 +192,12 @@ func WriteBOM(dst string, bom BOM) {
 
 	writer := csv.NewWriter(fp)
 	writer.Write([]string{"Comment", "Designator", "Footprint", "LCSC Part #"})
-	for cid, entry := range bom {
+	for id, entry := range bom {
 		writer.Write([]string{
 			entry.Comment,
 			strings.Join(entry.Designators, ","),
-			entry.Component.Package,
-			cid,
+			entry.Package,
+			LibraryComponent{ID: id}.CID(),
 		})
 	}
 

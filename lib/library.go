@@ -5,8 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strconv"
-	"strings"
 
 	"github.com/blevesearch/bleve"
 	"github.com/boltdb/bolt"
@@ -44,15 +42,6 @@ type Library struct {
 Import a library from an excel or csv file
 */
 func (l *Library) Import(rows <-chan []string) error {
-	fromID := func(ID string) int {
-		i, err := strconv.Atoi(strings.TrimPrefix(ID, "C"))
-		if err != nil {
-			return 0
-		}
-
-		return i
-	}
-
 	l.db.Update(func(tx *bolt.Tx) error {
 		tx.DeleteBucket(COMPONENTS_BKT)
 		tx.DeleteBucket(CATEGORIES_BKT)
@@ -76,11 +65,11 @@ func (l *Library) Import(rows <-chan []string) error {
 	k := 10000
 	row := []string{""}
 	ok := true
-	categories := make(map[string][]int)
-	indexes := make(map[string]map[string][]int)
-	indexes["R"] = make(map[string][]int)
-	indexes["C"] = make(map[string][]int)
-	indexes["L"] = make(map[string][]int)
+	categories := make(map[string][]int64)
+	indexes := make(map[string]map[string][]int64)
+	indexes["R"] = make(map[string][]int64)
+	indexes["C"] = make(map[string][]int64)
+	indexes["L"] = make(map[string][]int64)
 
 	for len(row) != 0 {
 		if err := l.db.Update(func(tx *bolt.Tx) error {
@@ -95,7 +84,7 @@ func (l *Library) Import(rows <-chan []string) error {
 				}
 
 				component := LibraryComponent{
-					ID:             fromID(row[0]),
+					ID:             FromCID(row[0]),
 					FirstCategory:  row[1],
 					SecondCategory: row[2],
 					Part:           row[3],
@@ -113,7 +102,7 @@ func (l *Library) Import(rows <-chan []string) error {
 
 				for _, each := range []string{component.FirstCategory, component.SecondCategory} {
 					if _, ok := categories[each]; !ok {
-						categories[each] = []int{}
+						categories[each] = []int64{}
 					}
 					categories[each] = append(categories[each], component.ID)
 				}
@@ -122,7 +111,7 @@ func (l *Library) Import(rows <-chan []string) error {
 					component.Value() != "" {
 
 					if _, ok := indexes[component.Prefix()][component.Value()]; !ok {
-						indexes[component.Prefix()][component.Value()] = []int{}
+						indexes[component.Prefix()][component.Value()] = []int64{}
 					}
 					indexes[component.Prefix()][component.Value()] = append(
 						indexes[component.Prefix()][component.Value()], component.ID,
@@ -280,10 +269,10 @@ func NewLibrary(root string) (*Library, error) {
 }
 
 /*
-referred to as 'component'
+referred to as 'library component'
 */
 type LibraryComponent struct {
-	ID             int
+	ID             int64
 	FirstCategory  string
 	SecondCategory string
 	Part           string
@@ -295,7 +284,7 @@ type LibraryComponent struct {
 	Rotation       float64
 }
 
-func (lc *LibraryComponent) CID() string {
+func (lc LibraryComponent) CID() string {
 	return fmt.Sprintf("C%1.1d", lc.ID)
 }
 
@@ -417,7 +406,7 @@ func (l *Library) FindMatching(bcomponent *BoardComponent) []*LibraryComponent {
 		bindex := tx.Bucket([]byte(iname))
 		bpackages := tx.Bucket(PACKAGE_ASC_BKT)
 
-		IDs := []int{}
+		IDs := []int64{}
 		if bytes := bindex.Get([]byte(bcomponent.Value())); bytes != nil {
 			Unmarshal(bytes, &IDs)
 		}
@@ -429,7 +418,7 @@ func (l *Library) FindMatching(bcomponent *BoardComponent) []*LibraryComponent {
 		components = make([]*LibraryComponent, len(IDs))
 		for i, ID := range IDs {
 			if bytes := bcomponents.Get(
-				[]byte((&LibraryComponent{ID: ID}).CID()),
+				[]byte(LibraryComponent{ID: ID}.CID()),
 			); bytes != nil {
 				Unmarshal(bytes, &components[i])
 			}
@@ -476,17 +465,7 @@ func (l *Library) Exact(id string) *LibraryComponent {
 		return &component
 	}
 
-	/* If the component is not found in the library, then add it */
-	fromID := func(ID string) int {
-		i, err := strconv.Atoi(strings.TrimPrefix(ID, "C"))
-		if err != nil {
-			return 0
-		}
-
-		return i
-	}
-
-	component = LibraryComponent{ID: fromID(id)}
+	component = LibraryComponent{ID: FromCID(id)}
 	if err := l.db.Update(func(tx *bolt.Tx) error {
 		components := tx.Bucket(COMPONENTS_BKT)
 
@@ -549,7 +528,7 @@ func (l *Library) FindInCategory(category string) []*LibraryComponent {
 		bcategories := tx.Bucket(CATEGORIES_BKT)
 		bcomponents := tx.Bucket(COMPONENTS_BKT)
 
-		IDs := []int{}
+		IDs := []int64{}
 		if bytes := bcategories.Get([]byte(category)); bytes != nil {
 			Unmarshal(bytes, &IDs)
 		}

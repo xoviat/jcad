@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -21,6 +22,12 @@ func Exists(path string) bool {
 	}
 
 	return true
+}
+
+func FromCID(cid string) int64 {
+	id, _ := strconv.ParseInt(strings.TrimPrefix(cid, "C"), 10, 64)
+
+	return id
 }
 
 func Normalize(src string) (string, error) {

@@ -1,0 +1,2294 @@
+{
+  "code": 200,
+  "data": {
+    "componentPageInfo": {
+      "endRow": 0,
+      "hasNextPage": false,
+      "hasPreviousPage": false,
+      "isFirstPage": false,
+      "isLastPage": false,
+      "list": [
+        {
+          "canPresaleNumber": 58948,
+          "componentBrandEn": "st(semtech) ",
+          "componentCode": "C8056",
+          "componentId": 8535,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20180914_ST-Semtech-ZMM3V3-M_C8056_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "ZMM3V3-M",
+          "componentName": "ST(Semtech) ZMM3V3-M",
+          "componentPrices": [
+            {
+              "endNumber": 99,
+              "productPrice": 0.0111,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 499,
+              "productPrice": 0.0099,
+              "startNumber": 100
+            },
+            {
+              "endNumber": 999,
+              "productPrice": 0.0088,
+              "startNumber": 500
+            },
+            {
+              "endNumber": 1019,
+              "productPrice": 0.0085,
+              "startNumber": 1000
+            },
+            {
+              "endNumber": 1039,
+              "productPrice": 0.0085,
+              "startNumber": 1020
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0085,
+              "startNumber": 1040
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "LL-34",
+          "componentTypeEn": "Zener Diodes",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/1811142211_ST-Semtech-ZMM3V3-M_C8056.pdf",
+          "describe": "2uA@1V 85Ω Single 3.1V~3.5V 500mW 3.3V MEFL,1.5x3.4mm  Zener Diodes ROHS",
+          "erpComponentName": "3.3V 500mW",
+          "firstSortAccessId": "2dc9a747be3d4be78948b03a3063559a",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Zener-Diodes_ST-Semtech-ZMM3V3-M_C8056.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20180914_ST-Semtech-ZMM3V3-M_C8056_front.jpg",
+          "secondSortAccessId": "8e9fb60235df452fb664abacee3f761d",
+          "stockCount": 80860,
+          "urlSuffix": "st_semtech-ZMM3V3M/C8056"
+        },
+        {
+          "canPresaleNumber": 114312,
+          "componentBrandEn": "st(semtech) ",
+          "componentCode": "C8062",
+          "componentId": 8541,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20180914_ST-Semtech-ZMM5V6-M_C8062_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "ZMM5V6-M",
+          "componentName": "ST(Semtech) ZMM5V6-M",
+          "componentPrices": [
+            {
+              "endNumber": 99,
+              "productPrice": 0.0121,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 499,
+              "productPrice": 0.0109,
+              "startNumber": 100
+            },
+            {
+              "endNumber": 999,
+              "productPrice": 0.0095,
+              "startNumber": 500
+            },
+            {
+              "endNumber": 1019,
+              "productPrice": 0.0093,
+              "startNumber": 1000
+            },
+            {
+              "endNumber": 1039,
+              "productPrice": 0.0093,
+              "startNumber": 1020
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0093,
+              "startNumber": 1040
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "LL-34",
+          "componentTypeEn": "Zener Diodes",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/1809301122_ST-Semtech-ZMM5V6-M_C8062.pdf",
+          "describe": "100nA@1V 25Ω Single 5.2V~6V 500mW 5.6V MEFL,1.5x3.4mm  Zener Diodes ROHS",
+          "erpComponentName": "5.6V 500mW",
+          "firstSortAccessId": "2dc9a747be3d4be78948b03a3063559a",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Zener-Diodes_ST-Semtech-ZMM5V6-M_C8062.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20180914_ST-Semtech-ZMM5V6-M_C8062_front.jpg",
+          "secondSortAccessId": "8e9fb60235df452fb664abacee3f761d",
+          "stockCount": 151424,
+          "urlSuffix": "st_semtech-ZMM5V6M/C8062"
+        },
+        {
+          "canPresaleNumber": 2343719,
+          "componentBrandEn": "Jiangsu Changjing Electronics Technology co., ltd. ",
+          "componentCode": "C8326",
+          "componentId": 8818,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20200730_Jiangsu-Changjing-Electronics-Technology-Co---Ltd--MMBT5401_C8326_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "MMBT5401",
+          "componentName": "Jiangsu Changjing Electronics Technology Co., Ltd. MMBT5401",
+          "componentPrices": [
+            {
+              "endNumber": 149,
+              "productPrice": 0.0145,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 899,
+              "productPrice": 0.0114,
+              "startNumber": 150
+            },
+            {
+              "endNumber": 1799,
+              "productPrice": 0.01,
+              "startNumber": 900
+            },
+            {
+              "endNumber": 7199,
+              "productPrice": 0.009,
+              "startNumber": 1800
+            },
+            {
+              "endNumber": 15299,
+              "productPrice": 0.0086,
+              "startNumber": 7200
+            },
+            {
+              "endNumber": 29699,
+              "productPrice": 0.0083,
+              "startNumber": 15300
+            },
+            {
+              "endNumber": 60299,
+              "productPrice": 0.0082,
+              "startNumber": 29700
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0082,
+              "startNumber": 60300
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "SOT-23",
+          "componentTypeEn": "Bipolar Transistors - BJT",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/1809140241_Jiangsu-Changjing-Electronics-Technology-Co---Ltd--MMBT5401_C8326.pdf",
+          "describe": "100nA 150V 300mW 600mA 200@10mA,5V 100MHz 500mV@50mA,5mA PNP +150℃@(Tj) SOT-23(SOT-23-3)  Bipolar Transistors - BJT ROHS",
+          "erpComponentName": "PNP 150V 600mA H档200-300",
+          "firstSortAccessId": "268f4926a47b46d88d13ed2961731f51",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Bipolar-Transistors-BJT_Jiangsu-Changjing-Electronics-Technology-Co-Ltd-MMBT5401_C8326.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20200730_Jiangsu-Changjing-Electronics-Technology-Co---Ltd--MMBT5401_C8326_front.jpg",
+          "secondSortAccessId": "24560e282e674306854421cbcc790cd4",
+          "stockCount": 2434869,
+          "urlSuffix": "8818-MMBT5401/C8326"
+        },
+        {
+          "canPresaleNumber": 620541,
+          "componentBrandEn": "Jiangsu Changjing Electronics Technology co., ltd. ",
+          "componentCode": "C8543",
+          "componentId": 9038,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20200725_Jiangsu-Changjing-Electronics-Technology-Co---Ltd--S9012-2T1_C8543_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "S9012 2T1",
+          "componentName": "Jiangsu Changjing Electronics Technology Co., Ltd. S9012 2T1",
+          "componentPrices": [
+            {
+              "endNumber": 99,
+              "productPrice": 0.0157,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 599,
+              "productPrice": 0.0126,
+              "startNumber": 100
+            },
+            {
+              "endNumber": 1199,
+              "productPrice": 0.0109,
+              "startNumber": 600
+            },
+            {
+              "endNumber": 4799,
+              "productPrice": 0.0098,
+              "startNumber": 1200
+            },
+            {
+              "endNumber": 10199,
+              "productPrice": 0.0089,
+              "startNumber": 4800
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0084,
+              "startNumber": 10200
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "SOT-23",
+          "componentTypeEn": "Bipolar Transistors - BJT",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/1809181212_Jiangsu-Changjing-Electronics-Technology-Co---Ltd--S9012-2T1_C8543.pdf",
+          "describe": "100nA 25V 300mW 500mA 200@50mA,1V 150MHz 600mV@500mA,50mA PNP +150℃@(Tj) SOT-23(SOT-23-3)  Bipolar Transistors - BJT ROHS",
+          "erpComponentName": "PNP 25V 500mA (200-350)",
+          "firstSortAccessId": "268f4926a47b46d88d13ed2961731f51",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Bipolar-Transistors-BJT_Jiangsu-Changjing-Electronics-Technology-Co-Ltd-S9012-2T1_C8543.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20200725_Jiangsu-Changjing-Electronics-Technology-Co---Ltd--S9012-2T1_C8543_front.jpg",
+          "secondSortAccessId": "24560e282e674306854421cbcc790cd4",
+          "stockCount": 652791,
+          "urlSuffix": "9038-S90122T1/C8543"
+        },
+        {
+          "canPresaleNumber": 1202461,
+          "componentBrandEn": "Jiangsu Changjing Electronics Technology co., ltd. ",
+          "componentCode": "C8598",
+          "componentId": 9093,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20190517_Jiangsu-Changjing-Electronics-Technology-Co---Ltd--B5819W-SL_C8598_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "B5819W SL",
+          "componentName": "Jiangsu Changjing Electronics Technology Co., Ltd. B5819W SL",
+          "componentPrices": [
+            {
+              "endNumber": 49,
+              "productPrice": 0.0297,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 149,
+              "productPrice": 0.0232,
+              "startNumber": 50
+            },
+            {
+              "endNumber": 749,
+              "productPrice": 0.0204,
+              "startNumber": 150
+            },
+            {
+              "endNumber": 2249,
+              "productPrice": 0.0184,
+              "startNumber": 750
+            },
+            {
+              "endNumber": 5249,
+              "productPrice": 0.0174,
+              "startNumber": 2250
+            },
+            {
+              "endNumber": 9749,
+              "productPrice": 0.017,
+              "startNumber": 5250
+            },
+            {
+              "endNumber": 20249,
+              "productPrice": 0.0168,
+              "startNumber": 9750
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0167,
+              "startNumber": 20250
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "SOD-123",
+          "componentTypeEn": "Schottky Barrier Diodes (SBD)",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/1809140216_Jiangsu-Changjing-Electronics-Technology-Co---Ltd--B5819W-SL_C8598.pdf",
+          "describe": "40V 600mV@1A 1A SOD-123  Schottky Barrier Diodes (SBD) ROHS",
+          "erpComponentName": "40V 1A 600mV@1A",
+          "firstSortAccessId": "2dc9a747be3d4be78948b03a3063559a",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Schottky-Barrier-Diodes-SBD_Jiangsu-Changjing-Electronics-Technology-Co-Ltd-B5819W-SL_C8598.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20190517_Jiangsu-Changjing-Electronics-Technology-Co---Ltd--B5819W-SL_C8598_front.jpg",
+          "secondSortAccessId": "a1f3269121f04e30b9d773949a829b12",
+          "stockCount": 1323190,
+          "urlSuffix": "9093-B5819WSL/C8598"
+        },
+        {
+          "canPresaleNumber": 57352,
+          "componentBrandEn": "Texas Instruments ",
+          "componentCode": "C9865",
+          "componentId": 10397,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20200710_Texas-Instruments-TPS54331DR_C9865_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "TPS54331DR",
+          "componentName": "Texas Instruments TPS54331DR",
+          "componentPrices": [
+            {
+              "endNumber": 9,
+              "productPrice": 0.3208,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 29,
+              "productPrice": 0.2558,
+              "startNumber": 10
+            },
+            {
+              "endNumber": 99,
+              "productPrice": 0.2242,
+              "startNumber": 30
+            },
+            {
+              "endNumber": 499,
+              "productPrice": 0.1958,
+              "startNumber": 100
+            },
+            {
+              "endNumber": 999,
+              "productPrice": 0.1881,
+              "startNumber": 500
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.1834,
+              "startNumber": 1000
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "SOIC-8",
+          "componentTypeEn": "DC-DC Converters",
+          "dataManualUrl": "https://www.ti.com/cn/lit/gpn/tps54331",
+          "describe": "Step-down type SOIC-8_150mil  DC-DC Converters ROHS",
+          "erpComponentName": "降压型",
+          "firstSortAccessId": "6dc5d27d4f8744478cf3224b04762038",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/DC-DC-Converters_Texas-Instruments-TPS54331DR_C9865.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20200710_Texas-Instruments-TPS54331DR_C9865_front.jpg",
+          "secondSortAccessId": "e5637b2c2e44498596421335a73dfd1f",
+          "stockCount": 61635,
+          "urlSuffix": "TexasInstruments-TPS54331DR/C9865"
+        },
+        {
+          "canPresaleNumber": 123219,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C11616",
+          "componentId": 12170,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-0402WGF5103TCE_C11616_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "0402WGF5103TCE",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 0402WGF5103TCE",
+          "componentPrices": [
+            {
+              "endNumber": 299,
+              "productPrice": 0.0005,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 899,
+              "productPrice": 0.0004,
+              "startNumber": 300
+            },
+            {
+              "endNumber": 2999,
+              "productPrice": 0.0004,
+              "startNumber": 900
+            },
+            {
+              "endNumber": 14999,
+              "productPrice": 0.0003,
+              "startNumber": 3000
+            },
+            {
+              "endNumber": 15059,
+              "productPrice": 0.0003,
+              "startNumber": 15000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0003,
+              "startNumber": 15060
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0402",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010216_UNI-ROYAL-Uniroyal-Elec-0402WGF5103TCE_C11616.pdf",
+          "describe": "62.5mW Thick Film Resistors 50V ±100ppm/℃ ±1% -55℃~+155℃ 510kΩ 0402  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "510kΩ ±1% 62.5mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0402WGF5103TCE_C11616.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-0402WGF5103TCE_C11616_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 147219,
+          "urlSuffix": "12170-0402WGF5103TCE/C11616"
+        },
+        {
+          "canPresaleNumber": 1603360,
+          "componentBrandEn": "Samsung electro-mechanics ",
+          "componentCode": "C14858",
+          "componentId": 15530,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20180914_Samsung-Electro-Mechanics-CL10C101JB8NNNC_C14858_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "CL10C101JB8NNNC",
+          "componentName": "Samsung Electro-Mechanics CL10C101JB8NNNC",
+          "componentPrices": [
+            {
+              "endNumber": 199,
+              "productPrice": 0.0039,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 799,
+              "productPrice": 0.0031,
+              "startNumber": 200
+            },
+            {
+              "endNumber": 1599,
+              "productPrice": 0.0027,
+              "startNumber": 800
+            },
+            {
+              "endNumber": 9599,
+              "productPrice": 0.0025,
+              "startNumber": 1600
+            },
+            {
+              "endNumber": 9639,
+              "productPrice": 0.0023,
+              "startNumber": 9600
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0023,
+              "startNumber": 9640
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0603",
+          "componentTypeEn": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/1811151136_Samsung-Electro-Mechanics-CL10C101JB8NNNC_C14858.pdf",
+          "describe": "50V 100pF C0G ±5% 0603  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+          "erpComponentName": "100pF ±5% 50V",
+          "firstSortAccessId": "1a513feddccb44f5bf49e1f5b9e5ffdb",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Multilayer-Ceramic-Capacitors-MLCC-SMD-SMT_Samsung-Electro-Mechanics-CL10C101JB8NNNC_C14858.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20180914_Samsung-Electro-Mechanics-CL10C101JB8NNNC_C14858_front.jpg",
+          "secondSortAccessId": "7e74f1d772c74e3d99bc4868d21962f2",
+          "stockCount": 1898910,
+          "urlSuffix": "15530-CL10C101JB8NNNC/C14858"
+        },
+        {
+          "canPresaleNumber": 25496,
+          "componentBrandEn": "Microchip Tech ",
+          "componentCode": "C14877",
+          "componentId": 15549,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20190612_Microchip-Tech-ATMEGA328P-AU_C14877_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "ATMEGA328P-AU",
+          "componentName": "Microchip Tech ATMEGA328P-AU",
+          "componentPrices": [
+            {
+              "endNumber": 9,
+              "productPrice": 2.9996,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 29,
+              "productPrice": 2.6705,
+              "startNumber": 10
+            },
+            {
+              "endNumber": 249,
+              "productPrice": 2.5044,
+              "startNumber": 30
+            },
+            {
+              "endNumber": 499,
+              "productPrice": 2.2787,
+              "startNumber": 250
+            },
+            {
+              "endNumber": 999,
+              "productPrice": 2.1972,
+              "startNumber": 500
+            },
+            {
+              "endNumber": 1999,
+              "productPrice": 2.1643,
+              "startNumber": 1000
+            },
+            {
+              "endNumber": 3999,
+              "productPrice": 2.1455,
+              "startNumber": 2000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 2.1298,
+              "startNumber": 4000
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "TQFP-32(7x7)",
+          "componentTypeEn": "Microcontroller Units (MCUs/MPUs/SOCs)",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/1809101618_Microchip-Tech-ATMEGA328P-AU_C14877.pdf",
+          "describe": "2KB 16K@x16bit -40℃~+85℃ 1.8V~5.5V AVR 1@x8ch/10bit Internal oscillator included  20MHz 23 1KB TQFP-32_7x7x08P  Microcontroller Units (MCUs/MPUs/SOCs) ROHS",
+          "erpComponentName": "AVR 20MHz",
+          "firstSortAccessId": "970fc8913b244545b4041b5fe5f5af22",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Microcontroller-Units-MCUs-MPUs-SOCs_Microchip-Tech-ATMEGA328P-AU_C14877.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20190612_Microchip-Tech-ATMEGA328P-AU_C14877_front.jpg",
+          "secondSortAccessId": "216cfc29aade4a17bb7b050210fde51b",
+          "stockCount": 31119,
+          "urlSuffix": "MicrochipTech-ATMEGA328PAU/C14877"
+        },
+        {
+          "canPresaleNumber": 223546,
+          "componentBrandEn": "Alpha & Omega Semicon ",
+          "componentCode": "C15127",
+          "componentId": 15801,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20180914_Alpha---Omega-Semicon-AO3401A_C15127_front_10.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "AO3401A",
+          "componentName": "Alpha & Omega Semicon AO3401A",
+          "componentPrices": [
+            {
+              "endNumber": 49,
+              "productPrice": 0.0811,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 149,
+              "productPrice": 0.0665,
+              "startNumber": 50
+            },
+            {
+              "endNumber": 499,
+              "productPrice": 0.0588,
+              "startNumber": 150
+            },
+            {
+              "endNumber": 2999,
+              "productPrice": 0.0525,
+              "startNumber": 500
+            },
+            {
+              "endNumber": 5999,
+              "productPrice": 0.0505,
+              "startNumber": 3000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0489,
+              "startNumber": 6000
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "SOT-23-3L",
+          "componentTypeEn": "MOSFETs",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/1810171817_Alpha---Omega-Semicon-AO3401A_C15127.pdf",
+          "describe": "30V 4A 44mΩ@10V,4.3A 1.4W 1.3V@250uA P Channel SOT-23-3L  MOSFETs ROHS",
+          "erpComponentName": "P沟道 30V 4A",
+          "firstSortAccessId": "268f4926a47b46d88d13ed2961731f51",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/MOSFETs_Alpha-Omega-Semicon-AO3401A_C15127.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20180914_Alpha---Omega-Semicon-AO3401A_C15127_front_10.jpg",
+          "secondSortAccessId": "ddf0056ef7c94d4fb214aa681f5dbc74",
+          "stockCount": 275353,
+          "urlSuffix": "Alpha_OmegaSemicon-AO3401A/C15127"
+        },
+        {
+          "canPresaleNumber": 2876290,
+          "componentBrandEn": "Samsung electro-mechanics ",
+          "componentCode": "C15850",
+          "componentId": 16532,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20180914_Samsung-Electro-Mechanics-CL21A106KAYNNNE_C15850_front_10.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "CL21A106KAYNNNE",
+          "componentName": "Samsung Electro-Mechanics CL21A106KAYNNNE",
+          "componentPrices": [
+            {
+              "endNumber": 199,
+              "productPrice": 0.0135,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 799,
+              "productPrice": 0.0107,
+              "startNumber": 200
+            },
+            {
+              "endNumber": 1599,
+              "productPrice": 0.0095,
+              "startNumber": 800
+            },
+            {
+              "endNumber": 9599,
+              "productPrice": 0.0085,
+              "startNumber": 1600
+            },
+            {
+              "endNumber": 19999,
+              "productPrice": 0.0081,
+              "startNumber": 9600
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0079,
+              "startNumber": 20000
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0805",
+          "componentTypeEn": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/1811121310_Samsung-Electro-Mechanics-CL21A106KAYNNNE_C15850.pdf",
+          "describe": "25V 10uF X5R ±10% 0805  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+          "erpComponentName": "10uF ±10% 25V",
+          "firstSortAccessId": "1a513feddccb44f5bf49e1f5b9e5ffdb",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Multilayer-Ceramic-Capacitors-MLCC-SMD-SMT_Samsung-Electro-Mechanics-CL21A106KAYNNNE_C15850.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20180914_Samsung-Electro-Mechanics-CL21A106KAYNNNE_C15850_front_10.jpg",
+          "secondSortAccessId": "7e74f1d772c74e3d99bc4868d21962f2",
+          "stockCount": 3669790,
+          "urlSuffix": "16532-CL21A106KAYNNNE/C15850"
+        },
+        {
+          "canPresaleNumber": 1391484,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17408",
+          "componentId": 18096,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F1000T5E_C17408_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "0805W8F1000T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 0805W8F1000T5E",
+          "componentPrices": [
+            {
+              "endNumber": 199,
+              "productPrice": 0.0018,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 999,
+              "productPrice": 0.0014,
+              "startNumber": 200
+            },
+            {
+              "endNumber": 1999,
+              "productPrice": 0.0012,
+              "startNumber": 1000
+            },
+            {
+              "endNumber": 9999,
+              "productPrice": 0.0011,
+              "startNumber": 2000
+            },
+            {
+              "endNumber": 10039,
+              "productPrice": 0.001,
+              "startNumber": 10000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.001,
+              "startNumber": 10040
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0805",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010216_UNI-ROYAL-Uniroyal-Elec-0805W8F1000T5E_C17408.pdf",
+          "describe": "125mW Thick Film Resistors 150V ±100ppm/℃ ±1% -55℃~+155℃ 100Ω 0805  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "100Ω ±1% 125mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0805W8F1000T5E_C17408.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F1000T5E_C17408_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 1794909,
+          "urlSuffix": "18096-0805W8F1000T5E/C17408"
+        },
+        {
+          "canPresaleNumber": 1728964,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17477",
+          "componentId": 18165,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F0000T5E_C17477_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "0805W8F0000T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 0805W8F0000T5E",
+          "componentPrices": [
+            {
+              "endNumber": 199,
+              "productPrice": 0.0022,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 599,
+              "productPrice": 0.0018,
+              "startNumber": 200
+            },
+            {
+              "endNumber": 1999,
+              "productPrice": 0.0015,
+              "startNumber": 600
+            },
+            {
+              "endNumber": 9999,
+              "productPrice": 0.0013,
+              "startNumber": 2000
+            },
+            {
+              "endNumber": 19999,
+              "productPrice": 0.0013,
+              "startNumber": 10000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0012,
+              "startNumber": 20000
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0805",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010216_UNI-ROYAL-Uniroyal-Elec-0805W8F0000T5E_C17477.pdf",
+          "describe": "125mW Thick Film Resistors 150V ±800ppm/℃ ±1% -55℃~+155℃ 0Ω 0805  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "0Ω ±1% 125mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0805W8F0000T5E_C17477.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F0000T5E_C17477_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 1986514,
+          "urlSuffix": "18165-0805W8F0000T5E/C17477"
+        },
+        {
+          "canPresaleNumber": 403124,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17557",
+          "componentId": 18245,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F2200T5E_C17557_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "0805W8F2200T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 0805W8F2200T5E",
+          "componentPrices": [
+            {
+              "endNumber": 199,
+              "productPrice": 0.0022,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 999,
+              "productPrice": 0.0019,
+              "startNumber": 200
+            },
+            {
+              "endNumber": 1999,
+              "productPrice": 0.0015,
+              "startNumber": 1000
+            },
+            {
+              "endNumber": 9999,
+              "productPrice": 0.0014,
+              "startNumber": 2000
+            },
+            {
+              "endNumber": 10039,
+              "productPrice": 0.0013,
+              "startNumber": 10000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0013,
+              "startNumber": 10040
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0805",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010200_UNI-ROYAL-Uniroyal-Elec-0805W8F2200T5E_C17557.pdf",
+          "describe": "125mW Thick Film Resistors 150V ±100ppm/℃ ±1% -55℃~+155℃ 220Ω 0805  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "220Ω ±1% 125mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0805W8F2200T5E_C17557.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F2200T5E_C17557_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 489574,
+          "urlSuffix": "18245-0805W8F2200T5E/C17557"
+        },
+        {
+          "canPresaleNumber": 445624,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17560",
+          "componentId": 18248,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F2202T5E_C17560_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "0805W8F2202T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 0805W8F2202T5E",
+          "componentPrices": [
+            {
+              "endNumber": 199,
+              "productPrice": 0.0017,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 999,
+              "productPrice": 0.0014,
+              "startNumber": 200
+            },
+            {
+              "endNumber": 1999,
+              "productPrice": 0.0011,
+              "startNumber": 1000
+            },
+            {
+              "endNumber": 9999,
+              "productPrice": 0.001,
+              "startNumber": 2000
+            },
+            {
+              "endNumber": 10039,
+              "productPrice": 0.0009,
+              "startNumber": 10000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0009,
+              "startNumber": 10040
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0805",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010200_UNI-ROYAL-Uniroyal-Elec-0805W8F2202T5E_C17560.pdf",
+          "describe": "125mW Thick Film Resistors 150V ±100ppm/℃ ±1% -55℃~+155℃ 22kΩ 0805  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "22kΩ ±1% 125mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0805W8F2202T5E_C17560.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F2202T5E_C17560_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 513974,
+          "urlSuffix": "18248-0805W8F2202T5E/C17560"
+        },
+        {
+          "canPresaleNumber": 1603589,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17604",
+          "componentId": 18292,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F2001T5E_C17604_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "0805W8F2001T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 0805W8F2001T5E",
+          "componentPrices": [
+            {
+              "endNumber": 199,
+              "productPrice": 0.0018,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 999,
+              "productPrice": 0.0014,
+              "startNumber": 200
+            },
+            {
+              "endNumber": 1999,
+              "productPrice": 0.0012,
+              "startNumber": 1000
+            },
+            {
+              "endNumber": 9999,
+              "productPrice": 0.0011,
+              "startNumber": 2000
+            },
+            {
+              "endNumber": 10039,
+              "productPrice": 0.001,
+              "startNumber": 10000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.001,
+              "startNumber": 10040
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0805",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010200_UNI-ROYAL-Uniroyal-Elec-0805W8F2001T5E_C17604.pdf",
+          "describe": "125mW Thick Film Resistors 150V ±100ppm/℃ ±1% -55℃~+155℃ 2kΩ 0805  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "2kΩ ±1% 125mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0805W8F2001T5E_C17604.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F2001T5E_C17604_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 1940789,
+          "urlSuffix": "18292-0805W8F2001T5E/C17604"
+        },
+        {
+          "canPresaleNumber": 318138,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17617",
+          "componentId": 18305,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F3000T5E_C17617_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "0805W8F3000T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 0805W8F3000T5E",
+          "componentPrices": [
+            {
+              "endNumber": 199,
+              "productPrice": 0.0016,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 999,
+              "productPrice": 0.0013,
+              "startNumber": 200
+            },
+            {
+              "endNumber": 1999,
+              "productPrice": 0.001,
+              "startNumber": 1000
+            },
+            {
+              "endNumber": 9999,
+              "productPrice": 0.001,
+              "startNumber": 2000
+            },
+            {
+              "endNumber": 10039,
+              "productPrice": 0.0008,
+              "startNumber": 10000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0008,
+              "startNumber": 10040
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0805",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010200_UNI-ROYAL-Uniroyal-Elec-0805W8F3000T5E_C17617.pdf",
+          "describe": "125mW Thick Film Resistors 150V ±100ppm/℃ ±1% -55℃~+155℃ 300Ω 0805  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "300Ω ±1% 125mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0805W8F3000T5E_C17617.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F3000T5E_C17617_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 386313,
+          "urlSuffix": "18305-0805W8F3000T5E/C17617"
+        },
+        {
+          "canPresaleNumber": 110031,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17807",
+          "componentId": 18495,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F7501T5E_C17807_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "0805W8F7501T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 0805W8F7501T5E",
+          "componentPrices": [
+            {
+              "endNumber": 199,
+              "productPrice": 0.0017,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 999,
+              "productPrice": 0.0013,
+              "startNumber": 200
+            },
+            {
+              "endNumber": 1999,
+              "productPrice": 0.0011,
+              "startNumber": 1000
+            },
+            {
+              "endNumber": 9999,
+              "productPrice": 0.001,
+              "startNumber": 2000
+            },
+            {
+              "endNumber": 10039,
+              "productPrice": 0.0009,
+              "startNumber": 10000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0009,
+              "startNumber": 10040
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0805",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2205311830_UNI-ROYAL-Uniroyal-Elec-0805W8F7501T5E_C17807.pdf",
+          "describe": "125mW Thick Film Resistors 150V ±100ppm/℃ ±1% -55℃~+155℃ 7.5kΩ 0805  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "7.5kΩ ±1% 125mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0805W8F7501T5E_C17807.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-0805W8F7501T5E_C17807_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 131181,
+          "urlSuffix": "18495-0805W8F7501T5E/C17807"
+        },
+        {
+          "canPresaleNumber": 403832,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17887",
+          "componentId": 18575,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-1206W4F3000T5E_C17887_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "1206W4F3000T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 1206W4F3000T5E",
+          "componentPrices": [
+            {
+              "endNumber": 149,
+              "productPrice": 0.003,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 749,
+              "productPrice": 0.0023,
+              "startNumber": 150
+            },
+            {
+              "endNumber": 1499,
+              "productPrice": 0.0019,
+              "startNumber": 750
+            },
+            {
+              "endNumber": 7499,
+              "productPrice": 0.0018,
+              "startNumber": 1500
+            },
+            {
+              "endNumber": 7529,
+              "productPrice": 0.0016,
+              "startNumber": 7500
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0016,
+              "startNumber": 7530
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "1206",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010200_UNI-ROYAL-Uniroyal-Elec-1206W4F3000T5E_C17887.pdf",
+          "describe": "250mW Thick Film Resistors 200V ±100ppm/℃ ±1% -55℃~+155℃ 300Ω 1206  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "300Ω ±1% 250mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-1206W4F3000T5E_C17887.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-1206W4F3000T5E_C17887_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 438332,
+          "urlSuffix": "18575-1206W4F3000T5E/C17887"
+        },
+        {
+          "canPresaleNumber": 397010,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17900",
+          "componentId": 18588,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-1206W4F1003T5E_C17900_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "1206W4F1003T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 1206W4F1003T5E",
+          "componentPrices": [
+            {
+              "endNumber": 149,
+              "productPrice": 0.0032,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 749,
+              "productPrice": 0.0025,
+              "startNumber": 150
+            },
+            {
+              "endNumber": 1499,
+              "productPrice": 0.0019,
+              "startNumber": 750
+            },
+            {
+              "endNumber": 7499,
+              "productPrice": 0.0017,
+              "startNumber": 1500
+            },
+            {
+              "endNumber": 7529,
+              "productPrice": 0.0015,
+              "startNumber": 7500
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0015,
+              "startNumber": 7530
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "1206",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010145_UNI-ROYAL-Uniroyal-Elec-1206W4F1003T5E_C17900.pdf",
+          "describe": "250mW Thick Film Resistors 200V ±100ppm/℃ ±1% -55℃~+155℃ 100kΩ 1206  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "100kΩ ±1% 250mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-1206W4F1003T5E_C17900.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-1206W4F1003T5E_C17900_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 478660,
+          "urlSuffix": "18588-1206W4F1003T5E/C17900"
+        },
+        {
+          "canPresaleNumber": 868887,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17901",
+          "componentId": 18589,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-1206W4F1000T5E_C17901_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "1206W4F1000T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 1206W4F1000T5E",
+          "componentPrices": [
+            {
+              "endNumber": 149,
+              "productPrice": 0.003,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 749,
+              "productPrice": 0.0023,
+              "startNumber": 150
+            },
+            {
+              "endNumber": 1499,
+              "productPrice": 0.0019,
+              "startNumber": 750
+            },
+            {
+              "endNumber": 7499,
+              "productPrice": 0.0018,
+              "startNumber": 1500
+            },
+            {
+              "endNumber": 7529,
+              "productPrice": 0.0016,
+              "startNumber": 7500
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0016,
+              "startNumber": 7530
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "1206",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010145_UNI-ROYAL-Uniroyal-Elec-1206W4F1000T5E_C17901.pdf",
+          "describe": "250mW Thick Film Resistors 200V ±100ppm/℃ ±1% -55℃~+155℃ 100Ω 1206  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "100Ω ±1% 250mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-1206W4F1000T5E_C17901.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-1206W4F1000T5E_C17901_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 1005387,
+          "urlSuffix": "18589-1206W4F1000T5E/C17901"
+        },
+        {
+          "canPresaleNumber": 869631,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17902",
+          "componentId": 18590,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220601_UNI-ROYAL-Uniroyal-Elec-1206W4F1002T5E_C17902_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "1206W4F1002T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 1206W4F1002T5E",
+          "componentPrices": [
+            {
+              "endNumber": 149,
+              "productPrice": 0.003,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 749,
+              "productPrice": 0.0023,
+              "startNumber": 150
+            },
+            {
+              "endNumber": 1499,
+              "productPrice": 0.0017,
+              "startNumber": 750
+            },
+            {
+              "endNumber": 7499,
+              "productPrice": 0.0016,
+              "startNumber": 1500
+            },
+            {
+              "endNumber": 7529,
+              "productPrice": 0.0014,
+              "startNumber": 7500
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0014,
+              "startNumber": 7530
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "1206",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010145_UNI-ROYAL-Uniroyal-Elec-1206W4F1002T5E_C17902.pdf",
+          "describe": "250mW Thick Film Resistors 200V ±100ppm/℃ ±1% -55℃~+155℃ 10kΩ 1206  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "10kΩ ±1% 250mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-1206W4F1002T5E_C17902.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220601_UNI-ROYAL-Uniroyal-Elec-1206W4F1002T5E_C17902_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 1066756,
+          "urlSuffix": "18590-1206W4F1002T5E/C17902"
+        },
+        {
+          "canPresaleNumber": 421752,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C17928",
+          "componentId": 18616,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220531_UNI-ROYAL-Uniroyal-Elec-1206W4F100KT5E_C17928_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "1206W4F100KT5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 1206W4F100KT5E",
+          "componentPrices": [
+            {
+              "endNumber": 149,
+              "productPrice": 0.0043,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 749,
+              "productPrice": 0.0035,
+              "startNumber": 150
+            },
+            {
+              "endNumber": 1499,
+              "productPrice": 0.0027,
+              "startNumber": 750
+            },
+            {
+              "endNumber": 7499,
+              "productPrice": 0.0025,
+              "startNumber": 1500
+            },
+            {
+              "endNumber": 14999,
+              "productPrice": 0.0023,
+              "startNumber": 7500
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0021,
+              "startNumber": 15000
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "1206",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010145_UNI-ROYAL-Uniroyal-Elec-1206W4F100KT5E_C17928.pdf",
+          "describe": "250mW Thick Film Resistors 200V ±800ppm/℃ ±1% -55℃~+155℃ 1Ω 1206  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "1Ω ±1% 250mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-1206W4F100KT5E_C17928.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220531_UNI-ROYAL-Uniroyal-Elec-1206W4F100KT5E_C17928_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 464127,
+          "urlSuffix": "18616-1206W4F100KT5E/C17928"
+        },
+        {
+          "canPresaleNumber": 3366534,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C21189",
+          "componentId": 21903,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220531_UNI-ROYAL-Uniroyal-Elec-0603WAF0000T5E_C21189_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "0603WAF0000T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 0603WAF0000T5E",
+          "componentPrices": [
+            {
+              "endNumber": 199,
+              "productPrice": 0.001,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 599,
+              "productPrice": 0.0007,
+              "startNumber": 200
+            },
+            {
+              "endNumber": 1999,
+              "productPrice": 0.0006,
+              "startNumber": 600
+            },
+            {
+              "endNumber": 9999,
+              "productPrice": 0.0006,
+              "startNumber": 2000
+            },
+            {
+              "endNumber": 10039,
+              "productPrice": 0.0005,
+              "startNumber": 10000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0005,
+              "startNumber": 10040
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0603",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010130_UNI-ROYAL-Uniroyal-Elec-0603WAF0000T5E_C21189.pdf",
+          "describe": "100mW Thick Film Resistors 75V ±1% -55℃~+155℃ 0Ω 0603  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "0Ω ±1% 100mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0603WAF0000T5E_C21189.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220531_UNI-ROYAL-Uniroyal-Elec-0603WAF0000T5E_C21189_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 4114534,
+          "urlSuffix": "21903-0603WAF0000T5E/C21189"
+        },
+        {
+          "canPresaleNumber": 761962,
+          "componentBrandEn": "uni-royal(uniroyal elec) ",
+          "componentCode": "C22765",
+          "componentId": 23492,
+          "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20220531_UNI-ROYAL-Uniroyal-Elec-0603WAF1201T5E_C22765_front.jpg",
+          "componentLibraryType": "base",
+          "componentModelEn": "0603WAF1201T5E",
+          "componentName": "UNI-ROYAL(Uniroyal Elec) 0603WAF1201T5E",
+          "componentPrices": [
+            {
+              "endNumber": 199,
+              "productPrice": 0.001,
+              "startNumber": 1
+            },
+            {
+              "endNumber": 999,
+              "productPrice": 0.0008,
+              "startNumber": 200
+            },
+            {
+              "endNumber": 1999,
+              "productPrice": 0.0006,
+              "startNumber": 1000
+            },
+            {
+              "endNumber": 9999,
+              "productPrice": 0.0005,
+              "startNumber": 2000
+            },
+            {
+              "endNumber": 10039,
+              "productPrice": 0.0005,
+              "startNumber": 10000
+            },
+            {
+              "endNumber": -1,
+              "productPrice": 0.0005,
+              "startNumber": 10040
+            }
+          ],
+          "componentProductType": 0,
+          "componentSource": "shop",
+          "componentSpecificationEn": "0603",
+          "componentTypeEn": "Chip Resistor - Surface Mount",
+          "dataManualUrl": "https://datasheet.lcsc.com/lcsc/2206010130_UNI-ROYAL-Uniroyal-Elec-0603WAF1201T5E_C22765.pdf",
+          "describe": "100mW Thick Film Resistors 75V ±100ppm/℃ ±1% -55℃~+155℃ 1.2kΩ 0603  Chip Resistor - Surface Mount ROHS",
+          "erpComponentName": "1.2kΩ ±1% 100mW",
+          "firstSortAccessId": "b97df1fd049743c0a0330513eac35a72",
+          "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0603WAF1201T5E_C22765.html",
+          "mergedComponentCode": null,
+          "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20220531_UNI-ROYAL-Uniroyal-Elec-0603WAF1201T5E_C22765_front.jpg",
+          "secondSortAccessId": "a49341812cad4b0bafa2ddd547a82bd4",
+          "stockCount": 845487,
+          "urlSuffix": "23492-0603WAF1201T5E/C22765"
+        }
+      ],
+      "navigateFirstPage": 0,
+      "navigateLastPage": 0,
+      "navigatePages": 0,
+      "navigatepageNums": null,
+      "nextPage": 0,
+      "pageNum": 2,
+      "pageSize": 25,
+      "pages": 24,
+      "prePage": 0,
+      "size": 0,
+      "startRow": 0,
+      "total": 595
+    },
+    "sortAndCountVoList": [
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 293,
+            "componentSortKeyId": 4,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 2,
+            "sortImgUrl": "Resistors.svg",
+            "sortName": "Chip Resistor - Surface Mount",
+            "sortUuid": "a49341812cad4b0bafa2ddd547a82bd4"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 5,
+            "componentSortKeyId": 6,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 2,
+            "sortImgUrl": "Resistors.svg",
+            "sortName": "Resistor Networks & Arrays",
+            "sortUuid": "beaa7952a1194315949faf89c5be809c"
+          }
+        ],
+        "componentCount": 298,
+        "componentSortKeyId": 2,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Resistors.svg",
+        "sortName": "Resistors",
+        "sortUuid": "b97df1fd049743c0a0330513eac35a72"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 32,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 31,
+            "sortImgUrl": "Capacitors.svg",
+            "sortName": "Tantalum Capacitors",
+            "sortUuid": "b5a2231489834fa8bf02058a569b450b"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 134,
+            "componentSortKeyId": 33,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 31,
+            "sortImgUrl": "Capacitors.svg",
+            "sortName": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+            "sortUuid": "7e74f1d772c74e3d99bc4868d21962f2"
+          }
+        ],
+        "componentCount": 136,
+        "componentSortKeyId": 31,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Capacitors.svg",
+        "sortName": "Capacitors",
+        "sortUuid": "1a513feddccb44f5bf49e1f5b9e5ffdb"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 3,
+            "componentSortKeyId": 35,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 34,
+            "sortImgUrl": "Memory.svg",
+            "sortName": "EEPROM",
+            "sortUuid": "4069c5d6187f4608b287ba3a374b24e6"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 79456,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 34,
+            "sortImgUrl": "Memory.svg",
+            "sortName": "NOR FLASH",
+            "sortUuid": "ab5e735dbdcd48dba60c03fb0d6eb284"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 79625,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 34,
+            "sortImgUrl": "Memory.svg",
+            "sortName": "NAND FLASH",
+            "sortUuid": "e1defb44e8314fb3b3f7cd90ebb56095"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 79648,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 34,
+            "sortImgUrl": "Memory.svg",
+            "sortName": "eMMC",
+            "sortUuid": "4d614d471f7b48e68b15ea07a609ce4d"
+          }
+        ],
+        "componentCount": 6,
+        "componentSortKeyId": 34,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Memory.svg",
+        "sortName": "Memory",
+        "sortUuid": "9b9f940a554b41dfbb16725c834c0a0b"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 5,
+            "componentSortKeyId": 67,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 64,
+            "sortImgUrl": "common.svg",
+            "sortName": "Switching Diode",
+            "sortUuid": "7b386b4d9b484c6f85139d4b9b7f2d35"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 68,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 64,
+            "sortImgUrl": "Diodes.svg",
+            "sortName": "Zener Diodes",
+            "sortUuid": "8e9fb60235df452fb664abacee3f761d"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 8,
+            "componentSortKeyId": 69,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 64,
+            "sortImgUrl": "Diodes.svg",
+            "sortName": "Schottky Barrier Diodes (SBD)",
+            "sortUuid": "a1f3269121f04e30b9d773949a829b12"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 70,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 64,
+            "sortImgUrl": "Diodes.svg",
+            "sortName": "Diodes - General Purpose",
+            "sortUuid": "eee0037aea5346c3802686f5f68f26f6"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 179,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 64,
+            "sortImgUrl": "Diodes.svg",
+            "sortName": "Bridge Rectifiers",
+            "sortUuid": "a879a2687f1a4a6bb630092272b7d6bc"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 79522,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 64,
+            "sortImgUrl": "Diodes.svg",
+            "sortName": "Diodes - Fast Recovery Rectifiers",
+            "sortUuid": "57bd9e57705044469faad02bbffcca15"
+          }
+        ],
+        "componentCount": 20,
+        "componentSortKeyId": 64,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Diodes.svg",
+        "sortName": "Diodes",
+        "sortUuid": "2dc9a747be3d4be78948b03a3063559a"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 255,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 102,
+            "sortImgUrl": "",
+            "sortName": "Optocouplers",
+            "sortUuid": "dc1d260756514eff905090e300f2d653"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 3,
+            "componentSortKeyId": 80364,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 102,
+            "sortImgUrl": "common.svg",
+            "sortName": "Light Emitting Diodes (LED)",
+            "sortUuid": "ab8f1c29f1354c669b691686da187b95"
+          }
+        ],
+        "componentCount": 4,
+        "componentSortKeyId": 102,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "common.svg",
+        "sortName": "Optocouplers & LEDs & Infrared",
+        "sortUuid": "f972da204e9147268b09e5e9b0c6292d"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 79428,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 107,
+            "sortImgUrl": "Logic ICs.svg",
+            "sortName": "Gates",
+            "sortUuid": "f10c695166f84c9589091db5816b9dfd"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 79536,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 107,
+            "sortImgUrl": "Logic ICs.svg",
+            "sortName": "Receivers & Transceivers",
+            "sortUuid": "0413897d361d446782a6003854b65e5d"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 79537,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 107,
+            "sortImgUrl": "Logic ICs.svg",
+            "sortName": "Inverters",
+            "sortUuid": "c76d1eaa737a4119afb9205c09d303ea"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 79538,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 107,
+            "sortImgUrl": "Logic ICs.svg",
+            "sortName": "Registers",
+            "sortUuid": "47bde60d06af4f2dbe1445d3011e4525"
+          }
+        ],
+        "componentCount": 7,
+        "componentSortKeyId": 107,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Logic ICs.svg",
+        "sortName": "Logic ICs",
+        "sortUuid": "4f1daf13964c440f895f56f72c7fe247"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 79909,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 141,
+            "sortImgUrl": "Sensors.svg",
+            "sortName": "Attitude Sensor/Gyroscope",
+            "sortUuid": "1ff865c231d945348d6abcf6b3038a38"
+          }
+        ],
+        "componentCount": 1,
+        "componentSortKeyId": 141,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Sensors.svg",
+        "sortName": "Sensors",
+        "sortUuid": "caefd6d6f2bc4507bdc2837246857fba"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 80363,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79436,
+            "sortImgUrl": "Optocouplers & LEDs & Infrared.svg",
+            "sortName": "Light Emitting Diodes (LED)",
+            "sortUuid": "f8d061909bd7460094b823b7c0edbf5e"
+          }
+        ],
+        "componentCount": 1,
+        "componentSortKeyId": 79436,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Optocouplers & LEDs & Infrared.svg",
+        "sortName": "optoelectronics",
+        "sortUuid": "2a1317eec5064bbb856a96033019985f"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 131,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79852,
+            "sortImgUrl": "Interface ICs.svg",
+            "sortName": "Digital Isolators",
+            "sortUuid": "bc8188b26d4b46c58f192d5e0cb80008"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 292,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79852,
+            "sortImgUrl": "Interface ICs.svg",
+            "sortName": "USB ICs",
+            "sortUuid": "fe5a222317bc45bab30a246b3c696e1a"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 302,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79852,
+            "sortImgUrl": "Interface ICs.svg",
+            "sortName": "RS232 ICs",
+            "sortUuid": "09eb1cf7bf6741c1931cb3b3e760d468"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 3,
+            "componentSortKeyId": 303,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79852,
+            "sortImgUrl": "Interface ICs.svg",
+            "sortName": "RS-485/RS-422 ICs",
+            "sortUuid": "34859f6efcf4461683b915592f4aaa69"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 322,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79852,
+            "sortImgUrl": "Interface ICs.svg",
+            "sortName": "CAN ICs",
+            "sortUuid": "b51a731dc09c4e0c9339d6c7a3694fab"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 79499,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79852,
+            "sortImgUrl": "Interface ICs.svg",
+            "sortName": "Analog Switches / Multiplexers",
+            "sortUuid": "bc1ced77a33147fa9b68e88c54b6330a"
+          }
+        ],
+        "componentCount": 11,
+        "componentSortKeyId": 79852,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Interface ICs.svg",
+        "sortName": "Communication Interface Chip/UART/485/232",
+        "sortUuid": "35ffc800f5de420dbac8854b6f389968"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 9,
+            "componentSortKeyId": 154,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79853,
+            "sortImgUrl": "Power Management ICs.svg",
+            "sortName": "DC-DC Converters",
+            "sortUuid": "e5637b2c2e44498596421335a73dfd1f"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 155,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79853,
+            "sortImgUrl": "Power Management ICs.svg",
+            "sortName": "Voltage References",
+            "sortUuid": "e3870a83656f44b495b9a0f6f08e49c1"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 9,
+            "componentSortKeyId": 79441,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79853,
+            "sortImgUrl": "Power Management ICs.svg",
+            "sortName": "Linear Voltage Regulators (LDO)",
+            "sortUuid": "b3fb69125a3547418c821e2c89e38cda"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 3,
+            "componentSortKeyId": 79505,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79853,
+            "sortImgUrl": "Power Management ICs.svg",
+            "sortName": "Battery Management ICs",
+            "sortUuid": "cfb8f471942e458eb494730a52a2a9ac"
+          }
+        ],
+        "componentCount": 22,
+        "componentSortKeyId": 79853,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Power Management ICs.svg",
+        "sortName": "Power Supply Chip",
+        "sortUuid": "6dc5d27d4f8744478cf3224b04762038"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 55,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79854,
+            "sortImgUrl": "Amplifiers.svg",
+            "sortName": "FET InputAmplifiers",
+            "sortUuid": "7391e1e2b17843b1a8bbaa10a2f605cf"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 56,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79854,
+            "sortImgUrl": "Amplifiers.svg",
+            "sortName": "Precision OpAmps",
+            "sortUuid": "1d9e4a6525114115b9e48937de9f9b8f"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 6,
+            "componentSortKeyId": 79486,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79854,
+            "sortImgUrl": "Amplifiers.svg",
+            "sortName": "Operational Amplifier",
+            "sortUuid": "abefbb9c6a5d4cbcbbcfe9a56a8e756b"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 79509,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79854,
+            "sortImgUrl": "Amplifiers.svg",
+            "sortName": "Comparators",
+            "sortUuid": "92617f44090440d4bbaf06037f3315fa"
+          }
+        ],
+        "componentCount": 9,
+        "componentSortKeyId": 79854,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Amplifiers.svg",
+        "sortName": "Operational Amplifier/Comparator",
+        "sortUuid": "eeff1f6fdd38486c99c44d7d67e917b3"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 7,
+            "componentSortKeyId": 79446,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79863,
+            "sortImgUrl": "Crystals.svg",
+            "sortName": "Crystals",
+            "sortUuid": "2f99ca1eff294f76b7aad492701f8a5b"
+          }
+        ],
+        "componentCount": 7,
+        "componentSortKeyId": 79863,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Crystals.svg",
+        "sortName": "Crystal Oscillator/Oscillator/Resonator",
+        "sortUuid": "915097ed2b2c47ba82584be9934b90f0"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 79495,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79864,
+            "sortImgUrl": "Embedded Peripheral ICs.svg",
+            "sortName": "Timers / Clock Oscillators",
+            "sortUuid": "67805b45d0f4482380fb89a2587392e4"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 79540,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79864,
+            "sortImgUrl": "Embedded Peripheral ICs.svg",
+            "sortName": "Real-time Clocks (RTC)",
+            "sortUuid": "4969c91172db4576b959156d6c31f8a0"
+          }
+        ],
+        "componentCount": 3,
+        "componentSortKeyId": 79864,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Embedded Peripheral ICs.svg",
+        "sortName": "RTC/Clock Chip",
+        "sortUuid": "c4029fbf86834bdfb04a6fca931cafce"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 10,
+            "componentSortKeyId": 65,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79865,
+            "sortImgUrl": "Fuses.svg",
+            "sortName": "TVS",
+            "sortUuid": "1e9a34d855fa42e2a1a0379efebc51c4"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 3,
+            "componentSortKeyId": 79458,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79865,
+            "sortImgUrl": "Fuses.svg",
+            "sortName": "ESD Protection Devices",
+            "sortUuid": "411793a343e34cfbae1d5a25ea49f331"
+          }
+        ],
+        "componentCount": 13,
+        "componentSortKeyId": 79865,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Fuses.svg",
+        "sortName": "TVS/Fuse/Board Level Protection",
+        "sortUuid": "52a9361a70a645d6aff4131f13f8be30"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 169,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79866,
+            "sortImgUrl": "Pushbutton Switches & Relays.svg",
+            "sortName": "Tactile Switches",
+            "sortUuid": "7f96d13e67b546e4ac2c80d1f3d21c01"
+          }
+        ],
+        "componentCount": 1,
+        "componentSortKeyId": 79866,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Pushbutton Switches & Relays.svg",
+        "sortName": "Key/Switch",
+        "sortUuid": "e5790dfa903c4a218a8107e8a8168d46"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 3,
+            "componentSortKeyId": 2475,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79868,
+            "sortImgUrl": "Filters.svg",
+            "sortName": "Ferrite Beads",
+            "sortUuid": "d2e058652256491aaf3c83faec54ab52"
+          }
+        ],
+        "componentCount": 3,
+        "componentSortKeyId": 79868,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Filters.svg",
+        "sortName": "Bead/Filter/EMI Optimization",
+        "sortUuid": "c3edb15d5c884a76a1ea4a0ab1f65307"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 5,
+            "componentSortKeyId": 104,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79873,
+            "sortImgUrl": "Optocouplers & LEDs & Infrared.svg",
+            "sortName": "Light Emitting Diodes (LED)",
+            "sortUuid": "ac4c3bf204dc486cb0c9c3fc16ef0c61"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 4,
+            "componentSortKeyId": 79533,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79873,
+            "sortImgUrl": "Optocouplers & LEDs & Infrared.svg",
+            "sortName": "Optocouplers - Phototransistor Output",
+            "sortUuid": "e003fa42474f4b3dae6cbd59fcef700c"
+          }
+        ],
+        "componentCount": 9,
+        "componentSortKeyId": 79873,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Optocouplers & LEDs & Infrared.svg",
+        "sortName": "Optocoupler/LED/Digital Tube/Photoelectric Device",
+        "sortUuid": "ef5403b59739412887bcc83a3044ab7f"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 1,
+            "componentSortKeyId": 28,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79874,
+            "sortImgUrl": "Driver ICs.svg",
+            "sortName": "LCD Drivers",
+            "sortUuid": "d0f38656fea94f7d9e507b322b7b53d7"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 3,
+            "componentSortKeyId": 79430,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79874,
+            "sortImgUrl": "Driver ICs.svg",
+            "sortName": "LED Display Drivers",
+            "sortUuid": "7f3d918d588642038abd829ac9b2ca4a"
+          }
+        ],
+        "componentCount": 4,
+        "componentSortKeyId": 79874,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Driver ICs.svg",
+        "sortName": "Nixie Tube Driver/LED Driver",
+        "sortUuid": "0251a228452444a3b6fdb7b89e06b4d2"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 77,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79882,
+            "sortImgUrl": "Embedded Processors & Controllers.svg",
+            "sortName": "ST Microelectronics",
+            "sortUuid": "d9bdeb2e1f4c4e2ebc0cd932002d1ee0"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 5,
+            "componentSortKeyId": 79443,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79882,
+            "sortImgUrl": "Embedded Processors & Controllers.svg",
+            "sortName": "Microcontroller Units (MCUs/MPUs/SOCs)",
+            "sortUuid": "216cfc29aade4a17bb7b050210fde51b"
+          }
+        ],
+        "componentCount": 7,
+        "componentSortKeyId": 79882,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Embedded Processors & Controllers.svg",
+        "sortName": "Single Chip Microcomputer/Microcontroller",
+        "sortUuid": "970fc8913b244545b4041b5fe5f5af22"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 5,
+            "componentSortKeyId": 79435,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79892,
+            "sortImgUrl": "Transistors.svg",
+            "sortName": "MOSFETs",
+            "sortUuid": "ddf0056ef7c94d4fb214aa681f5dbc74"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 13,
+            "componentSortKeyId": 79462,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79892,
+            "sortImgUrl": "Transistors.svg",
+            "sortName": "Bipolar Transistors - BJT",
+            "sortUuid": "24560e282e674306854421cbcc790cd4"
+          },
+          {
+            "childSortList": null,
+            "componentCount": 2,
+            "componentSortKeyId": 79488,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 79892,
+            "sortImgUrl": "Transistors.svg",
+            "sortName": "Darlington Transistor Arrays",
+            "sortUuid": "338ac1576ca54a078dd6d59dbd5ed78b"
+          }
+        ],
+        "componentCount": 20,
+        "componentSortKeyId": 79892,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Transistors.svg",
+        "sortName": "Triode/MOS Tube/Transistor",
+        "sortUuid": "268f4926a47b46d88d13ed2961731f51"
+      },
+      {
+        "childSortList": [
+          {
+            "childSortList": null,
+            "componentCount": 13,
+            "componentSortKeyId": 80322,
+            "enDescription": "",
+            "grade": 2,
+            "parentId": 80310,
+            "sortImgUrl": "Inductors & Chokes & Transformers.svg",
+            "sortName": "Inductors (SMD)",
+            "sortUuid": "9cfea052c4c0435980953e10b2db29cd"
+          }
+        ],
+        "componentCount": 13,
+        "componentSortKeyId": 80310,
+        "enDescription": "",
+        "grade": 1,
+        "parentId": 0,
+        "sortImgUrl": "Inductors & Chokes & Transformers.svg",
+        "sortName": "Inductors/Coils/Transformers",
+        "sortUuid": "b3b6048b375640b79c1e581dc00df855"
+      }
+    ]
+  },
+  "message": null
+}

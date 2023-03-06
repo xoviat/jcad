@@ -1,0 +1,153 @@
+{
+  "code": 200,
+  "data": {
+    "alternativesLcscComponentId": null,
+    "assemblyMode": "smtWeld",
+    "assemblyModeBatch": "smtWeld",
+    "assemblyProcess": "SMT",
+    "attributes": [
+      {
+        "attribute_name_en": "Capacitance",
+        "component_code": "C1547",
+        "attribute_value_name": "12pF"
+      },
+      {
+        "attribute_name_en": "Tolerance",
+        "component_code": "C1547",
+        "attribute_value_name": "±5%"
+      },
+      {
+        "attribute_name_en": "Temperature Coefficient",
+        "component_code": "C1547",
+        "attribute_value_name": "C0G"
+      },
+      {
+        "attribute_name_en": "Voltage Rated",
+        "component_code": "C1547",
+        "attribute_value_name": "50V"
+      }
+    ],
+    "canPresaleNumber": 364545,
+    "componentAlternativesCode": null,
+    "componentBrandEn": "FH (Guangdong Fenghua Advanced Tech)",
+    "componentCode": "C1547",
+    "componentDesignator": "C",
+    "componentImageUrl": "https://assets.lcsc.com/images/lcsc/900x900/20200710_FH--Guangdong-Fenghua-Advanced-Tech-0402CG120J500NT_C1547_front.jpg",
+    "componentLibraryType": "base",
+    "componentModelEn": "0402CG120J500NT",
+    "componentName": "FH (Guangdong Fenghua Advanced Tech) 0402CG120J500NT",
+    "componentPresaleType": null,
+    "componentProductType": 0,
+    "componentSource": "shop",
+    "componentSpecificationEn": "0402",
+    "componentStatus": "yes",
+    "componentTypeEn": null,
+    "dataManualUrl": "https://datasheet.lcsc.com/lcsc/1811141710_FH--Guangdong-Fenghua-Advanced-Tech-0402CG120J500NT_C1547.pdf",
+    "describe": "50V 12pF C0G ±5% 0402  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "encapsulationNumber": 10000,
+    "encapsulationUnit": "PCS",
+    "erpComponentName": "12pF ±5% 50V",
+    "firstTypeNameEn": "Capacitors",
+    "firstTypeNameId": 31,
+    "fixtureFlag": false,
+    "initialPrice": 0.001,
+    "isBuyComponent": "1",
+    "jlcPrices": null,
+    "lcscComponentId": 1899,
+    "lcscGoodsUrl": "https://lcsc.comhttps://lcsc.com/product-detail/Multilayer-Ceramic-Capacitors-MLCC-SMD-SMT_FH-Guangdong-Fenghua-Advanced-Tech-0402CG120J500NT_C1547.html/?href=jlc-SMT",
+    "leastNumber": 30,
+    "leastNumberPrice": 0.03,
+    "leastPatchNumber": 30,
+    "lossNumber": 10,
+    "matchedPartDetail": "FH (Guangdong Fenghua Advanced Tech)50V 12pF C0G ±5% 0402  Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "minImage": "https://assets.lcsc.com/images/lcsc/96x96/20200710_FH--Guangdong-Fenghua-Advanced-Tech-0402CG120J500NT_C1547_front.jpg",
+    "minImageList": null,
+    "minPresaleNumber": 0,
+    "minPresalePrice": null,
+    "minPurchaseNum": 1,
+    "overseasStockCount": 426495,
+    "preMinPurchaseNum": 10000,
+    "prices": [
+      {
+        "componentCode": "C1547",
+        "componentPriceAccessId": null,
+        "componentPriceKeyId": null,
+        "createTime": null,
+        "deleted": false,
+        "endNumber": 299,
+        "lcscComponentId": null,
+        "productPrice": 0.001,
+        "startNumber": 1,
+        "updateTime": null
+      },
+      {
+        "componentCode": "C1547",
+        "componentPriceAccessId": null,
+        "componentPriceKeyId": null,
+        "createTime": null,
+        "deleted": false,
+        "endNumber": 899,
+        "lcscComponentId": null,
+        "productPrice": 0.0008,
+        "startNumber": 300,
+        "updateTime": null
+      },
+      {
+        "componentCode": "C1547",
+        "componentPriceAccessId": null,
+        "componentPriceKeyId": null,
+        "createTime": null,
+        "deleted": false,
+        "endNumber": 2999,
+        "lcscComponentId": null,
+        "productPrice": 0.0007,
+        "startNumber": 900,
+        "updateTime": null
+      },
+      {
+        "componentCode": "C1547",
+        "componentPriceAccessId": null,
+        "componentPriceKeyId": null,
+        "createTime": null,
+        "deleted": false,
+        "endNumber": 14999,
+        "lcscComponentId": null,
+        "productPrice": 0.0006,
+        "startNumber": 3000,
+        "updateTime": null
+      },
+      {
+        "componentCode": "C1547",
+        "componentPriceAccessId": null,
+        "componentPriceKeyId": null,
+        "createTime": null,
+        "deleted": false,
+        "endNumber": 29999,
+        "lcscComponentId": null,
+        "productPrice": 0.0006,
+        "startNumber": 15000,
+        "updateTime": null
+      },
+      {
+        "componentCode": "C1547",
+        "componentPriceAccessId": null,
+        "componentPriceKeyId": null,
+        "createTime": null,
+        "deleted": false,
+        "endNumber": -1,
+        "lcscComponentId": null,
+        "productPrice": 0.0006,
+        "startNumber": 30000,
+        "updateTime": null
+      }
+    ],
+    "providerInfos": null,
+    "secondTypeNameEn": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+    "secondTypeNameId": 33,
+    "stockCount": 426495,
+    "storyGoods": false,
+    "warehouseCode": "sz",
+    "warehouseName": "深圳"
+  },
+  "message": null
+}

@@ -281,6 +281,8 @@ type LibraryComponent struct {
 	Manufacturer   string
 	LibraryType    string
 	Description    string
+
+	ComponentModelEn string `json:"componentModelEn"`
 }
 
 func (lc LibraryComponent) CID() string {

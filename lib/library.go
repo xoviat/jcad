@@ -272,17 +272,18 @@ func NewLibrary(root string) (*Library, error) {
 referred to as 'library component'
 */
 type LibraryComponent struct {
-	ID             int64
+	ID           int64
+	Category     string `json:"componentTypeEn"`
+	Part         string `json:"componentModelEn"`
+	Package      string `json:"componentSpecificationEn"`
+	Manufacturer string `json:"componentBrandEn"`
+	Description  string `json:"describe"`
+	Extended     bool
+
 	FirstCategory  string
 	SecondCategory string
-	Part           string
-	Package        string
 	SolderJoint    string
-	Manufacturer   string
 	LibraryType    string
-	Description    string
-
-	ComponentModelEn string `json:"componentModelEn"`
 }
 
 func (lc LibraryComponent) CID() string {

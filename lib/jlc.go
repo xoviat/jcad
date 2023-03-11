@@ -12,6 +12,11 @@ type JLC struct {
 	client *http.Client
 }
 
+type JLCLibraryComponent struct {
+	CID string `json:"componentCode"`
+	LibraryComponent
+}
+
 func NewJLC() *JLC {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
@@ -19,6 +24,10 @@ func NewJLC() *JLC {
 	}
 
 	return &JLC{client: &http.Client{Jar: jar}}
+}
+
+type jlcRequest interface {
+	Method() string
 }
 
 type jlcSelectComponentListRequest struct {
@@ -38,21 +47,23 @@ type jlcSelectComponentListRequest struct {
 	StockSort              *string  `json:"stockSort"`
 }
 
+func (r jlcSelectComponentListRequest) Method() string { return "selectSmtComponentList" }
+
 type jlcSelectComponentListResponse struct {
 	Code int `json:"code"`
 	Data struct {
 		ComponentPageInfo struct {
-			EndRow          int                 `json:"endRow"`
-			HasNextPage     bool                `json:"hasNextPage"`
-			HasPreviousPage bool                `json:"hasPreviousPage"`
-			IsFirstPage     bool                `json:"isFirstPage"`
-			IsLastPage      bool                `json:"isLastPage"`
-			List            []*LibraryComponent `json:"list"`
+			EndRow          int                    `json:"endRow"`
+			HasNextPage     bool                   `json:"hasNextPage"`
+			HasPreviousPage bool                   `json:"hasPreviousPage"`
+			IsFirstPage     bool                   `json:"isFirstPage"`
+			IsLastPage      bool                   `json:"isLastPage"`
+			List            []*JLCLibraryComponent `json:"list"`
 		} `json:"componentPageInfo"`
 	} `json:"data"`
 }
 
-func (jlc *JLC) selectComponentList(request *jlcSelectComponentListRequest) ([]*LibraryComponent, error) {
+func (jlc *JLC) makeRequest(request jlcRequest, response interface{}) error {
 	rd, wr := io.Pipe()
 
 	go func() {
@@ -63,46 +74,45 @@ func (jlc *JLC) selectComponentList(request *jlcSelectComponentListRequest) ([]*
 
 	req, err := http.NewRequest(
 		"POST",
-		"https://jlcpcb.com/shoppingCart/smtGood/selectSmtComponentList",
+		"https://jlcpcb.com/shoppingCart/smtGood/"+request.Method(),
 		bufio.NewReader(rd),
 	)
 
 	req.Header.Add("Content-Type", "application/json")
 	if err != nil {
-		return []*LibraryComponent{}, err
+		return err
 	}
 
 	resp, err := jlc.client.Do(req)
 	if err != nil {
-		return []*LibraryComponent{}, err
+		return err
 	}
 
-	var response jlcSelectComponentListResponse
 	dec := json.NewDecoder(resp.Body)
-	dec.Decode(&response)
-
-	_ = resp
-
-	return []*LibraryComponent{}, err
-
-	/*
-		componentAttributes	:  []
-		componentBrand	: 	null
-		componentLibraryType	: 	"base"
-		componentSpecification	: 	null
-		currentPage	: 	2
-		firstSortId	: 	""
-		firstSortName	: 	""
-		firstSortNameNew	: 	""
-		keyword	: 	null
-		pageSize	: 	25
-		searchSource	: 	"search"
-		secondSortName	: 	""
-		stockFlag	: 	null
-		stockSort	: 	null
-	*/
+	return dec.Decode(&response)
 }
 
-func (jlc *JLC) getComponentDetail() {
-	/* https://jlcpcb.com/shoppingCart/smtGood/getComponentDetail?componentLcscId=1899 */
+func (jlc *JLC) SelectBaseComponentList() ([]*LibraryComponent, error) {
+	request := jlcSelectComponentListRequest{
+		ComponentLibraryType: "base",
+		CurrentPage:          2,
+		PageSize:             25,
+		SearchSource:         "search",
+	}
+
+	response := jlcSelectComponentListResponse{}
+	jlc.makeRequest(request, &response)
+
+	components := make(
+		[]*LibraryComponent, len(response.Data.ComponentPageInfo.List),
+	)
+
+	for i := 0; i < len(components); i++ {
+		component := response.Data.ComponentPageInfo.List[i]
+		component.ID = FromCID(component.CID)
+
+		components[i] = &component.LibraryComponent
+	}
+
+	return components, nil
 }

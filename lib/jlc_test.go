@@ -1,10 +1,11 @@
 package lib
 
 import (
+	"fmt"
 	"testing"
 )
 
-func TestSelectComponentList(t *testing.T) {
+func TestSelectBaseComponentList(t *testing.T) {
 	jlc := NewJLC()
 
 	/*
@@ -24,12 +25,11 @@ func TestSelectComponentList(t *testing.T) {
 		stockSort	: 	null
 	*/
 
-	req := jlcSelectComponentListRequest{
-		ComponentLibraryType: "base",
-		CurrentPage:          2,
-		PageSize:             25,
-		SearchSource:         "search",
+	components, err := jlc.SelectBaseComponentList()
+
+	for _, component := range components {
+		fmt.Println(component.CID())
 	}
 
-	jlc.selectComponentList(&req)
+	_, _ = components, err
 }

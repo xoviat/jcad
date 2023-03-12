@@ -156,8 +156,16 @@ var generateCmd = &cobra.Command{
 				} else if result, ok := results[lib.FromCID(cid)]; ok {
 					assocations.Associate(component, result)
 				} else {
-					assocations.Associate(component, library.Exact(cid))
+					assocations.Associate(component, client.Exact(cid))
 				}
+			}
+
+			/*
+				If the associated part is not in the library, then load it
+			*/
+			if lc := assocations.FindAssociated(component); lc != nil && lc.ID != 0 && lc.Description == "" {
+				fmt.Printf("Loading data from JLCPCB for %s\n", component.Designator)
+				assocations.Associate(component, client.Exact(lc.CID()))
 			}
 
 			/*

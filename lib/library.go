@@ -256,34 +256,39 @@ func (l *Library) Exact(cid string) *LibraryComponent {
 	return &LibraryComponent{ID: FromCID(cid)}
 }
 
+/*
+returns:
+  - nil if no associated component
+  - LibraryComponent{ID:0} if this component is to be skipped
+  - LibraryComponent{ID:int64} if an associated component is found
+*/
 func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
 	if !bcomponent.CanAssemble() {
 		return &LibraryComponent{}
 	}
 
 	component := LibraryComponent{}
-	skip := false
+	cid := ""
 
 	l.db.View(func(tx *bolt.Tx) error {
 		bassociations := tx.Bucket(COMPONENTS_ASC_BKT)
 		bcomponents := tx.Bucket(COMPONENTS_BKT)
 
 		// fmt.Printf("FindAssociated: %s\n", bcomponent.Key())
-		ID := ""
 		if bytes := bassociations.Get(bcomponent.Key()); bytes != nil {
-			ID = string(bytes)
+			cid = string(bytes)
 		}
 
-		skip = ID == "C0"
-
-		if bytes := bcomponents.Get([]byte(ID)); bytes != nil {
+		if bytes := bcomponents.Get([]byte(cid)); bytes != nil {
 			Unmarshal(bytes, &component)
 		}
 
 		return nil
 	})
 
-	if component.ID == 0 && !skip {
+	if component.ID == 0 && cid != "C0" && cid != "" {
+		return &LibraryComponent{ID: FromCID(cid)}
+	} else if component.ID == 0 && cid != "C0" {
 		return nil
 	}
 

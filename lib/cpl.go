@@ -81,6 +81,9 @@ func (bc *BoardComponent) Rotate(drotation float64) error {
 	return nil
 }
 
+/*
+AssociationMap acts as an in-memory cache for the DB
+*/
 type AssocationMap struct {
 	library     *Library
 	assocations map[string]*LibraryComponent

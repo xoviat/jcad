@@ -139,6 +139,20 @@ func (jlc *JLC) SelectComponentList(keyword string) (map[int64]*LibraryComponent
 	return components, nil
 }
 
+func (jlc *JLC) Exact(cid string) *LibraryComponent {
+	components, err := jlc.SelectComponentList(cid)
+	if err != nil {
+		return &LibraryComponent{ID: FromCID(cid)}
+	}
+
+	component, ok := components[FromCID(cid)]
+	if !ok {
+		return &LibraryComponent{ID: FromCID(cid), Description: "No description available"}
+	}
+
+	return component
+}
+
 func (jlc *JLC) SelectBaseComponentList() (<-chan *LibraryComponent, <-chan error) {
 	size := 100
 	components := make(chan *LibraryComponent, size)

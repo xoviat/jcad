@@ -143,7 +143,7 @@ var generateCmd = &cobra.Command{
 					i := 0
 					for _, result := range results {
 						suggestions[i] = prompt.Suggest{
-							Text: result.CID(), Description: result.Description,
+							Text: result.CID(), Description: result.Part + " : " + result.Description,
 						}
 						i++
 					}

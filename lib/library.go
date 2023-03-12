@@ -234,16 +234,15 @@ func (lc LibraryComponent) Value() string {
 	return ""
 }
 
-func (l *Library) Exact(id string) *LibraryComponent {
-	if id == "C0" {
+func (l *Library) Exact(cid string) *LibraryComponent {
+	if cid == "C0" {
 		return &LibraryComponent{}
 	}
 
 	component := LibraryComponent{}
-
 	l.db.View(func(tx *bolt.Tx) error {
 		bcomponents := tx.Bucket(COMPONENTS_BKT)
-		if bytes := bcomponents.Get([]byte(id)); bytes != nil {
+		if bytes := bcomponents.Get([]byte(cid)); bytes != nil {
 			Unmarshal(bytes, &component)
 		}
 
@@ -254,26 +253,7 @@ func (l *Library) Exact(id string) *LibraryComponent {
 		return &component
 	}
 
-	component = LibraryComponent{ID: FromCID(id)}
-	if err := l.db.Update(func(tx *bolt.Tx) error {
-		components := tx.Bucket(COMPONENTS_BKT)
-
-		bytes, err := Marshal(component)
-		if err != nil {
-			return err
-		}
-
-		err = components.Put([]byte(component.CID()), bytes)
-		if err != nil {
-			return err
-		}
-
-		return nil
-	}); err != nil {
-		return &LibraryComponent{}
-	}
-
-	return &component
+	return &LibraryComponent{ID: FromCID(cid)}
 }
 
 func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
@@ -315,12 +295,23 @@ func (l *Library) Associate(bcomponent *BoardComponent, lcomponent *LibraryCompo
 	l.db.Update(func(tx *bolt.Tx) error {
 		bassociations := tx.Bucket(COMPONENTS_ASC_BKT)
 		bfootprints := tx.Bucket(PACKAGE_ASC_BKT)
+		bcomponents := tx.Bucket(COMPONENTS_BKT)
+
+		bytes, err := Marshal(lcomponent)
+		if err != nil {
+			return err
+		}
+
+		err = bcomponents.Put([]byte(lcomponent.CID()), bytes)
+		if err != nil {
+			return err
+		}
 
 		if lcomponent == nil {
 			return bassociations.Delete(bcomponent.Key())
 		}
 
-		err := bassociations.Put(bcomponent.Key(), []byte(lcomponent.CID()))
+		err = bassociations.Put(bcomponent.Key(), []byte(lcomponent.CID()))
 		if err != nil {
 			return err
 		}

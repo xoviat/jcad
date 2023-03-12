@@ -119,7 +119,7 @@ func (jlc *JLC) makeRequest(request jlcRequest, response interface{}) error {
 	return dec.Decode(&response)
 }
 
-func (jlc *JLC) SelectComponentList(keyword string) ([]*LibraryComponent, error) {
+func (jlc *JLC) SelectComponentList(keyword string) (map[int64]*LibraryComponent, error) {
 	request := jlcSelectComponentListRequest{
 		CurrentPage:  1,
 		PageSize:     25,
@@ -130,10 +130,10 @@ func (jlc *JLC) SelectComponentList(keyword string) ([]*LibraryComponent, error)
 	response := jlcSelectComponentListResponse{}
 	jlc.makeRequest(request, &response)
 
-	components := make([]*LibraryComponent, len(response.Data.ComponentPageInfo.List))
-	for i, component := range response.Data.ComponentPageInfo.List {
+	components := make(map[int64]*LibraryComponent)
+	for _, component := range response.Data.ComponentPageInfo.List {
 		component.ID = FromCID(component.CID)
-		components[i] = &component.LibraryComponent
+		components[component.ID] = &component.LibraryComponent
 	}
 
 	return components, nil

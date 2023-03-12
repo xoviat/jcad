@@ -106,6 +106,7 @@ var generateCmd = &cobra.Command{
 			mclear[designator] = struct{}{}
 		}
 
+		client := lib.NewJLC()
 		bom := make(lib.BOM)
 		components := lib.ReadPOS(filenames.POS)
 		assocations := lib.NewAssociationMap(library)
@@ -134,23 +135,28 @@ var generateCmd = &cobra.Command{
 
 			if lc := assocations.FindAssociated(component); lc == nil {
 				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Package)
-				id := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
-					suggestions := []prompt.Suggest{}
+				results, _ := client.SelectComponentList(component.Comment)
 
-					// TODO: Impl. extended suggestions with JLC API
-					for _, lcomponent := range []*lib.LibraryComponent{} {
-						suggestions = append(suggestions, prompt.Suggest{
-							Text: lcomponent.CID(), Description: lcomponent.Part + " " + lcomponent.Package,
-						})
+				cid := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
+					suggestions := make([]prompt.Suggest, len(results))
+
+					i := 0
+					for _, result := range results {
+						suggestions[i] = prompt.Suggest{
+							Text: result.CID(), Description: result.Description,
+						}
+						i++
 					}
 
 					return prompt.FilterHasPrefix(suggestions, d.GetWordBeforeCursor(), true)
 				})
 
-				if id == "" {
+				if cid == "" {
 					assocations.Associate(component, &lib.LibraryComponent{})
+				} else if result, ok := results[lib.FromCID(cid)]; ok {
+					assocations.Associate(component, result)
 				} else {
-					assocations.Associate(component, library.Exact(id))
+					assocations.Associate(component, library.Exact(cid))
 				}
 			}
 

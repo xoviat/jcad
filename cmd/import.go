@@ -16,10 +16,7 @@ limitations under the License.
 package cmd
 
 import (
-	"bufio"
-	"encoding/csv"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -46,74 +43,48 @@ var importCmd = &cobra.Command{
 			return
 		}
 
-		isAssociations := false
 		rows := make(chan []string, 100)
-		if strings.HasSuffix(strings.ToLower(src), ".csv") {
-			fp, err := os.Open(src)
-			if err != nil {
-				fmt.Printf("failed to open csv file: %s\n", src)
-				return
-			}
+		if !strings.HasSuffix(strings.ToLower(src), ".xls") &&
+			!strings.HasSuffix(strings.ToLower(src), ".xlsx") {
 
-			reader := csv.NewReader(bufio.NewReader(fp))
-			go func() {
-				defer fp.Close()
-
-				for row, _ := reader.Read(); len(row) > 0; row, _ = reader.Read() {
-					if len(row) < 9 {
-						continue
-					}
-
-					rows <- row
-				}
-
-				close(rows)
-			}()
-		} else if strings.HasSuffix(strings.ToLower(src), ".xls") ||
-			strings.HasSuffix(strings.ToLower(src), ".xlsx") {
-
-			f, err := excelize.OpenFile(src)
-			if err != nil {
-				fmt.Printf("failed to open excel file: %s\n", src)
-				return
-			}
-
-			isAssociations = f.GetSheetName(0) == "component-associations"
-			erows, err := f.Rows(f.GetSheetList()[0])
-			if err != nil {
-				fmt.Printf("failed to get sheet list: %s\n", src)
-				return
-			}
-
-			go func() {
-				for {
-					if end := !erows.Next(); end {
-						close(rows)
-						return
-					}
-
-					row, err := erows.Columns()
-					if err != nil || len(row) < 2 || (!isAssociations && len(row) < 9) {
-						continue
-					}
-
-					rows <- row
-				}
-			}()
-		} else {
-			fmt.Printf("unknown file type: %s\n", src)
+			fmt.Println("association file must be an excel spreadsheet")
 			return
 		}
 
-		// TODO: Import assocations if sheet name is component-assocations
-		//  library.ImportAssocations
-
-		if isAssociations {
-			err = library.ImportAssocations(rows)
-		} else {
-			fmt.Println("this functionality is no longer supported")
+		f, err := excelize.OpenFile(src)
+		if err != nil {
+			fmt.Printf("failed to open excel file: %s\n", src)
 			return
 		}
+
+		if f.GetSheetName(0) != "component-associations" {
+			fmt.Println("component-associations sheet must be present")
+			return
+		}
+
+		erows, err := f.Rows(f.GetSheetList()[0])
+		if err != nil {
+			fmt.Printf("failed to get sheet list: %s\n", src)
+			return
+		}
+
+		go func() {
+			for {
+				if end := !erows.Next(); end {
+					close(rows)
+					return
+				}
+
+				row, err := erows.Columns()
+				if err != nil || len(row) < 2 {
+					continue
+				}
+
+				rows <- row
+			}
+		}()
+
+		err = library.ImportAssocations(rows)
 		if err != nil {
 			fmt.Printf("failed to import library: %s\n", err)
 			return

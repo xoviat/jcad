@@ -34,6 +34,7 @@ var loadCmd = &cobra.Command{
 			return
 		}
 
+		fmt.Println("loading basic components from JLCPCB")
 		client := lib.NewJLC()
 
 		components, errs := client.SelectBaseComponentList()

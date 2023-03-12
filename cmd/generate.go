@@ -136,7 +136,9 @@ var generateCmd = &cobra.Command{
 				fmt.Printf("Enter component ID for %s, %s, %s\n:", component.Designator, component.Comment, component.Package)
 				id := prompt.Input("> ", func(d prompt.Document) []prompt.Suggest {
 					suggestions := []prompt.Suggest{}
-					for _, lcomponent := range library.FindMatching(component) {
+
+					// TODO: Impl. extended suggestions with JLC API
+					for _, lcomponent := range []*lib.LibraryComponent{} {
 						suggestions = append(suggestions, prompt.Suggest{
 							Text: lcomponent.CID(), Description: lcomponent.Part + " " + lcomponent.Package,
 						})

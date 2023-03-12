@@ -6,171 +6,91 @@ import (
 	"path/filepath"
 	"regexp"
 
-	"github.com/blevesearch/bleve"
 	"github.com/boltdb/bolt"
 )
 
 var (
 	COMPONENTS_BKT     = []byte("components")             // Contains all of the JLCPCB components
-	CATEGORIES_BKT     = []byte("categories")             // Associates the categories with all contained within
-	PACKAGES_BKT       = []byte("packages")               // Contains a list of eagle packages
-	SYMBOLS_BKT        = []byte("symbols")                // Contains a list of eagle symbols
 	COMPONENTS_ASC_BKT = []byte("component-associations") // Associates a BoardComponent Key with a LibraryComponent
 	PACKAGE_ASC_BKT    = []byte("package-associations")   // Associates a KiCad package with a JLCPCB package
 )
 
 var (
 	re1 *regexp.Regexp = regexp.MustCompile("[^a-zA-Z]+")
-	re2 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(nF|pF|uF)`)
-	re3 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(k|MOhms|KOhms|Ohms)`)
-	re4 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(uH|mH)`)
-
-	iprefixes = map[string]string{ // Associates a component value with a list of actual components
-		"R": "index-resistors",
-		"C": "index-capacitors",
-		"L": "index-inductors",
-	}
+	re2 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(pF|nF|uF|mF)`)
+	re3 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(mΩ|Ω|kΩ|MΩ)`)
+	re4 *regexp.Regexp = regexp.MustCompile(`[0-9\.]+(nH|uH|mH)`)
 )
 
+var (
+	BASIC_CAT_MAP = map[string][]string{
+		"R": {"Chip Resistor - Surface Mount"},
+		"C": {"Multilayer Ceramic Capacitors MLCC - SMD/SMT", "Tantalum Capacitors"},
+		"L": {"Inductors (SMD)"},
+	}
+	BASIC_FP_MAP = map[string]string{
+		"0402": "_0402_1005Metric",
+		"0603": "_0603_1608Metric",
+		"0805": "_0805_2012Metric",
+		"1206": "_1206_3216Metric",
+	}
+
+	BASIC_CAT_MAP_COMP map[string]string
+)
+
+func init() {
+	BASIC_CAT_MAP_COMP = make(map[string]string)
+
+	for prefix, categories := range BASIC_CAT_MAP {
+		for _, category := range categories {
+			BASIC_CAT_MAP_COMP[category] = prefix
+		}
+	}
+}
+
 type Library struct {
-	root  string
-	db    *bolt.DB
-	index bleve.Index
+	root string
+	db   *bolt.DB
 }
 
 /*
-Import a library from an excel or csv file
+Import all of the basic parts into the library
 */
-func (l *Library) Import(rows <-chan []string) error {
+func (l *Library) ImportBasic(components <-chan *LibraryComponent, errs <-chan error) error {
 	l.db.Update(func(tx *bolt.Tx) error {
 		tx.DeleteBucket(COMPONENTS_BKT)
-		tx.DeleteBucket(CATEGORIES_BKT)
-		for _, iprefix := range iprefixes {
-			tx.DeleteBucket([]byte(iprefix))
-		}
-
 		tx.CreateBucket(COMPONENTS_BKT)
-		tx.CreateBucket(CATEGORIES_BKT)
-		for _, iprefix := range iprefixes {
-			tx.CreateBucket([]byte(iprefix))
-		}
 
 		return nil
 	})
 
-	i := 0
-	/*
-		amount per transaction
-	*/
-	k := 10000
-	row := []string{""}
-	ok := true
-	categories := make(map[string][]int64)
-	indexes := make(map[string]map[string][]int64)
-	indexes["R"] = make(map[string][]int64)
-	indexes["C"] = make(map[string][]int64)
-	indexes["L"] = make(map[string][]int64)
-
-	for len(row) != 0 {
-		if err := l.db.Update(func(tx *bolt.Tx) error {
-			components := tx.Bucket(COMPONENTS_BKT)
-
-			/*
-				Do it this way to save memory
-			*/
-			for j := 0; j < k; j++ {
-				if row, ok = <-rows; !ok {
-					return nil
-				}
-
-				component := LibraryComponent{
-					ID:             FromCID(row[0]),
-					FirstCategory:  row[1],
-					SecondCategory: row[2],
-					Part:           row[3],
-					Package:        row[4],
-					SolderJoint:    row[5],
-					Manufacturer:   row[6],
-					LibraryType:    row[7],
-					Description:    row[8],
-				}
-
-				//				fmt.Printf(
-				//					"%1.0d, %s, %s, %s\n",
-				//					component.ID, component.FirstCategory, component.SecondCategory, component.Part,
-				//				)
-
-				for _, each := range []string{component.FirstCategory, component.SecondCategory} {
-					if _, ok := categories[each]; !ok {
-						categories[each] = []int64{}
-					}
-					categories[each] = append(categories[each], component.ID)
-				}
-
-				if component.LibraryType == "Basic" && component.Prefix() != "" &&
-					component.Value() != "" {
-
-					if _, ok := indexes[component.Prefix()][component.Value()]; !ok {
-						indexes[component.Prefix()][component.Value()] = []int64{}
-					}
-					indexes[component.Prefix()][component.Value()] = append(
-						indexes[component.Prefix()][component.Value()], component.ID,
-					)
-
-					//					if component.Prefix() == "R" {
-					//						fmt.Printf(
-					//							"%s + %s: %1.0d\n", component.Prefix(), component.Value(), component.ID,
-					//						)
-					//					}
-				}
-
-				bytes, err := Marshal(component)
-				if err != nil {
-					return err
-				}
-
-				err = components.Put([]byte(component.CID()), bytes)
-				if err != nil {
-					return err
-				}
-
-				i++
-			}
-
-			return nil
-		}); err != nil {
-			return err
-		}
-	}
-
 	return l.db.Update(func(tx *bolt.Tx) error {
-		bcategories := tx.Bucket(CATEGORIES_BKT)
-		for category, components := range categories {
-			bytes, err := Marshal(components)
+		bcomponents := tx.Bucket(COMPONENTS_BKT)
+		bassociations := tx.Bucket(COMPONENTS_ASC_BKT)
+
+		for component := range components {
+			bytes, err := Marshal(component)
 			if err != nil {
 				return err
 			}
 
-			// fmt.Println(category)
+			if key := component.BasicKey(); key != "" {
+				err = bassociations.Put([]byte(key), []byte(component.CID()))
+			}
+			if err != nil {
+				return err
+			}
 
-			err = bcategories.Put([]byte(category), bytes)
+			err = bcomponents.Put([]byte(component.CID()), bytes)
 			if err != nil {
 				return err
 			}
 		}
-		for prefix, bname := range iprefixes {
-			bucket := tx.Bucket([]byte(bname))
-			for value, components := range indexes[prefix] {
-				bytes, err := Marshal(components)
-				if err != nil {
-					return err
-				}
 
-				err = bucket.Put([]byte(value), bytes)
-				if err != nil {
-					return err
-				}
-			}
+		select {
+		case err := <-errs:
+			return err
+		default:
 		}
 
 		return nil
@@ -238,33 +158,15 @@ func NewLibrary(root string) (*Library, error) {
 
 	db.Update(func(tx *bolt.Tx) error {
 		tx.CreateBucketIfNotExists(COMPONENTS_BKT)
-		tx.CreateBucketIfNotExists(CATEGORIES_BKT)
-		tx.CreateBucketIfNotExists(PACKAGES_BKT)
-		tx.CreateBucketIfNotExists(SYMBOLS_BKT)
 		tx.CreateBucketIfNotExists(COMPONENTS_ASC_BKT)
 		tx.CreateBucketIfNotExists(PACKAGE_ASC_BKT)
-		for _, iprefix := range iprefixes {
-			tx.CreateBucketIfNotExists([]byte(iprefix))
-		}
 
 		return nil
 	})
 
-	var index bleve.Index
-	ipath := filepath.Join(root, "jcad.index")
-	if Exists(ipath) {
-		index, err = bleve.Open(ipath)
-	} else {
-		index, err = bleve.New(ipath, bleve.NewIndexMapping())
-	}
-	if err != nil {
-		return nil, err
-	}
-
 	return &Library{
-		root:  root,
-		db:    db,
-		index: index,
+		root: root,
+		db:   db,
 	}, nil
 }
 
@@ -278,150 +180,58 @@ type LibraryComponent struct {
 	Package      string `json:"componentSpecificationEn"`
 	Manufacturer string `json:"componentBrandEn"`
 	Description  string `json:"describe"`
-	Extended     bool
-
-	FirstCategory  string
-	SecondCategory string
-	SolderJoint    string
-	LibraryType    string
+	Basic        bool
 }
 
 func (lc LibraryComponent) CID() string {
 	return fmt.Sprintf("C%1.1d", lc.ID)
 }
 
-func (lc *LibraryComponent) Prefix() string {
-	switch lc.FirstCategory {
-	case "Capacitors":
-		return "C"
-	case "Resistors":
-		return "R"
-	case "Inductors & Chokes & Transformers":
-		return "L"
+/*
+compute the key for a basic resistor, capacitor or inductor
+*/
+func (lc LibraryComponent) BasicKey() string {
+	if !lc.Basic {
+		return ""
 	}
 
-	return ""
+	prefix := lc.Prefix()
+	if prefix == "" {
+		return ""
+	}
+
+	pkg, _ := BASIC_FP_MAP[lc.Package]
+	if pkg == "" {
+		return ""
+	}
+
+	return BoardComponent{
+		Designator: prefix,
+		Comment:    lc.Value(),
+		Package:    prefix + pkg,
+	}.StringKey()
+}
+
+func (lc LibraryComponent) Prefix() string {
+	prefix, _ := BASIC_CAT_MAP_COMP[lc.Category]
+
+	return prefix
 }
 
 /*
 Attempt to determine the value from the description
 */
-func (lc *LibraryComponent) Value() string {
-	switch lc.FirstCategory {
-	case "Capacitors":
+func (lc LibraryComponent) Value() string {
+	switch lc.Prefix() {
+	case "C":
 		return NormalizeValue(re2.FindString(lc.Description))
-	case "Resistors":
+	case "R":
 		return NormalizeValue(re3.FindString(lc.Description))
-	case "Inductors & Chokes & Transformers":
+	case "L":
 		return NormalizeValue(re4.FindString(lc.Description))
 	}
 
 	return ""
-}
-
-/*
-Determine whether it is possible to place the component using the SMT process
-*/
-func (l *Library) CanAssemble(bcomponent *BoardComponent) bool {
-	switch re1.ReplaceAllString(bcomponent.Designator, "") {
-	case "J":
-		return false
-	case "H":
-		return false
-	case "G":
-		return false
-	case "JP":
-		return false
-	case "DRA":
-		return false
-	case "DS":
-		return false
-	case "SW":
-		return false
-	}
-
-	return true
-}
-
-/*
-Find the best suitable library componentx, given the board components
-
-Prefer a basic part, if available
-Require the package (footprint) to match
-
-Return nil if no part found
-*/
-func (l *Library) FindMatching(bcomponent *BoardComponent) []*LibraryComponent {
-	/*
-		This method is not trivial! The comment may refer to a part number,
-		a resistor value, such as 2k2, or a capacitor value. A list of possible
-		combinations for the parameters is given below:
-
-		U	AMS1117-3.3		SOT-223-3_TabPin2,25.225001
-		U	STM32F405RGT6	LQFP-64_10x10mm_P0.5mm
-		F	500mA			Fuse_0603_1608Metric
-		FB	100 @ 100 MHz	L_0805_2012Metric
-		C	100nf			C_0402_1005Metric
-		R	220				R_0402_1005Metric
-		R	2k2				R_0603_1608Metric
-
-		The desired results are given below:
-
-		Power Management ICs				AMS1117-3.3		SOT-223					Positive Fixed 1.3V @ 800mA 15V 3.3V 1A
-		Embedded Processors & Controllers	STM32F405RGT6	LQFP-64_10.0x10.0x0.5P	STMicroelectronics
-		N/A
-	*/
-
-	iname, ok := iprefixes[bcomponent.Prefix()]
-	if !ok {
-		return []*LibraryComponent{}
-	}
-
-	// todo: filter further using package associations
-	components := []*LibraryComponent{}
-	pkg := ""
-	l.db.View(func(tx *bolt.Tx) error {
-		bcomponents := tx.Bucket(COMPONENTS_BKT)
-		bindex := tx.Bucket([]byte(iname))
-		bpackages := tx.Bucket(PACKAGE_ASC_BKT)
-
-		IDs := []int64{}
-		if bytes := bindex.Get([]byte(bcomponent.Value())); bytes != nil {
-			Unmarshal(bytes, &IDs)
-		}
-
-		if bytes := bpackages.Get([]byte(bcomponent.Package)); bytes != nil {
-			pkg = string(bytes)
-		}
-
-		components = make([]*LibraryComponent, len(IDs))
-		for i, ID := range IDs {
-			if bytes := bcomponents.Get(
-				[]byte(LibraryComponent{ID: ID}.CID()),
-			); bytes != nil {
-				Unmarshal(bytes, &components[i])
-			}
-		}
-
-		return nil
-	})
-
-	if pkg == "" {
-		return components
-	}
-
-	i := 0
-	for _, component := range components {
-		if component.Package != pkg {
-			continue
-		}
-
-		components[i] = component
-		i++
-	}
-	components = components[:i]
-
-	return components
 }
 
 func (l *Library) Exact(id string) *LibraryComponent {
@@ -467,7 +277,7 @@ func (l *Library) Exact(id string) *LibraryComponent {
 }
 
 func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
-	if !l.CanAssemble(bcomponent) {
+	if !bcomponent.CanAssemble() {
 		return &LibraryComponent{}
 	}
 
@@ -498,33 +308,6 @@ func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
 	}
 
 	return &component
-}
-
-func (l *Library) FindInCategory(category string) []*LibraryComponent {
-	components := []*LibraryComponent{}
-
-	l.db.View(func(tx *bolt.Tx) error {
-		bcategories := tx.Bucket(CATEGORIES_BKT)
-		bcomponents := tx.Bucket(COMPONENTS_BKT)
-
-		IDs := []int64{}
-		if bytes := bcategories.Get([]byte(category)); bytes != nil {
-			Unmarshal(bytes, &IDs)
-		}
-
-		for _, ID := range IDs {
-			component := LibraryComponent{}
-			if bytes := bcomponents.Get([]byte((&LibraryComponent{ID: ID}).CID())); bytes != nil {
-				Unmarshal(bytes, &component)
-			}
-
-			components = append(components, &component)
-		}
-
-		return nil
-	})
-
-	return components
 }
 
 func (l *Library) Associate(bcomponent *BoardComponent, lcomponent *LibraryComponent) {

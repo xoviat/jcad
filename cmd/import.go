@@ -30,11 +30,9 @@ import (
 // importCmd represents the import command
 var importCmd = &cobra.Command{
 	Use:   "import",
-	Short: "Import a component or association database.",
-	Long: `Import one of the following:
-		- A component database, in an xlsx or csv format. 
-		- An association database, in an xlsx format.`,
-	Args: cobra.ExactArgs(1),
+	Short: "Import an association database.",
+	Long:  `Import an association database, in xlsx format.`,
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		src, err := lib.Normalize(args[0])
 		if err != nil {
@@ -113,7 +111,8 @@ var importCmd = &cobra.Command{
 		if isAssociations {
 			err = library.ImportAssocations(rows)
 		} else {
-			err = library.Import(rows)
+			fmt.Println("this functionality is no longer supported")
+			return
 		}
 		if err != nil {
 			fmt.Printf("failed to import library: %s\n", err)

@@ -6,10 +6,13 @@ import (
 	"io"
 	"net/http"
 	"net/http/cookiejar"
+	"sync"
+	"time"
 )
 
 type JLC struct {
 	client *http.Client
+	lock   *sync.Mutex
 }
 
 type JLCLibraryComponent struct {
@@ -23,7 +26,10 @@ func NewJLC() *JLC {
 		panic("failed to create cookiejar for some reason")
 	}
 
-	return &JLC{client: &http.Client{Jar: jar}}
+	return &JLC{
+		client: &http.Client{Jar: jar},
+		lock:   &sync.Mutex{},
+	}
 }
 
 type jlcRequest interface {
@@ -63,7 +69,23 @@ type jlcSelectComponentListResponse struct {
 	} `json:"data"`
 }
 
+func (jlc *JLC) clearCookies() {
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		panic("failed to create cookiejar for some reason")
+	}
+
+	jlc.client.Jar = jar
+}
+
 func (jlc *JLC) makeRequest(request jlcRequest, response interface{}) error {
+	jlc.lock.Lock()
+	jlc.clearCookies()
+	go func() {
+		defer jlc.lock.Unlock()
+		time.Sleep(1500 * time.Millisecond)
+	}()
+
 	rd, wr := io.Pipe()
 
 	go func() {
@@ -88,31 +110,70 @@ func (jlc *JLC) makeRequest(request jlcRequest, response interface{}) error {
 		return err
 	}
 
+	//	buf, err := ioutil.ReadAll(resp.Body)
+	//	fmt.Println(string(buf))
+	//
+	//	dec := json.NewDecoder(bytes.NewReader(buf))
+
 	dec := json.NewDecoder(resp.Body)
 	return dec.Decode(&response)
 }
 
-func (jlc *JLC) SelectBaseComponentList() ([]*LibraryComponent, error) {
+func (jlc *JLC) SelectComponentList(keyword string) ([]*LibraryComponent, error) {
 	request := jlcSelectComponentListRequest{
-		ComponentLibraryType: "base",
-		CurrentPage:          2,
-		PageSize:             25,
-		SearchSource:         "search",
+		CurrentPage:  1,
+		PageSize:     25,
+		SearchSource: "search",
+		Keyword:      &keyword,
 	}
 
 	response := jlcSelectComponentListResponse{}
 	jlc.makeRequest(request, &response)
 
-	components := make(
-		[]*LibraryComponent, len(response.Data.ComponentPageInfo.List),
-	)
-
-	for i := 0; i < len(components); i++ {
-		component := response.Data.ComponentPageInfo.List[i]
+	components := make([]*LibraryComponent, len(response.Data.ComponentPageInfo.List))
+	for i, component := range response.Data.ComponentPageInfo.List {
 		component.ID = FromCID(component.CID)
-
 		components[i] = &component.LibraryComponent
 	}
 
 	return components, nil
+}
+
+func (jlc *JLC) SelectBaseComponentList() (<-chan *LibraryComponent, <-chan error) {
+	size := 100
+	components := make(chan *LibraryComponent, size)
+	errs := make(chan error)
+
+	go func() {
+		defer close(components)
+		defer close(errs)
+
+		page := 1
+		for {
+			request := jlcSelectComponentListRequest{
+				ComponentLibraryType: "base",
+				CurrentPage:          page,
+				PageSize:             size,
+				SearchSource:         "search",
+			}
+
+			response := jlcSelectComponentListResponse{}
+			jlc.makeRequest(request, &response)
+
+			if len(response.Data.ComponentPageInfo.List) == 0 {
+				return
+			}
+
+			for _, component := range response.Data.ComponentPageInfo.List {
+				component.ID = FromCID(component.CID)
+				component.Basic = true
+
+				components <- &component.LibraryComponent
+			}
+
+			page++
+		}
+	}()
+
+	return components, errs
 }

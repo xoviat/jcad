@@ -25,15 +25,39 @@ type BoardComponent struct {
 	Layer      string
 }
 
-func (bc *BoardComponent) Prefix() string {
+/*
+Determine whether it is possible to place the component using the SMT process
+*/
+func (bc BoardComponent) CanAssemble() bool {
+	switch re1.ReplaceAllString(bc.Designator, "") {
+	case "J":
+		return false
+	case "H":
+		return false
+	case "G":
+		return false
+	case "JP":
+		return false
+	case "DRA":
+		return false
+	case "DS":
+		return false
+	case "SW":
+		return false
+	}
+
+	return true
+}
+
+func (bc BoardComponent) Prefix() string {
 	return re1.ReplaceAllString(bc.Designator, "")
 }
 
-func (bc *BoardComponent) Value() string {
+func (bc BoardComponent) Value() string {
 	return NormalizeValue(bc.Comment)
 }
 
-func (bc *BoardComponent) Key() []byte {
+func (bc BoardComponent) Key() []byte {
 	return []byte(
 		bc.Prefix() + ":" +
 			strings.ReplaceAll(bc.Comment, ":", "_") + ":" +
@@ -41,7 +65,7 @@ func (bc *BoardComponent) Key() []byte {
 	)
 }
 
-func (bc *BoardComponent) StringKey() string {
+func (bc BoardComponent) StringKey() string {
 	return string(bc.Key())
 }
 

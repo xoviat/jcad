@@ -64,7 +64,7 @@ return a normalized resistor, capacitor, or inductor value
 */
 func NormalizeValue(val string) string {
 	for _, suffix := range []string{
-		"Ohms", "Ohm", "F", "H", "f", "h",
+		"Ω", "Ohms", "Ohm", "F", "H", "f", "h",
 	} {
 		val = strings.TrimSuffix(val, suffix)
 	}

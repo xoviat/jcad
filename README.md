@@ -65,7 +65,5 @@ in basic parts:
 
 ## Initial Configuration
 
-JCAD currently requires a `go` compiler to build the program and requires
-files that are no longer available on the JLCPCB website. The program is 
-being modified to include the basic parts in the repository, but the
-completion date of this work is unknown. 
+JCAD requires a go compiler to build. Once built, `jcad load` must be executed
+to load the basic components. Then, JCAD is ready to begin generating files.

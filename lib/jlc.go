@@ -142,7 +142,7 @@ func (jlc *JLC) SelectComponentList(keyword string) (map[int64]*LibraryComponent
 func (jlc *JLC) Exact(cid string) *LibraryComponent {
 	components, err := jlc.SelectComponentList(cid)
 	if err != nil {
-		return &LibraryComponent{ID: FromCID(cid)}
+		return &LibraryComponent{ID: FromCID(cid), Description: "No description available"}
 	}
 
 	component, ok := components[FromCID(cid)]

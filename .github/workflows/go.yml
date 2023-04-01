@@ -24,5 +24,11 @@ jobs:
     - name: Build
       run: go build -v ./...
 
+    - name: Upload
+      uses: AButler/upload-release-assets@v2.0
+      with:
+        files: '*.exe'
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+
 #    - name: Test
 #      run: go test -v ./...

@@ -6,8 +6,6 @@ name: Go
 on:
   push:
     branches: [ "master" ]
-    tags:
-      - "v*.*.*"
   pull_request:
     branches: [ "master" ]
 
@@ -25,13 +23,6 @@ jobs:
 
     - name: Build
       run: go build -v ./...
-
-    - name: Upload
-      uses: AButler/upload-release-assets@v2.0
-      with:
-        files: '*.exe'
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        release-tag: ${{  github.ref_name }}
 
 #    - name: Test
 #      run: go test -v ./...

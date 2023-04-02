@@ -5,14 +5,12 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-	"net/http/cookiejar"
 	"sync"
 	"time"
 )
 
 type JLC struct {
-	client *http.Client
-	lock   *sync.Mutex
+	lock *sync.Mutex
 }
 
 type JLCLibraryComponent struct {
@@ -21,14 +19,8 @@ type JLCLibraryComponent struct {
 }
 
 func NewJLC() *JLC {
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		panic("failed to create cookiejar for some reason")
-	}
-
 	return &JLC{
-		client: &http.Client{Jar: jar},
-		lock:   &sync.Mutex{},
+		lock: &sync.Mutex{},
 	}
 }
 
@@ -69,18 +61,8 @@ type jlcSelectComponentListResponse struct {
 	} `json:"data"`
 }
 
-func (jlc *JLC) clearCookies() {
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		panic("failed to create cookiejar for some reason")
-	}
-
-	jlc.client.Jar = jar
-}
-
 func (jlc *JLC) makeRequest(request jlcRequest, response interface{}) error {
 	jlc.lock.Lock()
-	jlc.clearCookies()
 	go func() {
 		defer jlc.lock.Unlock()
 		time.Sleep(1500 * time.Millisecond)
@@ -105,7 +87,7 @@ func (jlc *JLC) makeRequest(request jlcRequest, response interface{}) error {
 		return err
 	}
 
-	resp, err := jlc.client.Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}

@@ -38,23 +38,21 @@ var generateCmd = &cobra.Command{
 	Short: "Generate manufacturing outputs from a KiCAD board file.",
 	Long: `Generate manufacturing outputs for JLCPCB from a KiCAD board file:
 		- A ZIP file containing the gerber files used to create the PCB.
-		- CPL and BOM files used to place the SMT components.`,
+		- CPL and BOM files used to place the SMT components.
+		
+	Example:
+		- jcad generate <file.kicad_pcb>`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		pcb, err := lib.Normalize(args[0])
-		if err != nil {
-			fmt.Printf("failed to normalize path: %s\n", err)
-			return
-		}
-
-		if !strings.HasSuffix(pcb, ".kicad_pcb") {
-			fmt.Println("pcb does not exist or is not KiCad PCB")
-			return
-		}
-
 		library, err := lib.NewDefaultLibrary()
 		if err != nil {
-			fmt.Printf("failed to open or create default library: %s\n", err)
+			fmt.Printf("failed to obtain default library: %s\n", err)
+			return
+		}
+
+		pcb, err := lib.NormalizePCB(args[0])
+		if err != nil {
+			fmt.Println(err.Error())
 			return
 		}
 
@@ -75,7 +73,7 @@ var generateCmd = &cobra.Command{
 			ZIP:     filepath.Join(filepath.Dir(pcb), rname+"-gerber.zip"),
 		}
 
-		fmt.Println("JCAD: KiCAD -> JLCPCB PCB assembly output generator")
+		lib.PrintHeader()
 		fmt.Printf("Processing %s\n", pcb)
 
 		os.RemoveAll(filenames.Gerbers)

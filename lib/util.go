@@ -14,6 +14,11 @@ import (
 	"github.com/lxn/win"
 )
 
+func PrintHeader() {
+	fmt.Println("JCAD: A JLCPCB PCB Generator for KiCad")
+	fmt.Println("Copyright (c) 2023 Mars Galactic")
+}
+
 func Exists(path string) bool {
 	if _, err := os.Stat(path); err == nil {
 		return true
@@ -28,6 +33,19 @@ func FromCID(cid string) int64 {
 	id, _ := strconv.ParseInt(strings.TrimPrefix(cid, "C"), 10, 64)
 
 	return id
+}
+
+func NormalizePCB(src string) (string, error) {
+	src, err := Normalize(src)
+	if err != nil {
+		return "", fmt.Errorf("failed to obtain pcb: %s\n", err)
+	}
+
+	if !strings.HasSuffix(src, ".kicad_pcb") {
+		return "", fmt.Errorf("file is not a pcb: %s\n", err)
+	}
+
+	return src, nil
 }
 
 func Normalize(src string) (string, error) {

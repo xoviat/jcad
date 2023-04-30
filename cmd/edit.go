@@ -39,8 +39,8 @@ var editCmd = &cobra.Command{
 	Example:
 		- jcad edit                  : edit all component associations
 		- jcad edit <file.kicad_pcb> : edit component associations for a pcb
-		- jcad edit -export <file>   : export all component associations
-		- jcad edit -import <file>   : erase and import all component associations
+		- jcad edit --export <file>   : export all component associations
+		- jcad edit --import <file>   : erase and import all component associations
 	`,
 	Args: cobra.RangeArgs(0, 1),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -51,7 +51,7 @@ var editCmd = &cobra.Command{
 		}
 
 		pcb := ""
-		if len(args) > 0 {
+		if len(args) > 0 && args[0] != "" {
 			pcb, err = lib.NormalizePCB(args[0])
 		}
 		if err != nil {

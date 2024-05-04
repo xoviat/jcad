@@ -136,7 +136,7 @@ func GetKiCadBinPath() string {
 	/* TODO: scan for multiple versions and use latest */
 
 	return filepath.Join(
-		GetProgramFiles(), "KiCad", "7.0", "bin",
+		GetProgramFiles(), "KiCad", "8.0", "bin",
 	)
 }
 

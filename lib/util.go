@@ -5,8 +5,6 @@ import (
 	"encoding/gob"
 	"fmt"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"syscall"
@@ -112,32 +110,11 @@ func Unmarshal(data []byte, v interface{}) error {
 	return gob.NewDecoder(b).Decode(v)
 }
 
-/*
-execute a kicad-cli command
-*/
-func ExecuteKiCadCommand(args []string, cwd string) {
-	cmd := exec.Command(
-		filepath.Join(GetKiCadBinPath(), "kicad-cli"), args...,
-	)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Dir = cwd
-	cmd.Run()
-}
-
 func GetProgramFiles() string {
 	buf := make([]uint16, win.MAX_PATH)
 	win.SHGetSpecialFolderPath(win.HWND(0), &buf[0], win.CSIDL_PROGRAM_FILES, false)
 
 	return syscall.UTF16ToString(buf)
-}
-
-func GetKiCadBinPath() string {
-	/* TODO: scan for multiple versions and use latest */
-
-	return filepath.Join(
-		GetProgramFiles(), "KiCad", "8.0", "bin",
-	)
 }
 
 func GetLocalAppData() string {

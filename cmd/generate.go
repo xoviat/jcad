@@ -50,6 +50,12 @@ var generateCmd = &cobra.Command{
 			return
 		}
 
+		kicad, err := lib.NewKicadInterface()
+		if err != nil {
+			fmt.Printf("failed to obtain kicad instance: %s\n", err)
+			return
+		}
+
 		pcb, err := lib.NormalizePCB(args[0])
 		if err != nil {
 			fmt.Println(err.Error())
@@ -74,22 +80,23 @@ var generateCmd = &cobra.Command{
 		}
 
 		lib.PrintHeader()
+		fmt.Printf("Using KiCad bin path: %s\n", kicad.GetBinPath())
 		fmt.Printf("Processing %s\n", pcb)
 
 		os.RemoveAll(filenames.Gerbers)
 		os.MkdirAll(filenames.Gerbers, 0777)
 
-		lib.ExecuteKiCadCommand(
+		kicad.ExecuteCommand(
 			[]string{
 				"pcb", "export", "gerbers", filepath.Join("..", filepath.Base(pcb)),
 			}, filenames.Gerbers,
 		)
-		lib.ExecuteKiCadCommand(
+		kicad.ExecuteCommand(
 			[]string{
 				"pcb", "export", "drill", filepath.Join("..", filepath.Base(pcb)),
 			}, filenames.Gerbers,
 		)
-		lib.ExecuteKiCadCommand(
+		kicad.ExecuteCommand(
 			[]string{
 				"pcb", "export", "pos", filepath.Base(pcb),
 				"--output", filenames.POS,

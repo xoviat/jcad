@@ -60,9 +60,9 @@ var editCmd = &cobra.Command{
 		}
 
 		lib.PrintHeader()
-		fmt.Println("edit called")
-
 		if efile != "" {
+			fmt.Println("preparing to export component associations to file...")
+
 			f := excelize.NewFile()
 			f.NewSheet(string(lib.COMPONENTS_ASC_BKT))
 			f.DeleteSheet("Sheet1")
@@ -82,6 +82,8 @@ var editCmd = &cobra.Command{
 
 			f.Save()
 		} else if ifile != "" {
+			fmt.Println("preparing to import component associations from file...")
+
 			rows := make(chan []string, 100)
 			if !strings.HasSuffix(strings.ToLower(ifile), ".xls") &&
 				!strings.HasSuffix(strings.ToLower(ifile), ".xlsx") {
@@ -128,6 +130,8 @@ var editCmd = &cobra.Command{
 				fmt.Printf("failed to import library: %s\n", err)
 				return
 			}
+		} else {
+			fmt.Println("in-place editing is not implemented.")
 		}
 
 		_ = pcb

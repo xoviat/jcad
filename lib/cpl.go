@@ -29,7 +29,7 @@ type BoardComponent struct {
 Determine whether it is possible to place the component using the SMT process
 */
 func (bc BoardComponent) CanAssemble() bool {
-	switch re1.ReplaceAllString(bc.Designator, "") {
+	switch bc.Prefix() {
 	case "J":
 		return false
 	case "H":
@@ -51,6 +51,19 @@ func (bc BoardComponent) CanAssemble() bool {
 
 func (bc BoardComponent) Prefix() string {
 	return re1.ReplaceAllString(bc.Designator, "")
+}
+
+func (bc BoardComponent) IsAbnormal() bool {
+	switch bc.Prefix() {
+	case "R":
+		return IsAbnormal(bc.Comment)
+	case "L":
+		return IsAbnormal(bc.Comment)
+	case "C":
+		return IsAbnormal(bc.Comment)
+	}
+
+	return false
 }
 
 func (bc BoardComponent) Value() string {

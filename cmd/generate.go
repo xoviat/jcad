@@ -131,6 +131,11 @@ var generateCmd = &cobra.Command{
 		*/
 		i := 0
 		for _, component := range components {
+			if component.IsAbnormal() {
+				fmt.Printf("Component %s has abnormal comment, aborting...\n", component.Designator)
+				return
+			}
+
 			/*
 				if we've marked this as a component to skip
 			*/

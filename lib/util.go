@@ -91,6 +91,13 @@ func NormalizeValue(val string) string {
 }
 
 /*
+return whether a basic part has an abnormal comment
+*/
+func IsAbnormal(val string) bool {
+	return strings.HasSuffix(val, "K")
+}
+
+/*
 return an encoded object as bytes
 */
 func Marshal(v interface{}) ([]byte, error) {

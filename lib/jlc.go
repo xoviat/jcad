@@ -78,7 +78,7 @@ func (jlc *JLC) makeRequest(request jlcRequest, response interface{}) error {
 
 	req, err := http.NewRequest(
 		"POST",
-		"https://jlcpcb.com/shoppingCart/smtGood/"+request.Method(),
+		"https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/"+request.Method(),
 		bufio.NewReader(rd),
 	)
 

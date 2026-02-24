@@ -28,7 +28,7 @@ var loadCmd = &cobra.Command{
 	Short: "Load the basic parts list",
 	Long:  `Load the basic parts list from the JLCBPCB website.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		library, err := lib.NewDefaultLibrary()
+		library, err := lib.NewDefaultLibrary(false)
 		if err != nil {
 			fmt.Printf("failed to open or create default library: %s\n", err)
 			return

@@ -28,10 +28,10 @@ type BoardComponent struct {
 /*
 Determine whether it is possible to place the component using the SMT process
 */
-func (bc BoardComponent) CanAssemble() bool {
+func (bc BoardComponent) CanAssemble(connectors bool) bool {
 	switch bc.Prefix() {
 	case "J":
-		return false
+		return connectors
 	case "H":
 		return false
 	case "G":

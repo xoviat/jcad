@@ -29,7 +29,8 @@ import (
 )
 
 var (
-	lclear []string
+	lclear     []string
+	connectors bool
 )
 
 // generateCmd represents the generate command
@@ -44,7 +45,7 @@ var generateCmd = &cobra.Command{
 		- jcad generate <file.kicad_pcb>`,
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		library, err := lib.NewDefaultLibrary()
+		library, err := lib.NewDefaultLibrary(connectors)
 		if err != nil {
 			fmt.Printf("failed to obtain default library: %s\n", err)
 			return
@@ -210,6 +211,7 @@ func init() {
 	generateCmd.PersistentFlags().StringSliceVarP(
 		&lclear, "clear", "c", []string{}, "list of component associations to clear",
 	)
+	generateCmd.Flags().BoolVarP(&connectors, "connectors", "", false, "whether to assemble connectors")
 
 	// Here you will define your flags and configuration settings.
 

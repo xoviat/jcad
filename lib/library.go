@@ -49,8 +49,9 @@ func init() {
 }
 
 type Library struct {
-	root string
-	db   *bolt.DB
+	root       string
+	db         *bolt.DB
+	connectors bool
 }
 
 /*
@@ -140,17 +141,17 @@ func (l *Library) ImportAssocations(rows <-chan []string) error {
 	})
 }
 
-func NewDefaultLibrary() (*Library, error) {
+func NewDefaultLibrary(connectors bool) (*Library, error) {
 	path := filepath.Join(GetLocalAppData(), "jcad")
 	os.MkdirAll(path, 0777)
 
-	return NewLibrary(path)
+	return NewLibrary(path, connectors)
 }
 
 /*
 Create or open library from root
 */
-func NewLibrary(root string) (*Library, error) {
+func NewLibrary(root string, connectors bool) (*Library, error) {
 	db, err := bolt.Open(filepath.Join(root, "jcad.db"), 0777, nil)
 	if err != nil {
 		return nil, err
@@ -165,8 +166,9 @@ func NewLibrary(root string) (*Library, error) {
 	})
 
 	return &Library{
-		root: root,
-		db:   db,
+		root:       root,
+		db:         db,
+		connectors: connectors,
 	}, nil
 }
 
@@ -263,7 +265,7 @@ returns:
   - LibraryComponent{ID:int64} if an associated component is found
 */
 func (l *Library) FindAssociated(bcomponent *BoardComponent) *LibraryComponent {
-	if !bcomponent.CanAssemble() {
+	if !bcomponent.CanAssemble(l.connectors) {
 		return &LibraryComponent{}
 	}
 

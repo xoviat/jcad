@@ -44,7 +44,7 @@ var editCmd = &cobra.Command{
 	`,
 	Args: cobra.RangeArgs(0, 1),
 	Run: func(cmd *cobra.Command, args []string) {
-		library, err := lib.NewDefaultLibrary()
+		library, err := lib.NewDefaultLibrary(true)
 		if err != nil {
 			fmt.Printf("failed to obtain default library: %s\n", err)
 			return

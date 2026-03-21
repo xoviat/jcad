@@ -17,8 +17,11 @@ package cmd
 
 import (
 	"fmt"
+	"io/fs"
+	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/xoviat/jcad/lib"
@@ -44,29 +47,21 @@ var editCmd = &cobra.Command{
 	`,
 	Args: cobra.RangeArgs(0, 1),
 	Run: func(cmd *cobra.Command, args []string) {
-		library, err := lib.NewDefaultLibrary(true)
-		if err != nil {
-			fmt.Printf("failed to obtain default library: %s\n", err)
-			return
-		}
-
-		pcb := ""
-		if len(args) > 0 && args[0] != "" {
-			pcb, err = lib.NormalizePCB(args[0])
-		}
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
-
-		lib.PrintHeader()
-		if efile != "" {
+		export := func(library *lib.Library, path string) error {
 			fmt.Println("preparing to export component associations to file...")
 
 			f := excelize.NewFile()
-			f.NewSheet(string(lib.COMPONENTS_ASC_BKT))
-			f.DeleteSheet("Sheet1")
-			f.SaveAs(efile)
+			if _, err := f.NewSheet(string(lib.COMPONENTS_ASC_BKT)); err != nil {
+				return fmt.Errorf("failed to create new sheet: %s", err)
+			}
+
+			if err := f.DeleteSheet("Sheet1"); err != nil {
+				return fmt.Errorf("failed to delete sheet: %s", err)
+			}
+
+			if err := f.SaveAs(path); err != nil {
+				return fmt.Errorf("failed to save as: %s", err)
+			}
 
 			assocations := library.ExportAssociations()
 			i := 1
@@ -80,33 +75,31 @@ var editCmd = &cobra.Command{
 				i++
 			}
 
-			f.Save()
-		} else if ifile != "" {
+			return f.Save()
+		}
+
+		fimport := func(library *lib.Library, path string) error {
 			fmt.Println("preparing to import component associations from file...")
 
 			rows := make(chan []string, 100)
-			if !strings.HasSuffix(strings.ToLower(ifile), ".xls") &&
-				!strings.HasSuffix(strings.ToLower(ifile), ".xlsx") {
+			if !strings.HasSuffix(strings.ToLower(path), ".xls") &&
+				!strings.HasSuffix(strings.ToLower(path), ".xlsx") {
 
-				fmt.Println("association file must be an excel spreadsheet")
-				return
+				return fmt.Errorf("association file must be an excel spreadsheet")
 			}
 
-			f, err := excelize.OpenFile(ifile)
+			f, err := excelize.OpenFile(path)
 			if err != nil {
-				fmt.Printf("failed to open excel file: %s\n", ifile)
-				return
+				return fmt.Errorf("failed to open excel file: %s (%s)\n", path, err)
 			}
 
 			if f.GetSheetName(0) != string(lib.COMPONENTS_ASC_BKT) {
-				fmt.Println("component-associations sheet must be present")
-				return
+				return fmt.Errorf("component-associations sheet must be present")
 			}
 
 			erows, err := f.Rows(f.GetSheetList()[0])
 			if err != nil {
-				fmt.Printf("failed to get sheet list: %s\n", ifile)
-				return
+				return fmt.Errorf("failed to get sheet list: %s (%s)\n", ifile, err)
 			}
 
 			go func() {
@@ -127,14 +120,86 @@ var editCmd = &cobra.Command{
 
 			err = library.ImportAssocations(rows)
 			if err != nil {
-				fmt.Printf("failed to import library: %s\n", err)
+				return fmt.Errorf("failed to import library: %s\n", err)
+			}
+
+			return nil
+		}
+
+		library, err := lib.NewDefaultLibrary(true)
+		if err != nil {
+			fmt.Printf("failed to obtain default library: %s\n", err)
+			return
+		}
+
+		pcb := ""
+		if len(args) > 0 && args[0] != "" {
+			pcb, err = lib.NormalizePCB(args[0])
+		}
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		lib.PrintHeader()
+		if pcb != "" {
+			fmt.Println("editing components for pcb is not implemented")
+		}
+
+		if efile != "" {
+			if err := export(library, efile); err != nil {
+				fmt.Printf("failed to export lib: %s\n", err)
+				return
+			}
+		} else if ifile != "" {
+			if err := fimport(library, efile); err != nil {
+				fmt.Printf("failed to import lib: %s\n", err)
 				return
 			}
 		} else {
-			fmt.Println("in-place editing is not implemented.")
-		}
+			tempf, err := os.CreateTemp("", "associations-*.xlsx")
+			if err != nil {
+				fmt.Printf("Error creating temp file: %s\n", err)
+				return
+			}
 
-		_ = pcb
+			defer os.Remove(tempf.Name())
+
+			if err = tempf.Close(); err != nil {
+				fmt.Printf("failed to close file: %s\n", err)
+				return
+			}
+
+			if err := export(library, tempf.Name()); err != nil {
+				fmt.Printf("failed to export lib: %s\n", err)
+				return
+			}
+
+			cmd, err := lib.OpenFile(tempf.Name())
+			if err != nil {
+				fmt.Printf("failed to launch editor: %s\n", err)
+				return
+			}
+
+			if err := cmd.Wait(); err != nil {
+				fmt.Printf("failed to wait for cmd: %s\n", err)
+				return
+			}
+
+			for {
+				time.Sleep(500 * time.Millisecond)
+				if _, err := os.OpenFile(tempf.Name(), os.O_CREATE|os.O_WRONLY|os.O_APPEND, fs.ModeExclusive); err != nil {
+					continue
+				}
+
+				break
+			}
+
+			if err := fimport(library, tempf.Name()); err != nil {
+				fmt.Printf("failed to import lib: %s\n", err)
+				return
+			}
+		}
 	},
 }
 

@@ -1,6 +1,6 @@
 module github.com/xoviat/jcad
 
-go 1.25
+go 1.25.0
 
 require (
 	github.com/boltdb/bolt v1.3.1
@@ -9,7 +9,7 @@ require (
 	github.com/mcuadros/go-version v0.0.0-20190830083331-035f6764e8d2
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/spf13/cobra v1.10.2
-	github.com/xuri/excelize/v2 v2.10.0
+	github.com/xuri/excelize/v2 v2.10.1
 )
 
 require (
@@ -22,7 +22,7 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/mattn/go-runewidth v0.0.20 // indirect
+	github.com/mattn/go-runewidth v0.0.21 // indirect
 	github.com/mattn/go-tty v0.0.7 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
 	github.com/nwaples/rardecode v1.1.3 // indirect
@@ -37,9 +37,9 @@ require (
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
 	github.com/xuri/efp v0.0.1 // indirect
 	github.com/xuri/nfp v0.0.2-0.20250530014748-2ddeb826f9a9 // indirect
-	golang.org/x/crypto v0.48.0 // indirect
-	golang.org/x/net v0.50.0 // indirect
-	golang.org/x/sys v0.41.0 // indirect
-	golang.org/x/text v0.34.0 // indirect
+	golang.org/x/crypto v0.49.0 // indirect
+	golang.org/x/net v0.52.0 // indirect
+	golang.org/x/sys v0.42.0 // indirect
+	golang.org/x/text v0.35.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 )

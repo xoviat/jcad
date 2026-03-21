@@ -5,6 +5,8 @@ import (
 	"encoding/gob"
 	"fmt"
 	"os"
+	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 	"syscall"
@@ -90,16 +92,12 @@ func NormalizeValue(val string) string {
 	return val
 }
 
-/*
-return whether a basic part has an abnormal comment
-*/
+// return whether a basic part has an abnormal comment
 func IsAbnormal(val string) bool {
 	return strings.HasSuffix(val, "K")
 }
 
-/*
-return an encoded object as bytes
-*/
+// return an encoded object as bytes
 func Marshal(v interface{}) ([]byte, error) {
 	b := new(bytes.Buffer)
 	err := gob.NewEncoder(b).Encode(v)
@@ -109,9 +107,7 @@ func Marshal(v interface{}) ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-/*
-return a decoded object from bytes
-*/
+// return a decoded object from bytes
 func Unmarshal(data []byte, v interface{}) error {
 	b := bytes.NewBuffer(data)
 	return gob.NewDecoder(b).Decode(v)
@@ -129,4 +125,35 @@ func GetLocalAppData() string {
 	win.SHGetSpecialFolderPath(win.HWND(0), &buf[0], win.CSIDL_LOCAL_APPDATA, false)
 
 	return syscall.UTF16ToString(buf)
+}
+
+// OpenFile opens a file with the default application for the OS
+func OpenFile(path string) (*exec.Cmd, error) {
+	// Check if file exists
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return nil, fmt.Errorf("file does not exist: %s", path)
+	}
+
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		// "start" is a shell built-in, so we run it via cmd.exe
+		cmd = exec.Command("cmd", "/C", "start", "/wait", "", path)
+	case "darwin":
+		// macOS uses the "open" command
+		cmd = exec.Command("open", path)
+	case "linux":
+		// Linux typically uses xdg-open
+		cmd = exec.Command("xdg-open", path)
+	default:
+		return nil, fmt.Errorf("unsupported platform: %s", runtime.GOOS)
+	}
+
+	// Run the command
+	if err := cmd.Start(); err != nil {
+		return nil, err
+	}
+
+	return cmd, nil
 }
